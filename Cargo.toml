@@ -1,0 +1,13 @@
+[package]
+name = "rustg"
+version = "0.1.0"
+authors = ["Juan Potato <hasantiny@gmail.com>"]
+build = "build.rs"
+
+[build-dependencies]
+serde_codegen = "0.8.21"
+
+[dependencies]
+serde = "0.8.21"
+serde_json = "0.8.4"
+hyper = "0.9.14"
