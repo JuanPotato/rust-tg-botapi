@@ -1,4 +1,13 @@
 #[derive(Debug, Serialize, Deserialize)]
+pub struct ApiResult {
+    pub ok: bool,
+    pub description: Option<String>,
+    pub error_code: Option<i64>,
+    pub result: Option<Value>,
+    pub parameters: Option<ResponseParameters>
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Update {
     pub update_id: i64,
     pub message: Option<Message>,
