@@ -8,6 +8,30 @@ pub struct ApiResult {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub enum ReplyMarkup {
+    InlineKeyboard { // TODO: turn this into a tuple varient that holds InlineKeyboardMarkup
+        inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
+    },
+
+    ReplyKeyboard {
+        keyboard: Vec<Vec<KeyboardButton>>,
+        resize_keyboard: Option<bool>,
+        one_time_keyboard: Option<bool>,
+        selective: Option<bool>,
+    },
+
+    ReplyKeyboardRemove {
+        remove_keyboard: bool,
+        selective: Option<bool>,
+    },
+
+    ForceReply {
+        force_reply: bool,
+        selective: Option<bool>,
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Update {
     pub update_id: i64,
     pub message: Option<Message>,
@@ -182,30 +206,12 @@ pub struct UserProfilePhotos {
     pub photos: Vec<Vec<PhotoSize>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ReplyKeyboardMarkup {
-    pub keyboard: Vec<Vec<KeyboardButton>>,
-    pub resize_keyboard: Option<bool>,
-    pub one_time_keyboard: Option<bool>,
-    pub selective: Option<bool>,
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct KeyboardButton {
     pub text: String,
     pub request_contact: Option<bool>,
     pub request_location: Option<bool>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ReplyKeyboardRemove {
-    pub remove_keyboard: bool,
-    pub selective: Option<bool>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineKeyboardMarkup {
-    pub inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -230,12 +236,6 @@ pub struct CallbackQuery {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ForceReply {
-    pub force_reply: bool,
-    pub selective: Option<bool>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 pub struct ChatMember {
     pub user: User,
     pub status: String,
@@ -257,279 +257,262 @@ pub struct InlineQuery {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultArticle {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub title: String,
-    pub input_message_content: InputMessageContent,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub url: Option<String>,
-    pub hide_url: Option<bool>,
-    pub description: Option<String>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
+pub enum InlineQueryResult {
+    Article {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        title: String,
+        input_message_content: InputMessageContent,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        url: Option<String>,
+        hide_url: Option<bool>,
+        description: Option<String>,
+        thumb_url: Option<String>,
+        thumb_width: Option<i64>,
+        thumb_height: Option<i64>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultPhoto {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub photo_url: String,
-    pub thumb_url: String,
-    pub photo_width: Option<i64>,
-    pub photo_height: Option<i64>,
-    pub title: Option<String>,
-    pub description: Option<String>,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    Photo {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        photo_url: String,
+        thumb_url: String,
+        photo_width: Option<i64>,
+        photo_height: Option<i64>,
+        title: Option<String>,
+        description: Option<String>,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultGif {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub gif_url: String,
-    pub gif_width: Option<i64>,
-    pub gif_height: Option<i64>,
-    pub thumb_url: String,
-    pub title: Option<String>,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    Gif {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        gif_url: String,
+        gif_width: Option<i64>,
+        gif_height: Option<i64>,
+        thumb_url: String,
+        title: Option<String>,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultMpeg4Gif {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub mpeg4_url: String,
-    pub mpeg4_width: Option<i64>,
-    pub mpeg4_height: Option<i64>,
-    pub thumb_url: String,
-    pub title: Option<String>,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    Mpeg4Gif {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        mpeg4_url: String,
+        mpeg4_width: Option<i64>,
+        mpeg4_height: Option<i64>,
+        thumb_url: String,
+        title: Option<String>,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultVideo {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub video_url: String,
-    pub mime_type: String,
-    pub thumb_url: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub video_width: Option<i64>,
-    pub video_height: Option<i64>,
-    pub video_duration: Option<i64>,
-    pub description: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    Video {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        video_url: String,
+        mime_type: String,
+        thumb_url: String,
+        title: String,
+        caption: Option<String>,
+        video_width: Option<i64>,
+        video_height: Option<i64>,
+        video_duration: Option<i64>,
+        description: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultAudio {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub audio_url: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub performer: Option<String>,
-    pub audio_duration: Option<i64>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    Audio {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        audio_url: String,
+        title: String,
+        caption: Option<String>,
+        performer: Option<String>,
+        audio_duration: Option<i64>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultVoice {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub voice_url: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub voice_duration: Option<i64>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    Voice {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        voice_url: String,
+        title: String,
+        caption: Option<String>,
+        voice_duration: Option<i64>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultDocument {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub document_url: String,
-    pub mime_type: String,
-    pub description: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
+    Document {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        title: String,
+        caption: Option<String>,
+        document_url: String,
+        mime_type: String,
+        description: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+        thumb_url: Option<String>,
+        thumb_width: Option<i64>,
+        thumb_height: Option<i64>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultLocation {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub latitude: f64,
-    pub longitude: f64,
-    pub title: String,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
+    Location {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        latitude: f64,
+        longitude: f64,
+        title: String,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+        thumb_url: Option<String>,
+        thumb_width: Option<i64>,
+        thumb_height: Option<i64>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultVenue {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub latitude: f64,
-    pub longitude: f64,
-    pub title: String,
-    pub address: String,
-    pub foursquare_id: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
+    Venue {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        latitude: f64,
+        longitude: f64,
+        title: String,
+        address: String,
+        foursquare_id: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+        thumb_url: Option<String>,
+        thumb_width: Option<i64>,
+        thumb_height: Option<i64>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultContact {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub phone_number: String,
-    pub first_name: String,
-    pub last_name: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
+    Contact {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        phone_number: String,
+        first_name: String,
+        last_name: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+        thumb_url: Option<String>,
+        thumb_width: Option<i64>,
+        thumb_height: Option<i64>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultGame {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub game_short_name: String,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-}
+    Game {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        game_short_name: String,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultCachedPhoto {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub photo_file_id: String,
-    pub title: Option<String>,
-    pub description: Option<String>,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    CachedPhoto {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        photo_file_id: String,
+        title: Option<String>,
+        description: Option<String>,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultCachedGif {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub gif_file_id: String,
-    pub title: Option<String>,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    CachedGif {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        gif_file_id: String,
+        title: Option<String>,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultCachedMpeg4Gif {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub mpeg4_file_id: String,
-    pub title: Option<String>,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    CachedMpeg4Gif {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        mpeg4_file_id: String,
+        title: Option<String>,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultCachedSticker {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub sticker_file_id: String,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    CachedSticker {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        sticker_file_id: String,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultCachedDocument {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub title: String,
-    pub document_file_id: String,
-    pub description: Option<String>,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    CachedDocument {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        title: String,
+        document_file_id: String,
+        description: Option<String>,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultCachedVideo {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub video_file_id: String,
-    pub title: String,
-    pub description: Option<String>,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    CachedVideo {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        video_file_id: String,
+        title: String,
+        description: Option<String>,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultCachedVoice {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub voice_file_id: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
+    CachedVoice {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        voice_file_id: String,
+        title: String,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineQueryResultCachedAudio {
-    #[serde(rename="type")]
-    pub type_name: String,
-    pub id: String,
-    pub audio_file_id: String,
-    pub caption: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
+    CachedAudio {
+        #[serde(rename="type")]
+        type_name: String,
+        id: String,
+        audio_file_id: String,
+        caption: Option<String>,
+        reply_markup: Option<ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: Option<InputMessageContent>,
+    },
 }
 
 #[derive(Debug, Serialize, Deserialize)]

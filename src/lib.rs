@@ -25,15 +25,17 @@ pub mod types {
     include!(concat!(env!("OUT_DIR"), "/types.rs"));
 }
 
+pub mod args;
+
 use types::*;
 
 #[derive(Debug)]
 enum BotError {
     Http (hyper::error::Error),
     Api {
-        error_code:  i64,
+        error_code: i64,
         description: String,
-        parameters:  Option<ResponseParameters>
+        parameters: Option<ResponseParameters>
     }
 }
 
