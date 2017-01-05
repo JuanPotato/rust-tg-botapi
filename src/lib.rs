@@ -26,11 +26,12 @@ pub mod types {
 }
 
 pub mod args;
+pub mod builders;
 
 use types::*;
 
 #[derive(Debug)]
-enum BotError {
+pub enum BotError {
     Http (hyper::error::Error),
     Api {
         error_code: i64,
@@ -80,7 +81,7 @@ fn request(rb: RequestBuilder) -> Result<Value, BotError> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BotApi {
     base_url: String,
     client: Client,
@@ -94,17 +95,7 @@ impl BotApi {
         }
     }
 
-    // Plan for function:
-    // Have each function have a corresponding struct for its arguments
-    // And have optional arguments wrapping in a Option<...>
-
-    // TODO: Find a way to support channel usernames and chat_id
-    // maybe two different arguments, just both being optional
-    // and have a check that at least one was filled, make chat_id higher priority
-
-    // TODO: support file_id and uploading files in the same manner^
-
-    fn get_me(self) -> Result<User, BotError> {
+    pub fn get_me(self) -> Result<User, BotError> {
         let url = self.base_url + "getMe";
         let res = request(self.client.get(&url));
         match res {
@@ -112,6 +103,8 @@ impl BotApi {
             Err(e) => Err(e),
         }
     }
+
+
 }
 
 #[cfg(test)]

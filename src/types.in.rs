@@ -9,7 +9,7 @@ pub struct ApiResult {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ReplyMarkup {
-    InlineKeyboard { // TODO: turn this into a tuple varient that holds InlineKeyboardMarkup
+    InlineKeyboard {
         inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
     },
 

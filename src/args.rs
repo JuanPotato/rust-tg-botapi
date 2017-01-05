@@ -1,11 +1,56 @@
+extern crate serde_json;
+
+use serde_json::value::Value;
+
 use super::types;
 
-struct GetUpdates<'a> {
-    offset: Option<i64>,
-    limit: Option<i64>,
-    timeout: Option<i64>,
-    allowed_updates: Option<Vec<&'a str>>,
+pub struct GetUpdates<'a> {
+    pub offset: Option<i64>,
+    pub limit: Option<i64>,
+    pub timeout: Option<i64>,
+    pub allowed_updates: Option<Vec<&'a str>>,
 }
+
+impl<'a> GetUpdates<'a> {
+    pub fn new() -> GetUpdates<'a> {
+        GetUpdates {
+            offset: None,
+            limit: None,
+            timeout: None,
+            allowed_updates: None,
+        }
+    }
+
+    pub fn offset(&'a mut self, offset: i64) -> &'a mut GetUpdates {
+        self.offset = Some(offset);
+        self
+    }
+
+    pub fn limit(&'a mut self, limit: i64) -> &'a mut GetUpdates {
+        self.limit = Some(limit);
+        self
+    }
+
+    pub fn timeout(&'a mut self, timeout: i64) -> &'a mut GetUpdates {
+        self.timeout = Some(timeout);
+        self
+    }
+
+    pub fn allowed_updates(&'a mut self, allowed_updates: &[&'a str]) -> &'a mut GetUpdates {
+        self.allowed_updates = Some(allowed_updates.to_vec());
+        self
+    }
+
+    pub fn send(&self, bot: &super::BotApi) -> Result<Vec<types::Update>, super::BotError> {
+        let url = bot.base_url + "getUpdates";
+        let res = super::request(bot.client.get(&url));
+        match res {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    } // Find a better way to send. Maybe to intialize, pass bot token. 
+}
+
 
 struct SetWebhook<'a> {
     url: &'a str,
