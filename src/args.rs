@@ -4,20 +4,24 @@ use serde_json::value::Value;
 
 use super::types;
 
+
+#[derive(Debug)]
 pub struct GetUpdates<'a> {
     pub offset: Option<i64>,
     pub limit: Option<i64>,
     pub timeout: Option<i64>,
-    pub allowed_updates: Option<Vec<&'a str>>,
+    pub allowed_updates: Option<&'a [&'a str]>,
 }
 
+#[derive(Debug)]
 pub struct SetWebhook<'a> {
     pub url: &'a str,
     pub certificate: Option<&'a str>,
     pub max_connections: Option<i64>,
-    pub allowed_updates: Option<Vec<&'a str>>,
+    pub allowed_updates: Option<&'a [&'a str]>,
 }
 
+#[derive(Debug)]
 pub struct SendMessage<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -26,9 +30,10 @@ pub struct SendMessage<'a> {
     pub disable_web_page_preview: Option<bool>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<types::ReplyMarkup>, // Will probably & ReplyMarkup's
 }
 
+#[derive(Debug)]
 pub struct ForwardMessage<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -38,6 +43,7 @@ pub struct ForwardMessage<'a> {
     pub message_id: i64,
 }
 
+#[derive(Debug)]
 pub struct SendPhoto<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -49,6 +55,7 @@ pub struct SendPhoto<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct SendAudio<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -63,6 +70,7 @@ pub struct SendAudio<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct SendDocument<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -74,6 +82,7 @@ pub struct SendDocument<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct SendSticker<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -84,6 +93,7 @@ pub struct SendSticker<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct SendVideo<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -98,6 +108,7 @@ pub struct SendVideo<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct SendVoice<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -110,6 +121,7 @@ pub struct SendVoice<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct SendLocation<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -120,6 +132,7 @@ pub struct SendLocation<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct SendVenue<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -133,6 +146,7 @@ pub struct SendVenue<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct SendContact<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -144,54 +158,64 @@ pub struct SendContact<'a> {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+#[derive(Debug)]
 pub struct GetUserProfilePhotos {
     pub user_id: i64,
     pub offset: Option<i64>,
     pub limit: Option<i64>,
 }
 
+#[derive(Debug)]
 pub struct GetFile<'a> {
     pub file_id: &'a str,
 }
 
+#[derive(Debug)]
 pub struct KickChatMember<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
     pub user_id: i64,
 }
 
+#[derive(Debug)]
 pub struct LeaveChat<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
 }
 
+#[derive(Debug)]
 pub struct UnbanChatMember<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
     pub user_id: i64,
 }
 
+#[derive(Debug)]
 pub struct GetChat<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
 }
 
+#[derive(Debug)]
 pub struct GetChatAdministrators<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
 }
 
+#[derive(Debug)]
 pub struct GetChatMembersCount<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
 }
 
+#[derive(Debug)]
 pub struct GetChatMember<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
     pub user_id: i64,
 }
 
+#[derive(Debug)]
 pub struct AnswerCallbackQuery<'a> {
     pub callback_query_id: &'a str,
     pub text: Option<&'a str>,
@@ -200,6 +224,7 @@ pub struct AnswerCallbackQuery<'a> {
     pub cache_time: Option<i64>,
 }
 
+#[derive(Debug)]
 pub struct EditMessageText<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -211,6 +236,7 @@ pub struct EditMessageText<'a> {
     pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
+#[derive(Debug)]
 pub struct EditMessageCaption<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -220,6 +246,7 @@ pub struct EditMessageCaption<'a> {
     pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
+#[derive(Debug)]
 pub struct EditMessageReplyMarkup<'a> {
     pub chat_id: Option<i64>,
     pub chat_username: Option<&'a str>,
@@ -228,6 +255,7 @@ pub struct EditMessageReplyMarkup<'a> {
     pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
+#[derive(Debug)]
 pub struct AnswerInlineQuery<'a> {
     pub inline_query_id: &'a str,
     pub results: Vec<types::InlineQueryResult>,
@@ -238,6 +266,7 @@ pub struct AnswerInlineQuery<'a> {
     pub switch_pm_parameter: Option<&'a str>,
 }
 
+#[derive(Debug)]
 pub struct SendGame<'a> {
     pub chat_id: i64,
     pub game_short_name: &'a str,
@@ -246,6 +275,7 @@ pub struct SendGame<'a> {
     pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
+#[derive(Debug)]
 pub struct GetGameScore<'a> {
     pub user_id: i64,
     pub score: i64,
@@ -256,6 +286,7 @@ pub struct GetGameScore<'a> {
     pub inline_message_id: Option<&'a str>,
 }
 
+#[derive(Debug)]
 pub struct GetGameHighScores<'a> {
     pub user_id: i64,
     pub chat_id: Option<i64>,

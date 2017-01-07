@@ -31,6 +31,8 @@ pub mod builders;
 
 use types::*;
 
+// TODO: Organize this mess and get rid of most unwraps
+
 #[derive(Debug)]
 pub enum BotError {
     Http (hyper::error::Error),
@@ -60,8 +62,8 @@ impl error::Error for BotError {
     }
 }
 
-fn request(rb: RequestBuilder) -> Result<Value, BotError> {
-    match rb.send() {
+fn parse_request(response: Result<hyper::client::Response, hyper::Error>) -> Result<Value, BotError> {
+    match response {
         Ok(mut res) => {
             let mut body = String::new();
             res.read_to_string(&mut body).unwrap();
@@ -82,27 +84,6 @@ fn request(rb: RequestBuilder) -> Result<Value, BotError> {
     }
 }
 
-fn request_multipart(multi: multipart::client::Multipart<hyper::client::Request<hyper::net::Streaming>>) -> Result<Value, BotError> {
-    match multi.send() {
-        Ok(mut res) => {
-            let mut body = String::new();
-            res.read_to_string(&mut body).unwrap();
-            let got_me: ApiResult = serde_json::from_str(&body).unwrap();
-            if let Some(val) = got_me.result {
-                Ok(val)
-            } else {
-                Err(BotError::Api{
-                    error_code: got_me.error_code.unwrap(),
-                    description: got_me.description.unwrap(),
-                    parameters: got_me.parameters
-                })
-            }
-        },
-        Err(e) => {
-            Err(BotError::Http(e))
-        }
-    }
-}
 
 #[derive(Debug)]
 pub struct BotApi {
@@ -110,17 +91,28 @@ pub struct BotApi {
     client: Client,
 }
 
+impl Clone for BotApi {
+    fn clone(&self) -> BotApi {
+        BotApi {
+            base_url: self.base_url.clone(),
+            client: Client::new(),
+        }
+    }
+}
+
 impl BotApi {
     pub fn new(bot_token: &str) -> BotApi {
+        let url = format!("https://api.telegram.org/bot{}/", bot_token);
+
         BotApi {
-            base_url: format!("https://api.telegram.org/bot{}/", bot_token).parse().unwrap(),
+            base_url: url.parse().unwrap(),
             client: Client::new(),
         }
     }
 
-    pub fn get_me(self) -> Result<User, BotError> {
+    pub fn get_me(&self) -> Result<User, BotError> {
         let url = self.base_url.join("getMe").unwrap();
-        let res = request(self.client.get(url));
+        let res = parse_request(self.client.get(url).send());
         match res {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
@@ -154,13 +146,13 @@ impl BotApi {
             multi.write_text("timeout", timeout.to_string()).unwrap();
         }   
         
-        // if let Some(allowed_updates) = params.allowed_updates {
-        //     for allowed_update in allowed_updates {
-        //         multi.write_text("allowed_updates[]", allowed_update).unwrap();
-        //     }
-        // } // Cannot move out of borrowed context, :\
+        if let Some(allowed_updates) = params.allowed_updates {
+            for allowed_update in allowed_updates {
+                multi.write_text("allowed_updates[]", allowed_update).unwrap();
+            }
+        }
 
-        match request_multipart(multi) {
+        match parse_request(multi.send()) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -201,19 +193,19 @@ impl BotApi {
         //     multi.write_text("reply_markup", reply_markup).unwrap();
         // }
 
-        // TODO create macro or just a function that will take a serde_json::Value
+        // 1: TODO create macro or just a function that will take a serde_json::Value
         // and multi.write_text correctly all of its stuff. then some function for
         // arrays that is essentially just a loop
 
 
-        match request_multipart(multi) {
+        match parse_request(multi.send()) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
     }
 
 
-}
+} // 2: TODO don't use multipart when you don't have to
 
 #[cfg(test)]
 mod tests { // These aren't going to be the actual tests, just a place for me to easily test things as I go along
@@ -223,37 +215,61 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
     fn it_works() {
         let token = "";
         let bot = BotApi::new(token);
-        
-        let mut offset = 0;
-        
-        for _ in 0..3 {
-            let updates = bot.get_updates(&args::GetUpdates {
-                                            offset: Some(offset),
-                                            limit: None,
-                                            timeout: Some(600),
-                                            allowed_updates: None,
-                                        }).unwrap();
+
+        let mut update_args = args::GetUpdates {
+            offset: Some(0),
+            limit: None,
+            timeout: Some(600),
+            allowed_updates: None,
+        };
+
+                
+        'update_loop: loop {
+            let updates = bot.get_updates(&update_args).unwrap();
 
             for update in updates {
-                offset = update.update_id;
+                update_args.offset = Some(update.update_id + 1);
+                println!("{:?}", update_args.offset);
 
                 if let Some(message) = update.message {
                     let from = message.from.unwrap();
-                    let text = format!("Hi {}[{}]!", from.first_name,
-                                                     from.id);
+                    let text = format!("Hi {} [{}]!", from.first_name,
+                                                      from.id);
 
-                    bot.send_message(&args::SendMessage {
-                                        chat_id: Some(message.chat.id),
-                                        chat_username: None,
-                                        text: &text,
-                                        parse_mode: Some("Markdown"),
-                                        disable_web_page_preview: None,
-                                        disable_notification: None,
-                                        reply_to_message_id: Some(message.message_id),
-                                        reply_markup: None,
-                                    }).unwrap();
+                    let mut msg_args = args::SendMessage {
+                        chat_id: None,
+                        chat_username: None,
+                        text: "",
+                        parse_mode: Some("Markdown"),
+                        disable_web_page_preview: None,
+                        disable_notification: None,
+                        reply_to_message_id: None,
+                        reply_markup: None,
+                    };
+
+                    msg_args.text = &text;
+                    msg_args.chat_id = Some(message.chat.id);
+                    msg_args.reply_to_message_id = Some(message.message_id);
+
+                    bot.send_message(&msg_args);
+
+                    if let Some(text) = message.text {
+                        if text == "/exit" {
+                            break 'update_loop;
+                        }
+                    }
                 }
             }
         }
+        bot.get_updates(&update_args);
+        // Alright, so if you ever decide to have a function that terminates
+        // your bot, make sure you have a check at the beginning of the loop
+        // that makes sure you aren't processing old messages. You could also
+        // just make a getUpdates at the end of the execution that just uses
+        // the latest offset. This prevents you from having to reread any
+        // updates that were in the update array you got that had the terminate
+        // command. Because telegram only will stop sending you the update
+        // after you have used an offset greater than its. So if you never make
+        // another getUpdates, you will boot up, and terminate, forever. :)
     }
 }
