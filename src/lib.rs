@@ -190,7 +190,7 @@ impl BotApi {
         }
 
         if let Some(reply_markup) = params.reply_markup {
-            value_to_multi("reply_markup", serde_json::to_value(reply_markup)).unwrap();
+            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup), false);
         }
 
         match parse_request(multi.send()) {
@@ -199,32 +199,59 @@ impl BotApi {
         }
     }
 } // 2: TODO don't use multipart when you don't have to
-
-fn value_to_multi(&mut multi: multipart::client::Multipart, key: &str, val: Value, from_obj: bool) {
+//multipart::client::Multipart<>
+fn value_to_multi(multi: &mut multipart::client::Multipart<hyper::client::Request<hyper::net::Streaming>>, key: &str, val: Value, from_obj: bool) {
     match val {
         Value::Null => {
             multi.write_text(key, "null").unwrap();
         }
-        Value::Bool(v) |
-        Value::I64(v) |
-        Value::U64(v) |
-        Value::F64(v) |
+        Value::Bool(v) => {
+            if from_obj {
+                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
+            } else {
+                multi.write_text(key, v.to_string()).unwrap();
+            }
+        }
+        Value::I64(v) => {
+            if from_obj {
+                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
+            } else {
+                multi.write_text(key, v.to_string()).unwrap();
+            }
+        }
+        Value::U64(v) => {
+            if from_obj {
+                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
+            } else {
+                multi.write_text(key, v.to_string()).unwrap();
+            }
+        }
+        Value::F64(v) => {
+            if from_obj {
+                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
+            } else {
+                multi.write_text(key, v.to_string()).unwrap();
+            }
+        }
         Value::String(v) => {
             if from_obj {
-                multi.write_text(&format!(key, ""), v.to_string()).unwrap();
+                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
             } else {
                 multi.write_text(key, v.to_string()).unwrap();
             }
         }
         Value::Array(a) => {
-            let n = format!("{}[]", key);
+            let mut n = String::from(key);
+            n.push_str("[]");
             for item in a {
-                multi.write_text(&n, v.to_string()).unwrap();
+                value_to_multi(multi, &n, item, false);
             }
         }
         Value::Object(map) => {
-            for (key, value) in map {
-                value_to_multi(&mut multi, &format!(name, key), value, true);
+            for (map_key, map_value) in map {
+                let n = String::from(key);
+                n.replace("{}", &map_key);
+                value_to_multi(multi, &n, map_value, true);
             }
         }
     }

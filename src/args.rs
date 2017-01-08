@@ -30,7 +30,7 @@ pub struct SendMessage<'a> {
     pub disable_web_page_preview: Option<bool>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>, // Will probably & ReplyMarkup's
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -52,7 +52,7 @@ pub struct SendPhoto<'a> {
     pub caption: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -67,7 +67,7 @@ pub struct SendAudio<'a> {
     pub title: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -79,7 +79,7 @@ pub struct SendDocument<'a> {
     pub caption: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -90,7 +90,7 @@ pub struct SendSticker<'a> {
     pub file_id: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -105,7 +105,7 @@ pub struct SendVideo<'a> {
     pub caption: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -118,7 +118,7 @@ pub struct SendVoice<'a> {
     pub duration: Option<i64>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -129,7 +129,7 @@ pub struct SendLocation<'a> {
     pub longitude: f64,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -143,7 +143,7 @@ pub struct SendVenue<'a> {
     pub foursquare_id: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -155,7 +155,7 @@ pub struct SendContact<'a> {
     pub last_name: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
 #[derive(Debug)]
@@ -233,7 +233,7 @@ pub struct EditMessageText<'a> {
     pub text: &'a str,
     pub parse_mode: Option<&'a str>,
     pub disable_web_page_preview: Option<bool>,
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
 #[derive(Debug)]
@@ -243,7 +243,7 @@ pub struct EditMessageCaption<'a> {
     pub message_id: Option<i64>,
     pub inline_message_id: Option<&'a str>,
     pub caption: Option<&'a str>,
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
 #[derive(Debug)]
@@ -252,7 +252,7 @@ pub struct EditMessageReplyMarkup<'a> {
     pub chat_username: Option<&'a str>,
     pub message_id: Option<i64>,
     pub inline_message_id: Option<&'a str>,
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
 #[derive(Debug)]
@@ -272,7 +272,7 @@ pub struct SendGame<'a> {
     pub game_short_name: &'a str,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
 #[derive(Debug)]
