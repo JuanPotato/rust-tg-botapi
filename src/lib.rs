@@ -189,23 +189,46 @@ impl BotApi {
             multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
         }
 
-        // if let Some(reply_markup) = params.reply_markup {
-        //     multi.write_text("reply_markup", reply_markup).unwrap();
-        // }
-
-        // 1: TODO create macro or just a function that will take a serde_json::Value
-        // and multi.write_text correctly all of its stuff. then some function for
-        // arrays that is essentially just a loop
-
+        if let Some(reply_markup) = params.reply_markup {
+            value_to_multi("reply_markup", serde_json::to_value(reply_markup)).unwrap();
+        }
 
         match parse_request(multi.send()) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
     }
-
-
 } // 2: TODO don't use multipart when you don't have to
+
+fn value_to_multi(&mut multi: multipart::client::Multipart, key: &str, val: Value, from_obj: bool) {
+    match val {
+        Value::Null => {
+            multi.write_text(key, "null").unwrap();
+        }
+        Value::Bool(v) |
+        Value::I64(v) |
+        Value::U64(v) |
+        Value::F64(v) |
+        Value::String(v) => {
+            if from_obj {
+                multi.write_text(&format!(key, ""), v.to_string()).unwrap();
+            } else {
+                multi.write_text(key, v.to_string()).unwrap();
+            }
+        }
+        Value::Array(a) => {
+            let n = format!("{}[]", key);
+            for item in a {
+                multi.write_text(&n, v.to_string()).unwrap();
+            }
+        }
+        Value::Object(map) => {
+            for (key, value) in map {
+                value_to_multi(&mut multi, &format!(name, key), value, true);
+            }
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests { // These aren't going to be the actual tests, just a place for me to easily test things as I go along
