@@ -147,9 +147,7 @@ impl BotApi {
         }   
         
         if let Some(allowed_updates) = params.allowed_updates {
-            for allowed_update in allowed_updates {
-                multi.write_text("allowed_updates[]", allowed_update).unwrap();
-            }
+            value_to_multi(&mut multi, "allowed_updates", serde_json::to_value(allowed_updates));
         }
 
         match parse_request(multi.send()) {
@@ -190,7 +188,7 @@ impl BotApi {
         }
 
         if let Some(reply_markup) = params.reply_markup {
-            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup), false);
+            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
         match parse_request(multi.send()) {
@@ -199,59 +197,52 @@ impl BotApi {
         }
     }
 } // 2: TODO don't use multipart when you don't have to
-//multipart::client::Multipart<>
-fn value_to_multi(multi: &mut multipart::client::Multipart<hyper::client::Request<hyper::net::Streaming>>, key: &str, val: Value, from_obj: bool) {
+
+fn value_to_multi(multi: &mut Multipart<Request<hyper::net::Streaming>>, key: &str, val: Value) {
     match val {
         Value::Null => {
             multi.write_text(key, "null").unwrap();
         }
-        Value::Bool(v) => {
-            if from_obj {
-                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
-            } else {
-                multi.write_text(key, v.to_string()).unwrap();
-            }
+        Value::Bool(b) => {
+            multi.write_text(key, b.to_string()).unwrap();
         }
-        Value::I64(v) => {
-            if from_obj {
-                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
-            } else {
-                multi.write_text(key, v.to_string()).unwrap();
-            }
+        Value::I64(i) => {
+            multi.write_text(key, i.to_string()).unwrap();
         }
-        Value::U64(v) => {
-            if from_obj {
-                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
-            } else {
-                multi.write_text(key, v.to_string()).unwrap();
-            }
+        Value::U64(u) => {
+            multi.write_text(key, u.to_string()).unwrap();
         }
-        Value::F64(v) => {
-            if from_obj {
-                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
-            } else {
-                multi.write_text(key, v.to_string()).unwrap();
-            }
+        Value::F64(f) => {
+            multi.write_text(key, f.to_string()).unwrap();
         }
-        Value::String(v) => {
-            if from_obj {
-                multi.write_text(&str::replace(key, "{}", ""), v.to_string()).unwrap();
-            } else {
-                multi.write_text(key, v.to_string()).unwrap();
-            }
+        Value::String(s) => {
+            multi.write_text(key, s.to_string()).unwrap();
         }
         Value::Array(a) => {
-            let mut n = String::from(key);
-            n.push_str("[]");
+            let mut new_key = String::from(key);
+            new_key.push_str("[[]]");
+
+            let mut index = 0;
             for item in a {
-                value_to_multi(multi, &n, item, false);
+                let final_key = match item {
+                    Value::Array(_) | Value::Object(_) => {
+                        new_key.replace("[]", &index.to_string())
+                    }
+                    _ => {
+                        new_key.replace("[]", "")
+                    }
+                };
+
+                value_to_multi(multi, &final_key, item);
+                index += 1;
             }
         }
         Value::Object(map) => {
+            let mut new_key = String::from(key);
+            new_key.push_str("[{}]");
+
             for (map_key, map_value) in map {
-                let n = String::from(key);
-                n.replace("{}", &map_key);
-                value_to_multi(multi, &n, map_value, true);
+                value_to_multi(multi, &new_key.replace("{}", &map_key), map_value);
             }
         }
     }
