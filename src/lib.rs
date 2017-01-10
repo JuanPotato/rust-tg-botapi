@@ -1,3 +1,4 @@
+#![feature(question_mark)]
 extern crate hyper;
 extern crate multipart;
 extern crate serde_json;
@@ -26,7 +27,10 @@ pub mod types {
     include!(concat!(env!("OUT_DIR"), "/types.rs"));
 }
 
-pub mod args;
+pub mod args {
+    include!(concat!(env!("OUT_DIR"), "/args.rs"));
+}
+
 pub mod builders;
 
 use types::*;
@@ -130,27 +134,15 @@ impl BotApi {
 
         // Manage your errors
 
-        let req = Request::new(Method::Post, url).unwrap();
+        // I managed to have less places to have errors
 
-        let mut multi = Multipart::from_request(req).unwrap();
+        let body = serde_json::to_string(params).unwrap();
 
-        if let Some(offset) = params.offset {
-            multi.write_text("offset", offset.to_string()).unwrap();
-        }   
-        
-        if let Some(limit) = params.limit {
-            multi.write_text("limit", limit.to_string()).unwrap();
-        }   
-        
-        if let Some(timeout) = params.timeout {
-            multi.write_text("timeout", timeout.to_string()).unwrap();
-        }   
-        
-        if let Some(allowed_updates) = params.allowed_updates {
-            value_to_multi(&mut multi, "allowed_updates", serde_json::to_value(allowed_updates));
-        }
+        let res = self.client.post(url)
+                             .header(hyper::header::ContentType::json())
+                             .body(&body);
 
-        match parse_request(multi.send()) {
+        match parse_request(res.send()) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -159,46 +151,20 @@ impl BotApi {
     
     pub fn send_message(&self, params: &args::SendMessage) -> Result<Message, BotError> {
         let url = self.base_url.join("sendMessage").unwrap();
-        let req = Request::new(Method::Post, url).unwrap();
-        let mut multi = Multipart::from_request(req).unwrap();
+        let body = serde_json::to_string(params).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else
-        if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        let res = self.client.post(url)
+                             .header(hyper::header::ContentType::json())
+                             .body(&body);
 
-        multi.write_text("text", params.text).unwrap();
-
-        if let Some(parse_mode) = params.parse_mode {
-            multi.write_text("parse_mode", parse_mode).unwrap();
-        }
-
-        if let Some(disable_web_page_preview) = params.disable_web_page_preview {
-            multi.write_text("disable_web_page_preview", disable_web_page_preview.to_string()).unwrap();
-        }
-
-        if let Some(disable_notification) = params.disable_notification {
-            multi.write_text("disable_notification", disable_notification.to_string()).unwrap();
-        }
-
-        if let Some(reply_to_message_id) = params.reply_to_message_id {
-            multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
-        }
-
-        if let Some(reply_markup) = params.reply_markup {
-            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
-        }
-
-        match parse_request(multi.send()) {
+        match parse_request(res.send()) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
     }
-} // 2: TODO don't use multipart when you don't have to
+}
 
-fn value_to_multi(multi: &mut Multipart<Request<hyper::net::Streaming>>, key: &str, val: Value) {
+fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, val: Value) {
     match val {
         Value::Null => {
             multi.write_text(key, "null").unwrap();
