@@ -148,7 +148,6 @@ impl BotApi {
         }
     }
 
-    
     pub fn send_message(&self, params: &args::SendMessage) -> Result<Message, BotError> {
         let url = self.base_url.join("sendMessage").unwrap();
         let body = serde_json::to_string(params).unwrap();
@@ -158,6 +157,59 @@ impl BotApi {
                              .body(&body);
 
         match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+    
+    pub fn forward_message(&self, params: &args::ForwardMessage) -> Result<Message, BotError> {
+        let url = self.base_url.join("forwardMessage").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                             .header(hyper::header::ContentType::json())
+                             .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn send_photo(&self, params: &args::SendPhoto) -> Result<Message, BotError> {
+        let url = self.base_url.join("sendPhoto").unwrap();
+        let req = Request::new(Method::Post, url).unwrap();
+        let mut multi = Multipart::from_request(req).unwrap();
+
+        if let Some(chat_id) = params.chat_id {
+            multi.write_text("chat_id", chat_id.to_string()).unwrap();
+        } else if let Some(chat_username) = params.chat_username {
+            multi.write_text("chat_id", chat_username).unwrap();
+        }
+
+        if let Some(photo) = params.photo {
+            multi.write_file("photo", photo).unwrap();
+        } else if let Some(file_id) = params.file_id {
+            multi.write_text("file_id", file_id).unwrap();
+        }
+
+        if let Some(caption) = params.caption {
+            multi.write_text("caption", caption).unwrap();
+        }
+
+        if let Some(disable_notification) = params.disable_notification {
+            multi.write_text("disable_notification", disable_notification.to_string()).unwrap();
+        }
+
+        if let Some(reply_to_message_id) = params.reply_to_message_id {
+            multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
+        }
+
+        if let Some(reply_markup) = params.reply_markup {
+            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+        }
+
+        match parse_request(multi.send()) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -264,10 +316,24 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
                         if text == "/exit" {
                             break 'update_loop;
                         }
+                        if text == "/photo" {
+                            bot.send_photo(&args::SendPhoto {
+                                chat_id: Some(message.chat.id),
+                                chat_username: None,
+                                photo: Some("photo.png"),
+                                file_id: None,
+                                caption: Some("Yeahboi"),
+                                disable_notification: None,
+                                reply_to_message_id: Some(message.message_id),
+                                reply_markup: None,
+                            });
+                        }
                     }
                 }
             }
         }
+        update_args.limit = Some(0);
+        update_args.timeout = Some(0);
         bot.get_updates(&update_args);
         // Alright, so if you ever decide to have a function that terminates
         // your bot, make sure you have a check at the beginning of the loop

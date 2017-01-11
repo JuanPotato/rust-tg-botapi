@@ -90,8 +90,7 @@ impl <'a> Serialize for SendMessage<'a> {
     }
 }
 
-
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct ForwardMessage<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -110,30 +109,44 @@ pub struct ForwardMessage<'a> {
     pub message_id: i64,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for ForwardMessage<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("ForwardMessage",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 } +
+            if self.from_chat_username.is_some() || self.from_chat_id.is_some() { 1 } else { 0 } +
+            option_int!(&self.disable_notification))?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        if self.from_chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "from_chat_id", &self.from_chat_username)?;
+        } else if self.from_chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "from_chat_id", &self.from_chat_id)?;
+        }
+
+        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
+
+        serializer.serialize_struct_elt(&mut state, "message_id", &self.message_id)?;
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct SendPhoto<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
