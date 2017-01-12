@@ -92,19 +92,10 @@ impl <'a> Serialize for SendMessage<'a> {
 
 #[derive(Debug)]
 pub struct ForwardMessage<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub from_chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub from_chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
     pub message_id: i64,
 }
@@ -150,225 +141,194 @@ pub struct SendPhoto<'a> {
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct SendAudio<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub audio: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub performer: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct SendDocument<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct SendSticker<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sticker: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct SendVideo<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub video: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub width: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct SendVoice<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub voice: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct SendLocation<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
     pub latitude: f64,
     pub longitude: f64,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for SendLocation<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("SendLocation",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 3 } else { 2 } +
+            option_int!(&self.disable_notification,
+                        &self.reply_to_message_id,
+                        &self.reply_markup))?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_elt(&mut state, "latitude", &self.latitude)?;
+        serializer.serialize_struct_elt(&mut state, "longitude", &self.longitude)?;
+
+        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_to_message_id", &self.reply_to_message_id);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct SendVenue<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
     pub latitude: f64,
     pub longitude: f64,
     pub title: &'a str,
     pub address: &'a str,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for SendVenue<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("SendVenue",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 5 } else { 4 } +
+            option_int!(&self.foursquare_id,
+                        &self.disable_notification,
+                        &self.reply_to_message_id,
+                        &self.reply_markup))?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_elt(&mut state, "latitude", &self.latitude)?;
+        serializer.serialize_struct_elt(&mut state, "longitude", &self.longitude)?;
+        serializer.serialize_struct_elt(&mut state, "title", &self.title)?;
+        serializer.serialize_struct_elt(&mut state, "address", &self.address)?;
+
+        option_serialize_struct_elt!(serializer, &mut state, "foursquare_id", &self.foursquare_id);
+        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_to_message_id", &self.reply_to_message_id);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct SendContact<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
     pub phone_number: &'a str,
     pub first_name: &'a str,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>,
+}
+
+impl <'a> Serialize for SendContact<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("SendContact",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 3 } else { 2 } +
+            option_int!(&self.last_name,
+                        &self.disable_notification,
+                        &self.reply_to_message_id,
+                        &self.reply_markup))?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_elt(&mut state, "phone_number", &self.phone_number)?;
+        serializer.serialize_struct_elt(&mut state, "first_name", &self.first_name)?;
+
+        option_serialize_struct_elt!(serializer, &mut state, "last_name", &self.last_name);
+        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_to_message_id", &self.reply_to_message_id);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
+
+        serializer.serialize_struct_end(state)
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -387,7 +347,7 @@ pub struct GetFile<'a> {
     pub file_id: &'a str,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct KickChatMember<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -397,7 +357,26 @@ pub struct KickChatMember<'a> {
     pub user_id: i64,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for KickChatMember<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("KickChatMember",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 })?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_elt(&mut state, "user_id", &self.user_id)?;
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct LeaveChat<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -406,7 +385,24 @@ pub struct LeaveChat<'a> {
     pub chat_username: Option<&'a str>,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for LeaveChat<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("LeaveChat",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 })?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct UnbanChatMember<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -416,7 +412,26 @@ pub struct UnbanChatMember<'a> {
     pub user_id: i64,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for UnbanChatMember<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("UnbanChatMember",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 })?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_elt(&mut state, "user_id", &self.user_id)?;
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct GetChat<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -425,7 +440,24 @@ pub struct GetChat<'a> {
     pub chat_username: Option<&'a str>,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for GetChat<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("GetChat",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 })?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct GetChatAdministrators<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -434,7 +466,24 @@ pub struct GetChatAdministrators<'a> {
     pub chat_username: Option<&'a str>,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for GetChatAdministrators<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("GetChatAdministrators",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 })?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct GetChatMembersCount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -443,7 +492,24 @@ pub struct GetChatMembersCount<'a> {
     pub chat_username: Option<&'a str>,
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for GetChatMembersCount<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("GetChatMembersCount",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 })?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct GetChatMember<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -451,6 +517,25 @@ pub struct GetChatMember<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
     pub user_id: i64,
+}
+
+impl <'a> Serialize for GetChatMember<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("GetChatMember",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 })?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_elt(&mut state, "user_id", &self.user_id)?;
+
+        serializer.serialize_struct_end(state)
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -470,7 +555,7 @@ pub struct AnswerCallbackQuery<'a> {
     pub cache_time: Option<i64>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct EditMessageText<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -495,7 +580,35 @@ pub struct EditMessageText<'a> {
     pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for EditMessageText<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("EditMessageText",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 } +
+            option_int!(&self.message_id,
+                        &self.parse_mode,
+                        &self.disable_web_page_preview,
+                        &self.reply_markup))?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        serializer.serialize_struct_elt(&mut state, "text", &self.text)?;
+
+        option_serialize_struct_elt!(serializer, &mut state, "message_id", &self.message_id);
+        option_serialize_struct_elt!(serializer, &mut state, "parse_mode", &self.parse_mode);
+        option_serialize_struct_elt!(serializer, &mut state, "disable_web_page_preview", &self.disable_web_page_preview);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct EditMessageCaption<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -516,7 +629,33 @@ pub struct EditMessageCaption<'a> {
     pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
-#[derive(Debug, Serialize)]
+impl <'a> Serialize for EditMessageCaption<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("EditMessageCaption",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 } +
+            option_int!(&self.message_id,
+                        &self.inline_message_id,
+                        &self.caption,
+                        &self.reply_markup))?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        option_serialize_struct_elt!(serializer, &mut state, "message_id", &self.message_id);
+        option_serialize_struct_elt!(serializer, &mut state, "inline_message_id", &self.inline_message_id);
+        option_serialize_struct_elt!(serializer, &mut state, "caption", &self.caption);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
+
+        serializer.serialize_struct_end(state)
+    }
+}
+
+#[derive(Debug)]
 pub struct EditMessageReplyMarkup<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
@@ -532,6 +671,30 @@ pub struct EditMessageReplyMarkup<'a> {
     
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
+}
+
+impl <'a> Serialize for EditMessageReplyMarkup<'a> {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+        where S: Serializer
+    {
+        let mut state = serializer.serialize_struct("EditMessageReplyMarkup",
+            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 } +
+            option_int!(&self.message_id,
+                        &self.inline_message_id,
+                        &self.reply_markup))?;
+
+        if self.chat_username.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
+        } else if self.chat_id.is_some() {
+            serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_id)?;
+        }
+
+        option_serialize_struct_elt!(serializer, &mut state, "message_id", &self.message_id);
+        option_serialize_struct_elt!(serializer, &mut state, "inline_message_id", &self.inline_message_id);
+        option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
+
+        serializer.serialize_struct_end(state)
+    }
 }
 
 #[derive(Debug, Serialize)]

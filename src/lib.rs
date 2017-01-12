@@ -214,6 +214,225 @@ impl BotApi {
             Err(e) => Err(e),
         }
     }
+
+    pub fn send_audio(&self, params: &args::SendAudio) -> Result<Message, BotError> {
+        let url = self.base_url.join("sendAudio").unwrap();
+        let req = Request::new(Method::Post, url).unwrap();
+        let mut multi = Multipart::from_request(req).unwrap();
+
+        if let Some(chat_id) = params.chat_id {
+            multi.write_text("chat_id", chat_id.to_string()).unwrap();
+        } else if let Some(chat_username) = params.chat_username {
+            multi.write_text("chat_id", chat_username).unwrap();
+        }
+
+        if let Some(audio) = params.audio {
+            multi.write_file("audio", audio).unwrap();
+        } else if let Some(file_id) = params.file_id {
+            multi.write_text("file_id", file_id).unwrap();
+        }
+
+        if let Some(caption) = params.caption {
+            multi.write_text("caption", caption).unwrap();
+        }
+
+        if let Some(duration) = params.duration {
+            multi.write_text("duration", duration.to_string()).unwrap();
+        }
+
+        if let Some(performer) = params.performer {
+            multi.write_text("performer", performer).unwrap();
+        }
+
+        if let Some(title) = params.title {
+            multi.write_text("title", title).unwrap();
+        }
+
+        if let Some(disable_notification) = params.disable_notification {
+            multi.write_text("disable_notification", disable_notification.to_string()).unwrap();
+        }
+
+        if let Some(reply_to_message_id) = params.reply_to_message_id {
+            multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
+        }
+
+        if let Some(reply_markup) = params.reply_markup {
+            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+        }
+
+        match parse_request(multi.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn send_document(&self, params: &args::SendDocument) -> Result<Message, BotError> {
+        let url = self.base_url.join("sendDocument").unwrap();
+        let req = Request::new(Method::Post, url).unwrap();
+        let mut multi = Multipart::from_request(req).unwrap();
+
+        if let Some(chat_id) = params.chat_id {
+            multi.write_text("chat_id", chat_id.to_string()).unwrap();
+        } else if let Some(chat_username) = params.chat_username {
+            multi.write_text("chat_id", chat_username).unwrap();
+        }
+
+        if let Some(document) = params.document {
+            multi.write_file("document", document).unwrap();
+        } else if let Some(file_id) = params.file_id {
+            multi.write_text("file_id", file_id).unwrap();
+        }
+
+        if let Some(caption) = params.caption {
+            multi.write_text("caption", caption).unwrap();
+        }
+
+        if let Some(disable_notification) = params.disable_notification {
+            multi.write_text("disable_notification", disable_notification.to_string()).unwrap();
+        }
+
+        if let Some(reply_to_message_id) = params.reply_to_message_id {
+            multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
+        }
+
+        if let Some(reply_markup) = params.reply_markup {
+            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+        }
+
+        match parse_request(multi.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn send_sticker(&self, params: &args::SendSticker) -> Result<Message, BotError> {
+        let url = self.base_url.join("sendSticker").unwrap();
+        let req = Request::new(Method::Post, url).unwrap();
+        let mut multi = Multipart::from_request(req).unwrap();
+
+        if let Some(chat_id) = params.chat_id {
+            multi.write_text("chat_id", chat_id.to_string()).unwrap();
+        } else if let Some(chat_username) = params.chat_username {
+            multi.write_text("chat_id", chat_username).unwrap();
+        }
+
+        if let Some(sticker) = params.sticker {
+            multi.write_file("sticker", sticker).unwrap();
+        } else if let Some(file_id) = params.file_id {
+            multi.write_text("file_id", file_id).unwrap();
+        }
+
+        if let Some(disable_notification) = params.disable_notification {
+            multi.write_text("disable_notification", disable_notification.to_string()).unwrap();
+        }
+
+        if let Some(reply_to_message_id) = params.reply_to_message_id {
+            multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
+        }
+
+        if let Some(reply_markup) = params.reply_markup {
+            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+        }
+
+        match parse_request(multi.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn send_video(&self, params: &args::SendVideo) -> Result<Message, BotError> {
+        let url = self.base_url.join("sendVideo").unwrap();
+        let req = Request::new(Method::Post, url).unwrap();
+        let mut multi = Multipart::from_request(req).unwrap();
+
+        if let Some(chat_id) = params.chat_id {
+            multi.write_text("chat_id", chat_id.to_string()).unwrap();
+        } else if let Some(chat_username) = params.chat_username {
+            multi.write_text("chat_id", chat_username).unwrap();
+        }
+
+        if let Some(video) = params.video {
+            multi.write_file("video", video).unwrap();
+        } else if let Some(file_id) = params.file_id {
+            multi.write_text("file_id", file_id).unwrap();
+        }
+
+        if let Some(caption) = params.caption {
+            multi.write_text("caption", caption).unwrap();
+        }
+
+        if let Some(width) = params.width {
+            multi.write_text("width", width.to_string()).unwrap();
+        }
+
+        if let Some(height) = params.height {
+            multi.write_text("height", height.to_string()).unwrap();
+        }
+
+        if let Some(duration) = params.duration {
+            multi.write_text("duration", duration.to_string()).unwrap();
+        }
+
+        if let Some(disable_notification) = params.disable_notification {
+            multi.write_text("disable_notification", disable_notification.to_string()).unwrap();
+        }
+
+        if let Some(reply_to_message_id) = params.reply_to_message_id {
+            multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
+        }
+
+        if let Some(reply_markup) = params.reply_markup {
+            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+        }
+
+        match parse_request(multi.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn send_voice(&self, params: &args::SendVoice) -> Result<Message, BotError> {
+        let url = self.base_url.join("sendVoice").unwrap();
+        let req = Request::new(Method::Post, url).unwrap();
+        let mut multi = Multipart::from_request(req).unwrap();
+
+        if let Some(chat_id) = params.chat_id {
+            multi.write_text("chat_id", chat_id.to_string()).unwrap();
+        } else if let Some(chat_username) = params.chat_username {
+            multi.write_text("chat_id", chat_username).unwrap();
+        }
+
+        if let Some(voice) = params.voice {
+            multi.write_file("voice", voice).unwrap();
+        } else if let Some(file_id) = params.file_id {
+            multi.write_text("file_id", file_id).unwrap();
+        }
+
+        if let Some(caption) = params.caption {
+            multi.write_text("caption", caption).unwrap();
+        }
+
+        if let Some(duration) = params.duration {
+            multi.write_text("duration", duration.to_string()).unwrap();
+        }
+
+        if let Some(disable_notification) = params.disable_notification {
+            multi.write_text("disable_notification", disable_notification.to_string()).unwrap();
+        }
+
+        if let Some(reply_to_message_id) = params.reply_to_message_id {
+            multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
+        }
+
+        if let Some(reply_markup) = params.reply_markup {
+            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+        }
+
+        match parse_request(multi.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
 }
 
 fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, val: Value) {
@@ -292,41 +511,50 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
 
                 if let Some(message) = update.message {
                     let from = message.from.unwrap();
-                    let text = format!("Hi {} [{}]!", from.first_name,
-                                                      from.id);
 
-                    let mut msg_args = args::SendMessage {
-                        chat_id: None,
-                        chat_username: None,
-                        text: "",
-                        parse_mode: Some("Markdown"),
-                        disable_web_page_preview: None,
-                        disable_notification: None,
-                        reply_to_message_id: None,
-                        reply_markup: None,
-                    };
+                    let message_text = message.text.unwrap_or(String::new());
+                    let mut split_text = message_text.split_whitespace();
 
-                    msg_args.text = &text;
-                    msg_args.chat_id = Some(message.chat.id);
-                    msg_args.reply_to_message_id = Some(message.message_id);
-
-                    bot.send_message(&msg_args);
-
-                    if let Some(text) = message.text {
-                        if text == "/exit" {
-                            break 'update_loop;
-                        }
-                        if text == "/photo" {
-                            bot.send_photo(&args::SendPhoto {
-                                chat_id: Some(message.chat.id),
-                                chat_username: None,
-                                photo: Some("photo.png"),
-                                file_id: None,
-                                caption: Some("Yeahboi"),
-                                disable_notification: None,
-                                reply_to_message_id: Some(message.message_id),
-                                reply_markup: None,
-                            });
+                    if let Some(cmd) = split_text.next() {
+                        match cmd {
+                            "/exit" => {
+                                bot.send_message(&args::SendMessage {
+                                    chat_id: Some(message.chat.id),
+                                    chat_username: None,
+                                    text: "Goodbye!",
+                                    parse_mode: Some("Markdown"),
+                                    disable_web_page_preview: None,
+                                    disable_notification: None,
+                                    reply_to_message_id: Some(message.message_id),
+                                    reply_markup: None,
+                                });
+                                break 'update_loop;
+                            }
+                            "/start" | "/help" => {
+                                bot.send_message(&args::SendMessage {
+                                    chat_id: Some(message.chat.id),
+                                    chat_username: None,
+                                    text: "Hi, I'm a bot!",
+                                    parse_mode: Some("Markdown"),
+                                    disable_web_page_preview: None,
+                                    disable_notification: None,
+                                    reply_to_message_id: Some(message.message_id),
+                                    reply_markup: None,
+                                });
+                            }
+                            "/photo" => {
+                                bot.send_photo(&args::SendPhoto {
+                                    chat_id: Some(message.chat.id),
+                                    chat_username: None,
+                                    photo: Some("photo.png"),
+                                    file_id: None,
+                                    caption: Some("Yeahboi"),
+                                    disable_notification: None,
+                                    reply_to_message_id: Some(message.message_id),
+                                    reply_markup: None,
+                                });
+                            }
+                            _ => {}
                         }
                     }
                 }
