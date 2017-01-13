@@ -7,7 +7,6 @@ use hyper::net::Streaming;
 use hyper::method::Method;
 use hyper::client::Request;
 
-use hyper::client::RequestBuilder;
 use hyper::Client;
 use hyper::Url;
 
@@ -16,7 +15,6 @@ use multipart::client::Multipart;
 use serde_json::value::Value;
 
 use std::result::Result;
-use std::sync::Arc;
 use std::io::Read;
 use std::{fmt, error};
 
@@ -71,6 +69,7 @@ fn parse_request(response: Result<hyper::client::Response, hyper::Error>) -> Res
         Ok(mut res) => {
             let mut body = String::new();
             res.read_to_string(&mut body).unwrap();
+            println!("{}", body);
             let got_me: ApiResult = serde_json::from_str(&body).unwrap();
             if let Some(val) = got_me.result {
                 Ok(val)
@@ -95,14 +94,14 @@ pub struct BotApi {
     client: Client,
 }
 
-impl Clone for BotApi {
-    fn clone(&self) -> BotApi {
-        BotApi {
-            base_url: self.base_url.clone(),
-            client: Client::new(),
-        }
-    }
-}
+// impl Clone for BotApi {
+//     fn clone(&self) -> BotApi {
+//         BotApi {
+//             base_url: self.base_url.clone(),
+//             client: Client::new(),
+//         }
+//     }
+// }
 
 impl BotApi {
     pub fn new(bot_token: &str) -> BotApi {
@@ -433,6 +432,253 @@ impl BotApi {
             Err(e) => Err(e),
         }
     }
+
+    pub fn get_user_profile_photos(&self, params: &args::GetUserProfilePhotos) -> Result<UserProfilePhotos, BotError> {
+        let url = self.base_url.join("getUserProfilePhotos").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn get_file(&self, params: &args::GetFile) -> Result<File, BotError> {
+        let url = self.base_url.join("getFile").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn kick_chat_member(&self, params: &args::KickChatMember) -> Result<bool, BotError> {
+        let url = self.base_url.join("kickChatMember").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn leave_chat(&self, params: &args::LeaveChat) -> Result<bool, BotError> {
+        let url = self.base_url.join("leaveChat").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn unban_chat_member(&self, params: &args::UnbanChatMember) -> Result<bool, BotError> {
+        let url = self.base_url.join("unbanChatMember").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn get_chat(&self, params: &args::GetChat) -> Result<Chat, BotError> {
+        let url = self.base_url.join("getChat").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn get_chat_administrators(&self, params: &args::GetChatAdministrators) -> Result<Vec<ChatMember>, BotError> {
+        let url = self.base_url.join("getChatAdministrators").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn get_chat_members_count(&self, params: &args::GetChatMembersCount) -> Result<i64, BotError> {
+        let url = self.base_url.join("getChatMembersCount").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn get_chat_members(&self, params: &args::GetChatMember) -> Result<ChatMember, BotError> {
+        let url = self.base_url.join("getChatMember").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn answer_callback_query(&self, params: &args::AnswerCallbackQuery) -> Result<bool, BotError> {
+        let url = self.base_url.join("answerCallbackQuery").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn edit_message_text(&self, params: &args::EditMessageText) -> Result<EditMessageTextResult, BotError> {
+        let url = self.base_url.join("editMessageText").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => {
+                match val {
+                    Value::Bool(b) => Ok(EditMessageTextResult::B(b)),
+                    Value::Object(_) => Ok(EditMessageTextResult::M(serde_json::value::from_value(val).unwrap())),
+                    _ => Ok(EditMessageTextResult::B(false))
+                }
+            },
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn edit_message_caption(&self, params: &args::EditMessageCaption) -> Result<bool, BotError> {
+        let url = self.base_url.join("editMessageCaption").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn edit_message_reply_markup(&self, params: &args::EditMessageReplyMarkup) -> Result<bool, BotError> {
+        let url = self.base_url.join("editMessageReplyMarkup").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn answer_inline_query(&self, params: &args::AnswerInlineQuery) -> Result<bool, BotError> {
+        let url = self.base_url.join("answerInlineQuery").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn send_game(&self, params: &args::SendGame) -> Result<Message, BotError> {
+        let url = self.base_url.join("sendGame").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+
+    /*
+    pub fn set_game_score(&self, params: &args::SetGameScore) -> Result<, BotError> {
+        // returns the edited Message, otherwise returns True. Returns an error, if the new score is not greater than the user's current score in the chat and force is False.
+        let url = self.base_url.join("setGameScore").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
+    */
+
+    pub fn get_game_high_scores(&self, params: &args::GetGameHighScores) -> Result<Vec<GameHighScore>, BotError> {
+        let url = self.base_url.join("getGameHighScores").unwrap();
+        let body = serde_json::to_string(params).unwrap();
+
+        let res = self.client.post(url)
+                         .header(hyper::header::ContentType::json())
+                         .body(&body);
+
+        match parse_request(res.send()) {
+            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Err(e) => Err(e),
+        }
+    }
 }
 
 fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, val: Value) {
@@ -489,10 +735,12 @@ fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, val: Val
 mod tests { // These aren't going to be the actual tests, just a place for me to easily test things as I go along
     use super::*;
     extern crate serde_json;
+    use std::sync::Arc;
     #[test]
     fn it_works() {
         let token = "";
-        let bot = BotApi::new(token);
+        let bot_arc = Arc::new(BotApi::new(token));
+        let bot = bot_arc.clone();
 
         let mut update_args = args::GetUpdates {
             offset: Some(0),
@@ -546,13 +794,47 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
                                 bot.send_photo(&args::SendPhoto {
                                     chat_id: Some(message.chat.id),
                                     chat_username: None,
-                                    photo: Some("photo.png"),
+                                    photo: Some("/home/juan/Documents/JuanPotato.png"),
                                     file_id: None,
                                     caption: Some("Yeahboi"),
                                     disable_notification: None,
                                     reply_to_message_id: Some(message.message_id),
                                     reply_markup: None,
                                 });
+                            }
+                            "/edit" => {
+                                let sent = bot.send_message(&args::SendMessage {
+                                    chat_id: Some(message.chat.id),
+                                    chat_username: None,
+                                    text: "Editing...",
+                                    parse_mode: Some("Markdown"),
+                                    disable_web_page_preview: None,
+                                    disable_notification: None,
+                                    reply_to_message_id: Some(message.message_id),
+                                    reply_markup: None,
+                                });
+
+                                match sent {
+                                    Ok(sent_message) => {
+                                        let mut edit_args = args::EditMessageText {
+                                            chat_id: Some(message.chat.id),
+                                            chat_username: None,
+                                            message_id: Some(sent_message.message_id),
+                                            inline_message_id: None,
+                                            text: "Edited",
+                                            parse_mode: None,
+                                            disable_web_page_preview: None,
+                                            reply_markup: None,
+                                        };
+
+                                        if let Some(arg) = split_text.next() {
+                                            edit_args.text = &arg;
+                                        }
+
+                                        bot.edit_message_text(&edit_args);
+                                    }
+                                    Err(_) => {}
+                                }
                             }
                             _ => {}
                         }

@@ -349,10 +349,7 @@ pub struct GetFile<'a> {
 
 #[derive(Debug)]
 pub struct KickChatMember<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
     pub user_id: i64,
 }
@@ -378,10 +375,7 @@ impl <'a> Serialize for KickChatMember<'a> {
 
 #[derive(Debug)]
 pub struct LeaveChat<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
 }
 
@@ -404,10 +398,7 @@ impl <'a> Serialize for LeaveChat<'a> {
 
 #[derive(Debug)]
 pub struct UnbanChatMember<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
     pub user_id: i64,
 }
@@ -433,10 +424,7 @@ impl <'a> Serialize for UnbanChatMember<'a> {
 
 #[derive(Debug)]
 pub struct GetChat<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
 }
 
@@ -459,10 +447,7 @@ impl <'a> Serialize for GetChat<'a> {
 
 #[derive(Debug)]
 pub struct GetChatAdministrators<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
 }
 
@@ -485,10 +470,7 @@ impl <'a> Serialize for GetChatAdministrators<'a> {
 
 #[derive(Debug)]
 pub struct GetChatMembersCount<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
 }
 
@@ -557,26 +539,13 @@ pub struct AnswerCallbackQuery<'a> {
 
 #[derive(Debug)]
 pub struct EditMessageText<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<&'a str>,
     pub text: &'a str,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_web_page_preview: Option<bool>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
@@ -610,22 +579,11 @@ impl <'a> Serialize for EditMessageText<'a> {
 
 #[derive(Debug)]
 pub struct EditMessageCaption<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
@@ -657,19 +615,10 @@ impl <'a> Serialize for EditMessageCaption<'a> {
 
 #[derive(Debug)]
 pub struct EditMessageReplyMarkup<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<&'a str>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup>, // InlineKeyboardMarkup
 }
 
@@ -700,7 +649,7 @@ impl <'a> Serialize for EditMessageReplyMarkup<'a> {
 #[derive(Debug, Serialize)]
 pub struct AnswerInlineQuery<'a> {
     pub inline_query_id: &'a str,
-    pub results: Vec<types::InlineQueryResult>,
+    pub results: &'a [types::InlineQueryResult],
     
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_time: Option<i64>,
@@ -734,7 +683,7 @@ pub struct SendGame<'a> {
 }
 
 #[derive(Debug, Serialize)]
-pub struct GetGameScore<'a> {
+pub struct SetGameScore<'a> {
     pub user_id: i64,
     pub score: i64,
     

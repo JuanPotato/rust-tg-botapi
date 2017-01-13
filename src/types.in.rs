@@ -7,6 +7,12 @@ pub struct ApiResult {
     pub parameters: Option<ResponseParameters>
 }
 
+#[derive(Debug)]
+pub enum EditMessageTextResult {
+    M(Message),
+    B(bool),
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ReplyMarkup {
     InlineKeyboard {
@@ -206,6 +212,12 @@ pub struct UserProfilePhotos {
     pub photos: Vec<Vec<PhotoSize>>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct File {
+    pub file_id: String,
+    pub file_size: Option<i64>,
+    pub file_path: Option<String>,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct KeyboardButton {
@@ -542,7 +554,6 @@ pub enum InputMessageContent {
         last_name: Option<String>,
     },
 }
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ChosenInlineResult {
