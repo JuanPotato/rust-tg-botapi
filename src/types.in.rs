@@ -8,7 +8,7 @@ pub struct ApiResult {
 }
 
 #[derive(Debug)]
-pub enum EditMessageTextResult {
+pub enum MessageOrBool {
     M(Message),
     B(bool),
 }

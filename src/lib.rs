@@ -17,6 +17,7 @@ use serde_json::value::Value;
 use std::result::Result;
 use std::io::Read;
 use std::{fmt, error};
+use std::time::Duration;
 
 pub mod types {
     extern crate serde_json;
@@ -64,20 +65,20 @@ impl error::Error for BotError {
     }
 }
 
-fn parse_request(response: Result<hyper::client::Response, hyper::Error>) -> Result<Value, BotError> {
-    match response {
-        Ok(mut res) => {
+fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>) -> Result<Value, BotError> {
+    match respon_result {
+        Ok(mut response) => {
             let mut body = String::new();
-            res.read_to_string(&mut body).unwrap();
+            response.read_to_string(&mut body).unwrap();
             println!("{}", body);
-            let got_me: ApiResult = serde_json::from_str(&body).unwrap();
-            if let Some(val) = got_me.result {
+            let result: ApiResult = serde_json::from_str(&body).unwrap();
+            if let Some(val) = result.result {
                 Ok(val)
             } else {
                 Err(BotError::Api{
-                    error_code: got_me.error_code.unwrap(),
-                    description: got_me.description.unwrap(),
-                    parameters: got_me.parameters
+                    error_code: result.error_code.unwrap(),
+                    description: result.description.unwrap(),
+                    parameters: result.parameters
                 })
             }
         },
@@ -94,22 +95,17 @@ pub struct BotApi {
     client: Client,
 }
 
-// impl Clone for BotApi {
-//     fn clone(&self) -> BotApi {
-//         BotApi {
-//             base_url: self.base_url.clone(),
-//             client: Client::new(),
-//         }
-//     }
-// }
-
 impl BotApi {
     pub fn new(bot_token: &str) -> BotApi {
         let url = format!("https://api.telegram.org/bot{}/", bot_token);
+        // TODO validate this token
+
+        let mut c = Client::new();
+        c.set_read_timeout(Some(Duration::new(60, 0)));
 
         BotApi {
             base_url: url.parse().unwrap(),
-            client: Client::new(),
+            client: c,
         }
     }
 
@@ -573,7 +569,7 @@ impl BotApi {
         }
     }
 
-    pub fn edit_message_text(&self, params: &args::EditMessageText) -> Result<EditMessageTextResult, BotError> {
+    pub fn edit_message_text(&self, params: &args::EditMessageText) -> Result<MessageOrBool, BotError> {
         let url = self.base_url.join("editMessageText").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
@@ -584,16 +580,20 @@ impl BotApi {
         match parse_request(res.send()) {
             Ok(val) => {
                 match val {
-                    Value::Bool(b) => Ok(EditMessageTextResult::B(b)),
-                    Value::Object(_) => Ok(EditMessageTextResult::M(serde_json::value::from_value(val).unwrap())),
-                    _ => Ok(EditMessageTextResult::B(false))
+                    Value::Bool(b) => Ok(MessageOrBool::B(b)),
+                    Value::Object(_) => {
+                        Ok(MessageOrBool::M(
+                            serde_json::value::from_value(val).unwrap()
+                        ))
+                    },
+                    _ => Ok(MessageOrBool::B(false))
                 }
             },
             Err(e) => Err(e),
         }
     }
 
-    pub fn edit_message_caption(&self, params: &args::EditMessageCaption) -> Result<bool, BotError> {
+    pub fn edit_message_caption(&self, params: &args::EditMessageCaption) -> Result<MessageOrBool, BotError> {
         let url = self.base_url.join("editMessageCaption").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
@@ -602,12 +602,22 @@ impl BotApi {
                          .body(&body);
 
         match parse_request(res.send()) {
-            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Ok(val) => {
+                match val {
+                    Value::Bool(b) => Ok(MessageOrBool::B(b)),
+                    Value::Object(_) => {
+                        Ok(MessageOrBool::M(
+                            serde_json::value::from_value(val).unwrap()
+                        ))
+                    },
+                    _ => Ok(MessageOrBool::B(false))
+                }
+            },
             Err(e) => Err(e),
         }
     }
 
-    pub fn edit_message_reply_markup(&self, params: &args::EditMessageReplyMarkup) -> Result<bool, BotError> {
+    pub fn edit_message_reply_markup(&self, params: &args::EditMessageReplyMarkup) -> Result<MessageOrBool, BotError> {
         let url = self.base_url.join("editMessageReplyMarkup").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
@@ -616,7 +626,17 @@ impl BotApi {
                          .body(&body);
 
         match parse_request(res.send()) {
-            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Ok(val) => {
+                match val {
+                    Value::Bool(b) => Ok(MessageOrBool::B(b)),
+                    Value::Object(_) => {
+                        Ok(MessageOrBool::M(
+                            serde_json::value::from_value(val).unwrap()
+                        ))
+                    },
+                    _ => Ok(MessageOrBool::B(false))
+                }
+            },
             Err(e) => Err(e),
         }
     }
@@ -649,9 +669,7 @@ impl BotApi {
         }
     }
 
-    /*
-    pub fn set_game_score(&self, params: &args::SetGameScore) -> Result<, BotError> {
-        // returns the edited Message, otherwise returns True. Returns an error, if the new score is not greater than the user's current score in the chat and force is False.
+    pub fn set_game_score(&self, params: &args::SetGameScore) -> Result<MessageOrBool, BotError> {
         let url = self.base_url.join("setGameScore").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
@@ -660,11 +678,20 @@ impl BotApi {
                          .body(&body);
 
         match parse_request(res.send()) {
-            Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
+            Ok(val) => {
+                match val {
+                    Value::Bool(b) => Ok(MessageOrBool::B(b)),
+                    Value::Object(_) => {
+                        Ok(MessageOrBool::M(
+                            serde_json::value::from_value(val).unwrap()
+                        ))
+                    },
+                    _ => Ok(MessageOrBool::B(false))
+                }
+            },
             Err(e) => Err(e),
         }
     }
-    */
 
     pub fn get_game_high_scores(&self, params: &args::GetGameHighScores) -> Result<Vec<GameHighScore>, BotError> {
         let url = self.base_url.join("getGameHighScores").unwrap();
@@ -736,11 +763,13 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
     use super::*;
     extern crate serde_json;
     use std::sync::Arc;
+    use std::thread;
+    use std::env;
+
     #[test]
     fn it_works() {
-        let token = "";
-        let bot_arc = Arc::new(BotApi::new(token));
-        let bot = bot_arc.clone();
+        let token = &env::var("TOKEN").expect("No bot token provided, please set the environment variable TOKEN");
+        let bot = Arc::new(BotApi::new(token));
 
         let mut update_args = args::GetUpdates {
             offset: Some(0),
@@ -748,7 +777,6 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
             timeout: Some(600),
             allowed_updates: None,
         };
-
                 
         'update_loop: loop {
             let updates = bot.get_updates(&update_args).unwrap();
@@ -758,7 +786,7 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
                 println!("{:?}", update_args.offset);
 
                 if let Some(message) = update.message {
-                    let from = message.from.unwrap();
+                    // let from = message.from.unwrap();
 
                     let message_text = message.text.unwrap_or(String::new());
                     let mut split_text = message_text.split_whitespace();
@@ -766,7 +794,7 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
                     if let Some(cmd) = split_text.next() {
                         match cmd {
                             "/exit" => {
-                                bot.send_message(&args::SendMessage {
+                                let _ = bot.send_message(&args::SendMessage {
                                     chat_id: Some(message.chat.id),
                                     chat_username: None,
                                     text: "Goodbye!",
@@ -779,7 +807,7 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
                                 break 'update_loop;
                             }
                             "/start" | "/help" => {
-                                bot.send_message(&args::SendMessage {
+                                let _ = bot.send_message(&args::SendMessage {
                                     chat_id: Some(message.chat.id),
                                     chat_username: None,
                                     text: "Hi, I'm a bot!",
@@ -791,7 +819,7 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
                                 });
                             }
                             "/photo" => {
-                                bot.send_photo(&args::SendPhoto {
+                                let _ = bot.send_photo(&args::SendPhoto {
                                     chat_id: Some(message.chat.id),
                                     chat_username: None,
                                     photo: Some("/home/juan/Documents/JuanPotato.png"),
@@ -831,10 +859,55 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
                                             edit_args.text = &arg;
                                         }
 
-                                        bot.edit_message_text(&edit_args);
+                                        let _ = bot.edit_message_text(&edit_args);
                                     }
                                     Err(_) => {}
                                 }
+                            }
+                            "/thread" | "/threads" => {
+                                let bot1 = bot.clone();
+                                let bot2 = bot.clone();
+                                let bot3 = bot.clone();
+
+                                let chat_id = message.chat.id;
+                                let msg_id = message.message_id;
+
+                                thread::spawn(move || {
+                                    let _ = bot1.send_message(&args::SendMessage {
+                                        chat_id: Some(chat_id),
+                                        chat_username: None,
+                                        text: "Thread 1",
+                                        parse_mode: Some("Markdown"),
+                                        disable_web_page_preview: None,
+                                        disable_notification: None,
+                                        reply_to_message_id: Some(msg_id),
+                                        reply_markup: None,
+                                    });
+                                });
+                                thread::spawn(move || {
+                                    let _ = bot2.send_message(&args::SendMessage {
+                                        chat_id: Some(chat_id),
+                                        chat_username: None,
+                                        text: "Thread 2",
+                                        parse_mode: Some("Markdown"),
+                                        disable_web_page_preview: None,
+                                        disable_notification: None,
+                                        reply_to_message_id: Some(msg_id),
+                                        reply_markup: None,
+                                    });
+                                });
+                                thread::spawn(move || {
+                                    let _ = bot3.send_message(&args::SendMessage {
+                                        chat_id: Some(chat_id),
+                                        chat_username: None,
+                                        text: "Thread 3",
+                                        parse_mode: Some("Markdown"),
+                                        disable_web_page_preview: None,
+                                        disable_notification: None,
+                                        reply_to_message_id: Some(msg_id),
+                                        reply_markup: None,
+                                    });
+                                });
                             }
                             _ => {}
                         }
@@ -844,7 +917,7 @@ mod tests { // These aren't going to be the actual tests, just a place for me to
         }
         update_args.limit = Some(0);
         update_args.timeout = Some(0);
-        bot.get_updates(&update_args);
+        let _ = bot.get_updates(&update_args);
         // Alright, so if you ever decide to have a function that terminates
         // your bot, make sure you have a check at the beginning of the loop
         // that makes sure you aren't processing old messages. You could also
