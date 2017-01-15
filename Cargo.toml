@@ -1,5 +1,5 @@
 [package]
-name = "rustg"
+name = "tg_botapi"
 version = "0.1.0"
 authors = ["Juan Potato <hasantiny@gmail.com>"]
 build = "build.rs"
