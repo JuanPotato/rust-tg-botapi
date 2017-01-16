@@ -27,17 +27,17 @@ fn main() {
             if let Some(message) = update.message {
                 let bot = bot_arc.clone();
 
-                let chat_id = message.chat.id;
-                let msg_id = message.message_id;
-
-                let message_text = format("\"{}\"\n    - <i>You, CURRENT_YEAR</i>",
-                                          message.text.unwrap_or(String::new()));
-
                 thread::spawn(move || {
+                    let chat_id = message.chat.id;
+                    let msg_id = message.message_id;
+
+                    let message_text = format!("\"{}\"\n    - <i>You, CURRENT_YEAR</i>",
+                                               message.text.unwrap_or(String::new()));
+
                     let _ = bot.send_message(&args::SendMessage {
                         chat_id: Some(chat_id),
                         chat_username: None,
-                        text: ,
+                        text: &message_text,
                         parse_mode: Some("HTML"),
                         disable_web_page_preview: None,
                         disable_notification: None,
@@ -50,5 +50,5 @@ fn main() {
     }
     update_args.limit = Some(0);
     update_args.timeout = Some(0);
-    let _ = bot.get_updates(&update_args);
+    let _ = bot_arc.get_updates(&update_args);
 }

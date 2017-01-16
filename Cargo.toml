@@ -2,7 +2,15 @@
 name = "tg_botapi"
 version = "0.1.0"
 authors = ["Juan Potato <hasantiny@gmail.com>"]
+
+description = "Telegram Bot Api library"
+
+repository = "https://github.com/JuanPotato/rust-tg-botapi"
+readme = "README.md"
+
+keywords = ["telegram", "bot", "api"]
 build = "build.rs"
+license = "MIT"
 
 [build-dependencies]
 serde_codegen = "0.8.21"
@@ -12,4 +20,3 @@ serde = "0.8.21"
 serde_json = "0.8.4"
 hyper = "0.9.14"
 multipart = "0.9.0-alpha.9"
-lazy_static = "0.1.*"
