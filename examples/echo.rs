@@ -11,12 +11,7 @@ fn main() {
     let token = &env::var("TOKEN").expect("No bot token provided, please set the environment variable TOKEN");
     let bot_arc = Arc::new(BotApi::new(token));
 
-    let mut update_args = args::GetUpdates {
-        offset: Some(0),
-        limit: None,
-        timeout: Some(600),
-        allowed_updates: None,
-    };
+    let mut update_args = args::GetUpdates::new().timeout(600).offset(0);
             
     'update_loop: loop {
         let updates = bot_arc.get_updates(&update_args).unwrap();
