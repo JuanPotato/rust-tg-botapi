@@ -493,10 +493,7 @@ impl <'a> Serialize for GetChatMembersCount<'a> {
 
 #[derive(Debug)]
 pub struct GetChatMember<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_username: Option<&'a str>,
     pub user_id: i64,
 }
@@ -649,7 +646,7 @@ impl <'a> Serialize for EditMessageReplyMarkup<'a> {
 #[derive(Debug, Serialize)]
 pub struct AnswerInlineQuery<'a> {
     pub inline_query_id: &'a str,
-    pub results: &'a [types::InlineQueryResult],
+    pub results: &'a [&'a types::InlineQueryResult],
     
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_time: Option<i64>,

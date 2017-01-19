@@ -11,12 +11,7 @@ fn main() {
     let token = &env::var("TOKEN").expect("No bot token provided, please set the environment variable TOKEN");
     let bot = Arc::new(BotApi::new(token));
 
-    let mut update_args = args::GetUpdates {
-        offset: Some(0),
-        limit: None,
-        timeout: Some(600),
-        allowed_updates: None,
-    };
+    let mut update_args = args::GetUpdates::new().timeout(600).offset(0);
             
     'update_loop: loop {
         let updates = bot.get_updates(&update_args).unwrap();
@@ -33,66 +28,33 @@ fn main() {
                 if let Some(cmd) = split_text.next() {
                     match cmd {
                         "/exit" => {
-                            let _ = bot.send_message(&args::SendMessage {
-                                chat_id: Some(message.chat.id),
-                                chat_username: None,
-                                text: "Goodbye!",
-                                parse_mode: Some("Markdown"),
-                                disable_web_page_preview: None,
-                                disable_notification: None,
-                                reply_to_message_id: Some(message.message_id),
-                                reply_markup: None,
-                            });
+                            let _ = bot.send_message(&args::SendMessage::new("Goodbye!")
+                                            .chat_id(message.chat.id)
+                                            .reply_to_message_id(message.message_id));
                             break 'update_loop;
                         }
                         "/start" | "/help" => {
-                            let _ = bot.send_message(&args::SendMessage {
-                                chat_id: Some(message.chat.id),
-                                chat_username: None,
-                                text: "Hi, I'm a bot!",
-                                parse_mode: Some("Markdown"),
-                                disable_web_page_preview: None,
-                                disable_notification: None,
-                                reply_to_message_id: Some(message.message_id),
-                                reply_markup: None,
-                            });
+                            let _ = bot.send_message(&args::SendMessage::new("Hi, I'm a bot!")
+                                            .chat_id(message.chat.id)
+                                            .reply_to_message_id(message.message_id));
                         }
                         "/photo" => {
-                            let _ = bot.send_photo(&args::SendPhoto {
-                                chat_id: Some(message.chat.id),
-                                chat_username: None,
-                                photo: Some("/home/juan/Documents/JuanPotato.png"),
-                                file_id: None,
-                                caption: Some("Yeahboi"),
-                                disable_notification: None,
-                                reply_to_message_id: Some(message.message_id),
-                                reply_markup: None,
-                            });
+                            let _ = bot.send_photo(&args::SendPhoto::new()
+                                            .chat_id(message.chat.id)
+                                            .reply_to_message_id(message.message_id)
+                                            .photo("/home/juan/Documents/JuanPotato.png"));
                         }
                         "/edit" => {
-                            let sent = bot.send_message(&args::SendMessage {
-                                chat_id: Some(message.chat.id),
-                                chat_username: None,
-                                text: "Editing...",
-                                parse_mode: Some("Markdown"),
-                                disable_web_page_preview: None,
-                                disable_notification: None,
-                                reply_to_message_id: Some(message.message_id),
-                                reply_markup: None,
-                            });
+                            let sent = bot.send_message(&args::SendMessage::new("Editing")
+                                            .chat_id(message.chat.id)
+                                            .reply_to_message_id(message.message_id));
 
                             match sent {
                                 Ok(sent_message) => {
-                                    let mut edit_args = args::EditMessageText {
-                                        chat_id: Some(message.chat.id),
-                                        chat_username: None,
-                                        message_id: Some(sent_message.message_id),
-                                        inline_message_id: None,
-                                        text: "Edited",
-                                        parse_mode: None,
-                                        disable_web_page_preview: None,
-                                        reply_markup: None,
-                                    };
+                                    let mut edit_args = args::EditMessageText::new("Edited")
+                                            .chat_id(message.chat.id)
+                                            .message_id(sent_message.message_id)
+                                            .parse_mode("Markdown");
 
                                     if let Some(arg) = split_text.next() {
                                         edit_args.text = &arg;
@@ -112,40 +74,19 @@ fn main() {
                             let msg_id = message.message_id;
 
                             thread::spawn(move || {
-                                let _ = bot1.send_message(&args::SendMessage {
-                                    chat_id: Some(chat_id),
-                                    chat_username: None,
-                                    text: "Thread 1",
-                                    parse_mode: Some("Markdown"),
-                                    disable_web_page_preview: None,
-                                    disable_notification: None,
-                                    reply_to_message_id: Some(msg_id),
-                                    reply_markup: None,
-                                });
+                                let _ = bot1.send_message(&args::SendMessage::new("Thread 1")
+                                            .chat_id(chat_id)
+                                            .reply_to_message_id(msg_id));
                             });
                             thread::spawn(move || {
-                                let _ = bot2.send_message(&args::SendMessage {
-                                    chat_id: Some(chat_id),
-                                    chat_username: None,
-                                    text: "Thread 2",
-                                    parse_mode: Some("Markdown"),
-                                    disable_web_page_preview: None,
-                                    disable_notification: None,
-                                    reply_to_message_id: Some(msg_id),
-                                    reply_markup: None,
-                                });
+                                let _ = bot2.send_message(&args::SendMessage::new("Thread 2")
+                                            .chat_id(chat_id)
+                                            .reply_to_message_id(msg_id));
                             });
                             thread::spawn(move || {
-                                let _ = bot3.send_message(&args::SendMessage {
-                                    chat_id: Some(chat_id),
-                                    chat_username: None,
-                                    text: "Thread 3",
-                                    parse_mode: Some("Markdown"),
-                                    disable_web_page_preview: None,
-                                    disable_notification: None,
-                                    reply_to_message_id: Some(msg_id),
-                                    reply_markup: None,
-                                });
+                                let _ = bot3.send_message(&args::SendMessage::new("Thread 3")
+                                            .chat_id(chat_id)
+                                            .reply_to_message_id(msg_id));
                             });
                         }
                         _ => {}
