@@ -1,3 +1,24 @@
+extern crate serde_json;
+extern crate serde;
+
+use self::serde::ser::Serialize;
+use self::serde::ser::Serializer;
+
+use serde_json::value::Value;
+
+macro_rules! option_int {
+    ( $( $x:expr ),* ) => {{ (0 $( + if $x.is_some() { 1 } else { 0 } )* ) }};
+}
+
+macro_rules! option_serialize_struct_elt {
+    ($serializer:expr, $state:expr, $name:expr, $option:expr) => {{
+        if $option.is_some() {
+            $serializer.serialize_struct_elt($state, $name, $option)?;
+        }
+    }};
+}
+
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ApiResult {
     pub ok: bool,
@@ -13,7 +34,7 @@ pub enum MessageOrBool {
     B(bool),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub enum ReplyMarkup {
     InlineKeyboard {
         inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
@@ -34,6 +55,67 @@ pub enum ReplyMarkup {
     ForceReply {
         force_reply: bool,
         selective: Option<bool>,
+    }
+}
+
+impl Serialize for ReplyMarkup {
+    fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error> where
+     S: Serializer {
+        match *self {
+            ReplyMarkup::InlineKeyboard {
+                ref inline_keyboard
+            } => {
+                let mut state = serializer.serialize_struct("InlineKeyboardMarkup",  1)?;
+                serializer.serialize_struct_elt(&mut state, "inline_keyboard", inline_keyboard)?;
+                serializer.serialize_struct_end(state)
+            }
+
+            ReplyMarkup::ReplyKeyboard {
+                ref keyboard,
+                ref resize_keyboard,
+                ref one_time_keyboard,
+                ref selective
+            } => {
+                let mut state = serializer.serialize_struct("ReplyKeyboardMarkup", 1 +
+                option_int!(resize_keyboard, one_time_keyboard, selective))?;
+
+                serializer.serialize_struct_elt(&mut state, "keyboard", keyboard)?;
+
+                option_serialize_struct_elt!(serializer, &mut state, "resize_keyboard", resize_keyboard);
+                option_serialize_struct_elt!(serializer, &mut state, "one_time_keyboard", one_time_keyboard);
+                option_serialize_struct_elt!(serializer, &mut state, "selective", selective);
+
+                serializer.serialize_struct_end(state)
+            }
+
+            ReplyMarkup::ReplyKeyboardRemove {
+                ref remove_keyboard,
+                ref selective
+            } => {
+                let mut state = serializer.serialize_struct("ReplyKeyboardRemove", 1 +
+                option_int!(selective))?;
+
+                serializer.serialize_struct_elt(&mut state, "remove_keyboard", remove_keyboard)?;
+
+                option_serialize_struct_elt!(serializer, &mut state, "selective", selective);
+
+                serializer.serialize_struct_end(state)
+            }
+
+            ReplyMarkup::ForceReply {
+                ref force_reply,
+                ref selective
+            } => {
+                let mut state = serializer.serialize_struct("ForceReply", 1 +
+                option_int!(selective))?;
+
+                serializer.serialize_struct_elt(&mut state, "force_reply", force_reply)?;
+
+                option_serialize_struct_elt!(serializer, &mut state, "selective", selective);
+
+                serializer.serialize_struct_end(state)
+            }
+        }
     }
 }
 
@@ -222,17 +304,31 @@ pub struct File {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct KeyboardButton {
     pub text: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_contact: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_location: Option<bool>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct InlineKeyboardButton {
     pub text: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub callback_data: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub switch_inline_query: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub switch_inline_query_current_chat: Option<String>,
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub callback_game: Option<CallbackGame>,
 }
 

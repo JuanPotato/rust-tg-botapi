@@ -84,7 +84,11 @@ impl <'a> Serialize for SendMessage<'a> {
         option_serialize_struct_elt!(serializer, &mut state, "disable_web_page_preview", &self.disable_web_page_preview);
         option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
         option_serialize_struct_elt!(serializer, &mut state, "reply_to_message_id", &self.reply_to_message_id);
-        option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
+
+        if self.reply_markup.is_some() {
+            serializer.serialize_struct_elt(&mut state, "reply_markup", &self.reply_markup)?;
+            println!("{:?}", serde_json::to_string(&self.reply_markup));
+        }
 
         serializer.serialize_struct_end(state)
     }

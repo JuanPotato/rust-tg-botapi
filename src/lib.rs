@@ -19,9 +19,6 @@ use std::{fmt, error};
 use std::time::Duration;
 
 pub mod types {
-    extern crate serde_json;
-    use serde_json::value::Value;
-    
     include!(concat!(env!("OUT_DIR"), "/types.rs"));
 }
 

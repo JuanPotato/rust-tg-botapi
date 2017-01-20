@@ -1,6 +1,7 @@
 extern crate tg_botapi;
 
 use tg_botapi::args;
+use tg_botapi::types;
 use tg_botapi::BotApi;
 
 use std::sync::Arc;
@@ -87,6 +88,54 @@ fn main() {
                                 let _ = bot3.send_message(&args::SendMessage::new("Thread 3")
                                             .chat_id(chat_id)
                                             .reply_to_message_id(msg_id));
+                            });
+                        }
+                        "/inline" => {
+                            let keyboard: Vec<Vec<types::KeyboardButton>> = 
+                                vec![
+                                    vec![
+                                        types::KeyboardButton {
+                                            text: "Yes".to_string(),
+                                            request_contact: None,
+                                            request_location: None,
+                                        },
+                                        types::KeyboardButton {
+                                            text: "No".to_string(),
+                                            request_contact: None,
+                                            request_location: None,
+                                        },
+                                    ]
+                                ];
+                              
+                            let _ = bot.send_message(&args::SendMessage {
+                                chat_id: Some(message.chat.id),
+                                chat_username: None,
+                                text: "Yes or No?",
+                                parse_mode: None,
+                                disable_web_page_preview: None,
+                                disable_notification: None,
+                                reply_to_message_id: None,
+                                reply_markup: Some(&types::ReplyMarkup::ReplyKeyboard {
+                                    keyboard: keyboard,
+                                    resize_keyboard: None,
+                                    one_time_keyboard: None,
+                                    selective: None,
+                                }),
+                            });
+                        }
+                        "/clear" | "No" => {                              
+                            let _ = bot.send_message(&args::SendMessage {
+                                chat_id: Some(message.chat.id),
+                                chat_username: None,
+                                text: "Me too",
+                                parse_mode: None,
+                                disable_web_page_preview: None,
+                                disable_notification: None,
+                                reply_to_message_id: None,
+                                reply_markup: Some(&types::ReplyMarkup::ReplyKeyboardRemove {
+                                    remove_keyboard: true,
+                                    selective: None,
+                                }),
                             });
                         }
                         _ => {}
