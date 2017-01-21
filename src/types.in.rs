@@ -34,14 +34,14 @@ pub enum MessageOrBool {
     B(bool),
 }
 
-#[derive(Debug, Deserialize)]
-pub enum ReplyMarkup {
-    InlineKeyboard<'a> {
-        inline_keyboard: &'a [&'a InlineKeyboardButton]],
+#[derive(Debug)]
+pub enum ReplyMarkup<'a> {
+    InlineKeyboard {
+        inline_keyboard: &'a [&'a InlineKeyboardButton<'a>],
     },
 
-    ReplyKeyboard<'a> {
-        keyboard: &'a [&'a KeyboardButton]],
+    ReplyKeyboard {
+        keyboard: &'a [&'a KeyboardButton<'a>],
         resize_keyboard: Option<bool>,
         one_time_keyboard: Option<bool>,
         selective: Option<bool>,
@@ -58,7 +58,7 @@ pub enum ReplyMarkup {
     }
 }
 
-impl Serialize for ReplyMarkup {
+impl<'a> Serialize for ReplyMarkup<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error> where
      S: Serializer {
         match *self {
@@ -119,15 +119,14 @@ impl Serialize for ReplyMarkup {
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub enum InlineQueryResult {
-    Article<'a> {
-        #[serde(rename="type")]
+#[derive(Debug)]
+pub enum InlineQueryResult<'a> {
+    Article {
         type_name: &'a str,
         id: &'a str,
         title: &'a str,
-        input_message_content: &'a InputMessageContent,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
+        input_message_content: &'a InputMessageContent<'a>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
         url: Option<&'a str>,
         hide_url: Option<bool>,
         description: Option<&'a str>,
@@ -136,8 +135,7 @@ pub enum InlineQueryResult {
         thumb_height: Option<i64>,
     },
 
-    Photo<'a> {
-        #[serde(rename="type")]
+    Photo {
         type_name: String,
         id: String,
         photo_url: String,
@@ -147,12 +145,11 @@ pub enum InlineQueryResult {
         title: Option<&'a str>,
         description: Option<&'a str>,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    Gif<'a> {
-        #[serde(rename="type")]
+    Gif {
         type_name: &'a str,
         id: &'a str,
         gif_url: &'a str,
@@ -161,12 +158,11 @@ pub enum InlineQueryResult {
         thumb_url: &'a str,
         title: Option<&'a str>,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    Mpeg4Gif<'a> {
-        #[serde(rename="type")]
+    Mpeg4Gif {
         type_name: &'a str,
         id: &'a str,
         mpeg4_url: &'a str,
@@ -175,12 +171,11 @@ pub enum InlineQueryResult {
         thumb_url: &'a str,
         title: Option<&'a str>,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    Video<'a> {
-        #[serde(rename="type")]
+    Video {
         type_name: &'a str,
         id: &'a str,
         video_url: &'a str,
@@ -192,12 +187,11 @@ pub enum InlineQueryResult {
         video_height: Option<i64>,
         video_duration: Option<i64>,
         description: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    Audio<'a> {
-        #[serde(rename="type")]
+    Audio {
         type_name: &'a str,
         id: &'a str,
         audio_url: &'a str,
@@ -205,24 +199,22 @@ pub enum InlineQueryResult {
         caption: Option<&'a str>,
         performer: Option<&'a str>,
         audio_duration: Option<i64>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    Voice<'a> {
-        #[serde(rename="type")]
+    Voice {
         type_name: &'a str,
         id: &'a str,
         voice_url: &'a str,
         title: &'a str,
         caption: Option<&'a str>,
         voice_duration: Option<i64>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    Document<'a> {
-        #[serde(rename="type")]
+    Document {
         type_name: &'a str,
         id: &'a str,
         title: &'a str,
@@ -230,29 +222,27 @@ pub enum InlineQueryResult {
         document_url: &'a str,
         mime_type: &'a str,
         description: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
         thumb_url: Option<&'a str>,
         thumb_width: Option<i64>,
         thumb_height: Option<i64>,
     },
 
-    Location<'a> {
-        #[serde(rename="type")]
+    Location {
         type_name: &'a str,
         id: &'a str,
         latitude: f64,
         longitude: f64,
         title: &'a str,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
         thumb_url: Option<&'a str>,
         thumb_width: Option<i64>,
         thumb_height: Option<i64>,
     },
 
-    Venue<'a> {
-        #[serde(rename="type")]
+    Venue {
         type_name: &'a str,
         id: &'a str,
         latitude: f64,
@@ -260,125 +250,115 @@ pub enum InlineQueryResult {
         title: &'a str,
         address: &'a str,
         foursquare_id: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
         thumb_url: Option<&'a str>,
         thumb_width: Option<i64>,
         thumb_height: Option<i64>,
     },
 
-    Contact<'a> {
-        #[serde(rename="type")]
+    Contact {
         type_name: &'a str,
         id: &'a str,
         phone_number: &'a str,
         first_name: &'a str,
         last_name: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
         thumb_url: Option<&'a str>,
         thumb_width: Option<i64>,
         thumb_height: Option<i64>,
     },
 
-    Game<'a> {
-        #[serde(rename="type")]
+    Game {
         type_name: &'a str,
         id: &'a str,
         game_short_name: &'a str,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
     },
 
-    CachedPhoto<'a> {
-        #[serde(rename="type")]
+    CachedPhoto {
         type_name: &'a str,
         id: &'a str,
         photo_file_id: &'a str,
         title: Option<&'a str>,
         description: Option<&'a str>,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    CachedGif<'a> {
-        #[serde(rename="type")]
+    CachedGif {
         type_name: &'a str,
         id: &'a str,
         gif_file_id: &'a str,
         title: Option<&'a str>,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    CachedMpeg4Gif<'a> {
-        #[serde(rename="type")]
+    CachedMpeg4Gif {
         type_name: &'a str,
         id: &'a str,
         mpeg4_file_id: &'a str,
         title: Option<&'a str>,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    CachedSticker<'a> {
-        #[serde(rename="type")]
+    CachedSticker {
         type_name: &'a str,
         id: &'a str,
         sticker_file_id: &'a str,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    CachedDocument<'a> {
-        #[serde(rename="type")]
+    CachedDocument {
         type_name: &'a str,
         id: &'a str,
         title: &'a str,
         document_file_id: &'a str,
         description: Option<&'a str>,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    CachedVideo<'a> {
-        #[serde(rename="type")]
+    CachedVideo {
         type_name: &'a str,
         id: &'a str,
         video_file_id: &'a str,
         title: &'a str,
         description: Option<&'a str>,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    CachedVoice<'a> {
-        #[serde(rename="type")]
+    CachedVoice {
         type_name: &'a str,
         id: &'a str,
         voice_file_id: &'a str,
         title: &'a str,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 
-    CachedAudio<'a> {
-        #[serde(rename="type")]
+    CachedAudio {
         type_name: &'a str,
         id: &'a str,
         audio_file_id: &'a str,
         caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent>,
+        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+        input_message_content: Option<&'a InputMessageContent<'a>>,
     },
 }
 
-impl Serialize for InlineQueryResult {
+impl<'a> Serialize for InlineQueryResult<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error> where
      S: Serializer {
         match *self {
@@ -1014,8 +994,8 @@ impl Serialize for InlineQueryResult {
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub enum InputMessageContent {
+#[derive(Debug)]
+pub enum InputMessageContent<'a> {
     Text {
         message_text: &'a str,
         parse_mode: Option<&'a str>,
@@ -1042,7 +1022,7 @@ pub enum InputMessageContent {
     },
 }
 
-impl Serialize for InputMessageContent {
+impl<'a> Serialize for InputMessageContent<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error> where
      S: Serializer {
         match *self {
@@ -1297,9 +1277,9 @@ pub struct File {
     pub file_path: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct KeyboardButton {
-    pub text: String,
+#[derive(Debug, Serialize)]
+pub struct KeyboardButton<'a> {
+    pub text: &'a str,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_contact: Option<bool>,
@@ -1308,24 +1288,24 @@ pub struct KeyboardButton {
     pub request_location: Option<bool>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InlineKeyboardButton {
-    pub text: String,
+#[derive(Debug, Serialize)]
+pub struct InlineKeyboardButton<'a> {
+    pub text: &'a str,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
+    pub url: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub callback_data: Option<String>,
+    pub callback_data: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub switch_inline_query: Option<String>,
+    pub switch_inline_query: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub switch_inline_query_current_chat: Option<String>,
+    pub switch_inline_query_current_chat: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub callback_game: Option<CallbackGame>,
+    pub callback_game: Option<&'a CallbackGame>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

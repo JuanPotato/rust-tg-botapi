@@ -1,4 +1,7 @@
 use args::*;
+
+use types::InlineKeyboardButton;
+use types::KeyboardButton;
 use types;
 
 // Pardon the super long lines this was mostly made by regex and I'm worried
@@ -461,4 +464,31 @@ impl<'a> GetGameHighScores<'a> {
     }
 
     buildera!(GetGameHighScores; chat_id, i64; message_id, i64; inline_message_id, &'a str);
+}
+
+impl<'a> KeyboardButton<'a> {
+    pub fn new(text: &'a str) -> KeyboardButton<'a> {
+        KeyboardButton {
+            text: text,
+            request_contact: None,
+            request_location: None,
+        }
+    }
+
+    buildera!(KeyboardButton; request_contact, bool; request_location, bool);
+}
+
+impl<'a> InlineKeyboardButton<'a> {
+    pub fn new(text: &'a str) -> InlineKeyboardButton<'a> {
+        InlineKeyboardButton {
+            text: text,
+            url: None,
+            callback_data: None,
+            switch_inline_query: None,
+            switch_inline_query_current_chat: None,
+            callback_game: None,
+        }
+    }
+
+    buildera!(InlineKeyboardButton; url, &'a str; callback_data, &'a str; switch_inline_query, &'a str; switch_inline_query_current_chat, &'a str; callback_game, &'a types::CallbackGame);
 }
