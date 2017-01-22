@@ -91,52 +91,29 @@ fn main() {
                             });
                         }
                         "/inline" => {
-                            let keyboard: Vec<Vec<types::KeyboardButton>> = 
-                                vec![
-                                    vec![
-                                        types::KeyboardButton {
-                                            text: "Yes".to_string(),
-                                            request_contact: None,
-                                            request_location: None,
-                                        },
-                                        types::KeyboardButton {
-                                            text: "No".to_string(),
-                                            request_contact: None,
-                                            request_location: None,
-                                        },
-                                    ]
-                                ];
+                            let keyboard = [
+                                    &[
+                                        types::KeyboardButton::new("Yes"),
+                                        types::KeyboardButton::new("No"),
+                                    ][..],
+                                    &[
+                                        types::KeyboardButton::new("Eh"),
+                                        types::KeyboardButton::new("He"),
+                                    ][..]
+                                ]; // Find prettier way to do this :\
                               
-                            let _ = bot.send_message(&args::SendMessage {
-                                chat_id: Some(message.chat.id),
-                                chat_username: None,
-                                text: "Yes or No?",
-                                parse_mode: None,
-                                disable_web_page_preview: None,
-                                disable_notification: None,
-                                reply_to_message_id: None,
-                                reply_markup: Some(&types::ReplyMarkup::ReplyKeyboard {
-                                    keyboard: keyboard,
-                                    resize_keyboard: None,
-                                    one_time_keyboard: None,
-                                    selective: None,
-                                }),
-                            });
+                            let _ = bot.send_message(&args::SendMessage
+                                ::new("Yes or No?")
+                                .chat_id(message.chat.id)
+                                .reply_markup(&types::ReplyMarkup::new_reply_keyboard(&keyboard[..]))
+                            );
                         }
                         "/clear" | "No" => {                              
-                            let _ = bot.send_message(&args::SendMessage {
-                                chat_id: Some(message.chat.id),
-                                chat_username: None,
-                                text: "Me too",
-                                parse_mode: None,
-                                disable_web_page_preview: None,
-                                disable_notification: None,
-                                reply_to_message_id: None,
-                                reply_markup: Some(&types::ReplyMarkup::ReplyKeyboardRemove {
-                                    remove_keyboard: true,
-                                    selective: None,
-                                }),
-                            });
+                            let _ = bot.send_message(&args::SendMessage
+                                ::new("Me too")
+                                .chat_id(message.chat.id)
+                                .reply_markup(&types::ReplyMarkup::new_reply_keyboard_remove(true)),
+                            );
                         }
                         _ => {}
                     }

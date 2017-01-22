@@ -2,6 +2,21 @@ use args::*;
 
 use types::InlineKeyboardButton;
 use types::KeyboardButton;
+
+use types::ReplyMarkup;
+
+use types::InlineKeyboardMarkup;
+use types::ReplyKeyboardMarkup;
+use types::ReplyKeyboardRemoveMarkup;
+use types::ForceReplyMarkup;
+
+use types::InputMessageContent;
+
+use types::InputTextMessageContent;
+use types::InputLocationMessageContent;
+use types::InputVenueMessageContent;
+use types::InputContactMessageContent;
+
 use types;
 
 // Pardon the super long lines this was mostly made by regex and I'm worried
@@ -69,7 +84,7 @@ impl<'a> SendMessage<'a> {
         }
     }
 
-    buildera!(SendMessage; chat_id, i64; chat_username, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendMessage; chat_id, i64; chat_username, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> ForwardMessage<'a> {
@@ -101,7 +116,7 @@ impl<'a> SendPhoto<'a> {
         }
     }
 
-    buildera!(SendPhoto; chat_id, i64; chat_username, &'a str; photo, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendPhoto; chat_id, i64; chat_username, &'a str; photo, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> SendAudio<'a> {
@@ -121,7 +136,7 @@ impl<'a> SendAudio<'a> {
         }
     }
 
-    buildera!(SendAudio; chat_id, i64; chat_username, &'a str; audio, &'a str; file_id, &'a str; caption, &'a str; duration, i64; performer, &'a str; title, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendAudio; chat_id, i64; chat_username, &'a str; audio, &'a str; file_id, &'a str; caption, &'a str; duration, i64; performer, &'a str; title, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> SendDocument<'a> {
@@ -138,7 +153,7 @@ impl<'a> SendDocument<'a> {
         }
     }
 
-    buildera!(SendDocument; chat_id, i64; chat_username, &'a str; document, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendDocument; chat_id, i64; chat_username, &'a str; document, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> SendSticker<'a> {
@@ -154,7 +169,7 @@ impl<'a> SendSticker<'a> {
         }
     }
 
-    buildera!(SendSticker; chat_id, i64; chat_username, &'a str; sticker, &'a str; file_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendSticker; chat_id, i64; chat_username, &'a str; sticker, &'a str; file_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> SendVideo<'a> {
@@ -174,7 +189,7 @@ impl<'a> SendVideo<'a> {
         }
     }
 
-    buildera!(SendVideo; chat_id, i64; chat_username, &'a str; video, &'a str; file_id, &'a str; duration, i64; width, i64; height, i64; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendVideo; chat_id, i64; chat_username, &'a str; video, &'a str; file_id, &'a str; duration, i64; width, i64; height, i64; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> SendVoice<'a> {
@@ -192,7 +207,7 @@ impl<'a> SendVoice<'a> {
         }
     }
 
-    buildera!(SendVoice; chat_id, i64; chat_username, &'a str; voice, &'a str; file_id, &'a str; caption, &'a str; duration, i64; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendVoice; chat_id, i64; chat_username, &'a str; voice, &'a str; file_id, &'a str; caption, &'a str; duration, i64; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> SendLocation<'a> {
@@ -208,7 +223,7 @@ impl<'a> SendLocation<'a> {
         }
     }
 
-    buildera!(SendLocation; chat_id, i64; chat_username, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendLocation; chat_id, i64; chat_username, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> SendVenue<'a> {
@@ -227,7 +242,7 @@ impl<'a> SendVenue<'a> {
         }
     }
 
-    buildera!(SendVenue; chat_id, i64; chat_username, &'a str; foursquare_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendVenue; chat_id, i64; chat_username, &'a str; foursquare_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl<'a> SendContact<'a> {
@@ -244,7 +259,7 @@ impl<'a> SendContact<'a> {
         }
     }
 
-    buildera!(SendContact; chat_id, i64; chat_username, &'a str; last_name, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup);
+    buildera!(SendContact; chat_id, i64; chat_username, &'a str; last_name, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
 }
 
 impl GetUserProfilePhotos {
@@ -375,7 +390,7 @@ impl<'a> EditMessageText<'a> {
         }
     }
 
-    buildera!(EditMessageText; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; reply_markup, &'a types::ReplyMarkup); // InlineKeyboardMarkup
+    buildera!(EditMessageText; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; reply_markup, &'a ReplyMarkup); // InlineKeyboardMarkup
 }
 
 impl<'a> EditMessageCaption<'a> {
@@ -390,7 +405,7 @@ impl<'a> EditMessageCaption<'a> {
         }
     }
 
-    buildera!(EditMessageCaption; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; caption, &'a str; reply_markup, &'a types::ReplyMarkup); // InlineKeyboardMarkup
+    buildera!(EditMessageCaption; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; caption, &'a str; reply_markup, &'a ReplyMarkup); // InlineKeyboardMarkup
 }
 
 impl<'a> EditMessageReplyMarkup<'a> {
@@ -404,7 +419,7 @@ impl<'a> EditMessageReplyMarkup<'a> {
         }
     }
 
-    buildera!(EditMessageReplyMarkup; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; reply_markup, &'a types::ReplyMarkup); // InlineKeyboardMarkup
+    buildera!(EditMessageReplyMarkup; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; reply_markup, &'a ReplyMarkup); // InlineKeyboardMarkup
 }
 
 impl<'a> AnswerInlineQuery<'a> {
@@ -434,7 +449,7 @@ impl<'a> SendGame<'a> {
         }
     }
 
-    buildera!(SendGame; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a types::ReplyMarkup); // InlineKeyboardMarkup
+    buildera!(SendGame; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup); // InlineKeyboardMarkup
 }
 
 impl<'a> SetGameScore<'a> {
@@ -492,3 +507,182 @@ impl<'a> InlineKeyboardButton<'a> {
 
     buildera!(InlineKeyboardButton; url, &'a str; callback_data, &'a str; switch_inline_query, &'a str; switch_inline_query_current_chat, &'a str; callback_game, &'a types::CallbackGame);
 }
+
+impl<'a> ReplyMarkup<'a> {
+    pub fn new_inline_keyboard(keyboard: &'a [&'a [InlineKeyboardButton<'a>]]) -> ReplyMarkup<'a> {
+        ReplyMarkup::InlineKeyboard(InlineKeyboardMarkup {
+            inline_keyboard: keyboard,
+        })
+    }
+
+    pub fn new_reply_keyboard(keyboard: &'a [&'a [KeyboardButton<'a>]]) -> ReplyMarkup<'a> {
+        ReplyMarkup::ReplyKeyboard(ReplyKeyboardMarkup {
+            keyboard: keyboard,
+            resize_keyboard: None,
+            one_time_keyboard: None,
+            selective: None,
+        })
+    }
+
+    pub fn new_reply_keyboard_remove(remove_keyboard: bool) -> ReplyMarkup<'a> {
+        ReplyMarkup::ReplyKeyboardRemove(ReplyKeyboardRemoveMarkup {
+            remove_keyboard: remove_keyboard,
+            selective: None,
+        })
+    }
+
+    pub fn new_force_reply(force_reply: bool) -> ReplyMarkup<'a> {
+        ReplyMarkup::ForceReply(ForceReplyMarkup {
+            force_reply: force_reply,
+            selective: None,
+        })
+    }
+
+    pub fn selective(mut self, selective: bool) -> ReplyMarkup<'a> {
+        match self {
+            ReplyMarkup::InlineKeyboard(_) => { }
+
+            ReplyMarkup::ReplyKeyboard(ref mut markup) => {
+                markup.selective = Some(selective);
+            }
+
+            ReplyMarkup::ReplyKeyboardRemove(ref mut markup) => {
+                markup.selective = Some(selective);
+            }
+
+            ReplyMarkup::ForceReply(ref mut markup) => {
+                markup.selective = Some(selective);
+            }
+        }
+        self
+    }
+
+    pub fn resize_keyboard(mut self, resize_keyboard: bool) -> ReplyMarkup<'a> {
+        match self {
+            ReplyMarkup::InlineKeyboard(_) => { }
+
+            ReplyMarkup::ReplyKeyboard(ref mut markup) => {
+                markup.resize_keyboard = Some(resize_keyboard);
+            }
+
+            ReplyMarkup::ReplyKeyboardRemove(_) => { }
+
+            ReplyMarkup::ForceReply(_) => { }
+        }
+        self
+    }
+
+    pub fn one_time_keyboard(mut self, one_time_keyboard: bool) -> ReplyMarkup<'a> {
+        match self {
+            ReplyMarkup::InlineKeyboard(_) => { }
+
+            ReplyMarkup::ReplyKeyboard(ref mut markup) => {
+                markup.one_time_keyboard = Some(one_time_keyboard);
+            }
+
+            ReplyMarkup::ReplyKeyboardRemove(_) => { }
+
+            ReplyMarkup::ForceReply(_) => { }
+        }
+        self
+    }
+}
+
+impl<'a> InputMessageContent<'a> {
+    pub fn new_text(message_text: &'a str) -> InputMessageContent<'a> {
+        InputMessageContent::Text(InputTextMessageContent {
+            message_text: message_text,
+            parse_mode: None,
+            disable_web_page_preview: None,
+        })
+    }
+
+    pub fn new_location(latitude: f64, longitude: f64) -> InputMessageContent<'a> {
+        InputMessageContent::Location(InputLocationMessageContent {
+            latitude: latitude,
+            longitude: longitude,
+        })
+    }
+
+    pub fn new_venue(latitude: f64, longitude: f64, title: &'a str, address: &'a str) -> InputMessageContent<'a> {
+        InputMessageContent::Venue(InputVenueMessageContent {
+            latitude: latitude,
+            longitude: longitude,
+            title: title,
+            address: address,
+            foursquare_id: None,
+        })
+    }
+
+    pub fn new_contact(phone_number: &'a str, first_name: &'a str) -> InputMessageContent<'a> {
+        InputMessageContent::Contact(InputContactMessageContent {
+            phone_number: phone_number,
+            first_name: first_name,
+            last_name: None,
+        })
+    }
+
+    pub fn parse_mode(mut self, parse_mode: &'a str) -> InputMessageContent<'a> {
+        match self {
+            InputMessageContent::Text(ref mut markup) => {
+                markup.parse_mode = Some(parse_mode);
+            }
+
+            InputMessageContent::Location(_) => { }
+
+            InputMessageContent::Venue(_) => { }
+
+            InputMessageContent::Contact(_) => { }
+        }
+        self
+    }
+
+    pub fn disable_web_page_preview(mut self, disable_web_page_preview: bool) -> InputMessageContent<'a> {
+        match self {
+            InputMessageContent::Text(ref mut markup) => {
+                markup.disable_web_page_preview = Some(disable_web_page_preview);
+            }
+
+            InputMessageContent::Location(_) => { }
+
+            InputMessageContent::Venue(_) => { }
+
+            InputMessageContent::Contact(_) => { }
+        }
+        self
+    }
+
+    pub fn foursquare_id(mut self, foursquare_id: &'a str) -> InputMessageContent<'a> {
+        match self {
+            InputMessageContent::Text(_) => { }
+
+            InputMessageContent::Location(_) => { }
+
+            InputMessageContent::Venue(ref mut markup) => {
+                markup.foursquare_id = Some(foursquare_id);
+            }
+
+            InputMessageContent::Contact(_) => { }
+        }
+        self
+    }
+
+    pub fn last_name(mut self, last_name: &'a str) -> InputMessageContent<'a> {
+        match self {
+            InputMessageContent::Text(_) => { }
+
+            InputMessageContent::Location(_) => { }
+
+            InputMessageContent::Venue(_) => { }
+
+            InputMessageContent::Contact(ref mut markup) => {
+                markup.last_name = Some(last_name);
+            }
+        }
+        self
+    }
+}
+
+// impl<'a> InlineQueryResult<'a> {
+
+// }

@@ -16,7 +16,7 @@ license = "MIT"
 serde_codegen = "0.8.21"
 
 [dependencies]
-serde = "0.8.21"
-serde_json = "0.8.4"
+serde = "0.8.23"
+serde_json = "0.8.6"
 hyper = "0.9.14"
 multipart = "0.9.0-alpha.9"

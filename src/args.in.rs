@@ -87,7 +87,6 @@ impl <'a> Serialize for SendMessage<'a> {
 
         if self.reply_markup.is_some() {
             serializer.serialize_struct_elt(&mut state, "reply_markup", &self.reply_markup)?;
-            println!("{:?}", serde_json::to_string(&self.reply_markup));
         }
 
         serializer.serialize_struct_end(state)

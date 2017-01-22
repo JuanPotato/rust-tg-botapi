@@ -36,82 +36,80 @@ pub enum MessageOrBool {
 
 #[derive(Debug)]
 pub enum ReplyMarkup<'a> {
-    InlineKeyboard {
-        inline_keyboard: &'a [&'a InlineKeyboardButton<'a>],
-    },
+    InlineKeyboard(InlineKeyboardMarkup<'a>),
+    ReplyKeyboard(ReplyKeyboardMarkup<'a>),
+    ReplyKeyboardRemove(ReplyKeyboardRemoveMarkup),
+    ForceReply(ForceReplyMarkup),
+}
 
-    ReplyKeyboard {
-        keyboard: &'a [&'a KeyboardButton<'a>],
-        resize_keyboard: Option<bool>,
-        one_time_keyboard: Option<bool>,
-        selective: Option<bool>,
-    },
+#[derive(Debug)]
+pub struct InlineKeyboardMarkup<'a> {
+    pub inline_keyboard: &'a [&'a [InlineKeyboardButton<'a>]],
+}
 
-    ReplyKeyboardRemove {
-        remove_keyboard: bool,
-        selective: Option<bool>,
-    },
+#[derive(Debug)]
+pub struct ReplyKeyboardMarkup<'a> {
+    pub keyboard: &'a [&'a [KeyboardButton<'a>]],
+    pub resize_keyboard: Option<bool>,
+    pub one_time_keyboard: Option<bool>,
+    pub selective: Option<bool>,
+}
 
-    ForceReply {
-        force_reply: bool,
-        selective: Option<bool>,
-    }
+#[derive(Debug)]
+pub struct ReplyKeyboardRemoveMarkup {
+    pub remove_keyboard: bool,
+    pub selective: Option<bool>,
+}
+
+#[derive(Debug)]
+pub struct ForceReplyMarkup {
+    pub force_reply: bool,
+    pub selective: Option<bool>,
 }
 
 impl<'a> Serialize for ReplyMarkup<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error> where
      S: Serializer {
         match *self {
-            ReplyMarkup::InlineKeyboard {
-                ref inline_keyboard,
-            } => {
+            ReplyMarkup::InlineKeyboard(ref markup) => {
                 let mut state = serializer.serialize_struct("InlineKeyboardMarkup",  1)?;
-                serializer.serialize_struct_elt(&mut state, "inline_keyboard", inline_keyboard)?;
+                serializer.serialize_struct_elt(&mut state, "inline_keyboard", markup.inline_keyboard)?;
                 serializer.serialize_struct_end(state)
             }
 
-            ReplyMarkup::ReplyKeyboard {
-                ref keyboard,
-                ref resize_keyboard,
-                ref one_time_keyboard,
-                ref selective,
-            } => {
+            ReplyMarkup::ReplyKeyboard(ref markup) => {
                 let mut state = serializer.serialize_struct("ReplyKeyboardMarkup", 1 +
-                option_int!(resize_keyboard, one_time_keyboard, selective))?;
+                option_int!(markup.resize_keyboard,
+                            markup.one_time_keyboard,
+                            markup.selective))?;
 
-                serializer.serialize_struct_elt(&mut state, "keyboard", keyboard)?;
+                serializer.serialize_struct_elt(&mut state, "keyboard", markup.keyboard)?;
 
-                option_serialize_struct_elt!(serializer, &mut state, "resize_keyboard", resize_keyboard);
-                option_serialize_struct_elt!(serializer, &mut state, "one_time_keyboard", one_time_keyboard);
-                option_serialize_struct_elt!(serializer, &mut state, "selective", selective);
+                option_serialize_struct_elt!(serializer, &mut state, "resize_keyboard", markup.resize_keyboard);
+                option_serialize_struct_elt!(serializer, &mut state, "one_time_keyboard", markup.one_time_keyboard);
+                option_serialize_struct_elt!(serializer, &mut state, "selective", markup.selective);
 
                 serializer.serialize_struct_end(state)
             }
 
-            ReplyMarkup::ReplyKeyboardRemove {
-                ref remove_keyboard,
-                ref selective,
-            } => {
+            ReplyMarkup::ReplyKeyboardRemove(ref markup) => {
                 let mut state = serializer.serialize_struct("ReplyKeyboardRemove", 1 +
-                option_int!(selective))?;
+                option_int!(markup.selective))?;
 
-                serializer.serialize_struct_elt(&mut state, "remove_keyboard", remove_keyboard)?;
+                serializer.serialize_struct_elt(&mut state, "remove_keyboard", markup.remove_keyboard)?;
 
-                option_serialize_struct_elt!(serializer, &mut state, "selective", selective);
+                option_serialize_struct_elt!(serializer, &mut state, "selective", markup.selective);
 
                 serializer.serialize_struct_end(state)
             }
 
-            ReplyMarkup::ForceReply {
-                ref force_reply,
-                ref selective,
-            } => {
+            ReplyMarkup::ForceReply (ref markup) => {
                 let mut state = serializer.serialize_struct("ForceReply", 1 +
-                option_int!(selective))?;
+                option_int!(markup.selective))?;
 
-                serializer.serialize_struct_elt(&mut state, "force_reply", force_reply)?;
+                serializer.serialize_struct_elt(&mut state, "force_reply", markup.force_reply)?;
 
-                option_serialize_struct_elt!(serializer, &mut state, "selective", selective);
+                option_serialize_struct_elt!(serializer, &mut state, "selective", markup.selective);
 
                 serializer.serialize_struct_end(state)
             }
@@ -996,98 +994,87 @@ impl<'a> Serialize for InlineQueryResult<'a> {
 
 #[derive(Debug)]
 pub enum InputMessageContent<'a> {
-    Text {
-        message_text: &'a str,
-        parse_mode: Option<&'a str>,
-        disable_web_page_preview: Option<bool>,
-    },
+    Text(InputTextMessageContent<'a>),
+    Location(InputLocationMessageContent),
+    Venue(InputVenueMessageContent<'a>),
+    Contact(InputContactMessageContent<'a>),
+}
 
-    Location {
-        latitude: f64,
-        longitude: f64,
-    },
+#[derive(Debug)]
+pub struct InputTextMessageContent<'a> {
+    pub message_text: &'a str,
+    pub parse_mode: Option<&'a str>,
+    pub disable_web_page_preview: Option<bool>,
+}
 
-    Venue {
-        latitude: f64,
-        longitude: f64,
-        title: &'a str,
-        address: &'a str,
-        foursquare_id: Option<&'a str>,
-    },
+#[derive(Debug)]
+pub struct InputLocationMessageContent {
+    pub latitude: f64,
+    pub longitude: f64,
+}
 
-    Contact {
-        phone_number: &'a str,
-        first_name: &'a str,
-        last_name: Option<&'a str>,
-    },
+#[derive(Debug)]
+pub struct InputVenueMessageContent<'a> {
+    pub latitude: f64,
+    pub longitude: f64,
+    pub title: &'a str,
+    pub address: &'a str,
+    pub foursquare_id: Option<&'a str>,
+}
+
+#[derive(Debug)]
+pub struct InputContactMessageContent<'a> {
+    pub phone_number: &'a str,
+    pub first_name: &'a str,
+    pub last_name: Option<&'a str>,
 }
 
 impl<'a> Serialize for InputMessageContent<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error> where
      S: Serializer {
         match *self {
-            InputMessageContent::Text {
-                ref message_text,
-
-                ref parse_mode,
-                ref disable_web_page_preview,
-            } => {
+            InputMessageContent::Text(ref markup) => {
                 let mut state = serializer.serialize_struct("InputTextMessageContent",  1 +
-                    option_int!(parse_mode, disable_web_page_preview))?;
+                    option_int!(markup.parse_mode, markup.disable_web_page_preview))?;
 
-                serializer.serialize_struct_elt(&mut state, "message_text", message_text)?;
-                option_serialize_struct_elt!(serializer, &mut state, "parse_mode", parse_mode);
-                option_serialize_struct_elt!(serializer, &mut state, "disable_web_page_preview", disable_web_page_preview);
+                serializer.serialize_struct_elt(&mut state, "message_text", markup.message_text)?;
+                option_serialize_struct_elt!(serializer, &mut state, "parse_mode", markup.parse_mode);
+                option_serialize_struct_elt!(serializer, &mut state, "disable_web_page_preview", markup.disable_web_page_preview);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InputMessageContent::Location {
-                ref latitude,
-                ref longitude,
-            } => {
+            InputMessageContent::Location(ref markup) => {
                 let mut state = serializer.serialize_struct("InputLocationMessageContent", 2)?;
 
-                serializer.serialize_struct_elt(&mut state, "latitude", latitude)?;
-                serializer.serialize_struct_elt(&mut state, "longitude", longitude)?;
+                serializer.serialize_struct_elt(&mut state, "latitude", markup.latitude)?;
+                serializer.serialize_struct_elt(&mut state, "longitude", markup.longitude)?;
 
                 serializer.serialize_struct_end(state)
             }
 
-            InputMessageContent::Venue {
-                ref latitude,
-                ref longitude,
-                ref title,
-                ref address,
-
-                ref foursquare_id,
-            } => {
+            InputMessageContent::Venue(ref markup) => {
                 let mut state = serializer.serialize_struct("InputVenueMessageContent", 4 +
-                option_int!(foursquare_id))?;
+                option_int!(markup.foursquare_id))?;
 
-                serializer.serialize_struct_elt(&mut state, "latitude", latitude)?;
-                serializer.serialize_struct_elt(&mut state, "longitude", longitude)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                serializer.serialize_struct_elt(&mut state, "address", address)?;
+                serializer.serialize_struct_elt(&mut state, "latitude", markup.latitude)?;
+                serializer.serialize_struct_elt(&mut state, "longitude", markup.longitude)?;
+                serializer.serialize_struct_elt(&mut state, "title", markup.title)?;
+                serializer.serialize_struct_elt(&mut state, "address", markup.address)?;
 
-                option_serialize_struct_elt!(serializer, &mut state, "foursquare_id", foursquare_id);
+                option_serialize_struct_elt!(serializer, &mut state, "foursquare_id", markup.foursquare_id);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InputMessageContent::Contact {
-                ref phone_number,
-                ref first_name,
-
-                ref last_name,
-            } => {
+            InputMessageContent::Contact(ref markup) => {
                 let mut state = serializer.serialize_struct("InputContactMessageContent", 2 +
-                option_int!(last_name))?;
+                option_int!(markup.last_name))?;
 
-                serializer.serialize_struct_elt(&mut state, "phone_number", phone_number)?;
-                serializer.serialize_struct_elt(&mut state, "first_name", first_name)?;
+                serializer.serialize_struct_elt(&mut state, "phone_number", markup.phone_number)?;
+                serializer.serialize_struct_elt(&mut state, "first_name", markup.first_name)?;
 
-                option_serialize_struct_elt!(serializer, &mut state, "last_name", last_name);
+                option_serialize_struct_elt!(serializer, &mut state, "last_name", markup.last_name);
 
                 serializer.serialize_struct_end(state)
             }
