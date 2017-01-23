@@ -119,872 +119,691 @@ impl<'a> Serialize for ReplyMarkup<'a> {
 
 #[derive(Debug)]
 pub enum InlineQueryResult<'a> {
-    Article {
-        type_name: &'a str,
-        id: &'a str,
-        title: &'a str,
-        input_message_content: &'a InputMessageContent<'a>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        url: Option<&'a str>,
-        hide_url: Option<bool>,
-        description: Option<&'a str>,
-        thumb_url: Option<&'a str>,
-        thumb_width: Option<i64>,
-        thumb_height: Option<i64>,
-    },
+    Article(InlineQueryResultArticle<'a>),
+    Photo(InlineQueryResultPhoto<'a>),
+    Gif(InlineQueryResultGif<'a>),
+    Mpeg4Gif(InlineQueryResultMpeg4Gif<'a>),
+    Video(InlineQueryResultVideo<'a>),
+    Audio(InlineQueryResultAudio<'a>),
+    Voice(InlineQueryResultVoice<'a>),
+    Document(InlineQueryResultDocument<'a>),
+    Location(InlineQueryResultLocation<'a>),
+    Venue(InlineQueryResultVenue<'a>),
+    Contact(InlineQueryResultContact<'a>),
+    Game(InlineQueryResultGame<'a>),
+    CachedPhoto(InlineQueryResultCachedPhoto<'a>),
+    CachedGif(InlineQueryResultCachedGif<'a>),
+    CachedMpeg4Gif(InlineQueryResultCachedMpeg4Gif<'a>),
+    CachedSticker(InlineQueryResultCachedSticker<'a>),
+    CachedDocument(InlineQueryResultCachedDocument<'a>),
+    CachedVideo(InlineQueryResultCachedVideo<'a>),
+    CachedVoice(InlineQueryResultCachedVoice<'a>),
+    CachedAudio(InlineQueryResultCachedAudio<'a>),
+}
 
-    Photo {
-        type_name: String,
-        id: String,
-        photo_url: String,
-        thumb_url: String,
-        photo_width: Option<i64>,
-        photo_height: Option<i64>,
-        title: Option<&'a str>,
-        description: Option<&'a str>,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultArticle<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub title: &'a str,
+    pub input_message_content: &'a InputMessageContent<'a>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub url: Option<&'a str>,
+    pub hide_url: Option<bool>,
+    pub description: Option<&'a str>,
+    pub thumb_url: Option<&'a str>,
+    pub thumb_width: Option<i64>,
+    pub thumb_height: Option<i64>,
+}
 
-    Gif {
-        type_name: &'a str,
-        id: &'a str,
-        gif_url: &'a str,
-        gif_width: Option<i64>,
-        gif_height: Option<i64>,
-        thumb_url: &'a str,
-        title: Option<&'a str>,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultPhoto<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub photo_url: &'a str,
+    pub thumb_url: &'a str,
+    pub photo_width: Option<i64>,
+    pub photo_height: Option<i64>,
+    pub title: Option<&'a str>,
+    pub description: Option<&'a str>,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    Mpeg4Gif {
-        type_name: &'a str,
-        id: &'a str,
-        mpeg4_url: &'a str,
-        mpeg4_width: Option<i64>,
-        mpeg4_height: Option<i64>,
-        thumb_url: &'a str,
-        title: Option<&'a str>,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultGif<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub gif_url: &'a str,
+    pub gif_width: Option<i64>,
+    pub gif_height: Option<i64>,
+    pub thumb_url: &'a str,
+    pub title: Option<&'a str>,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    Video {
-        type_name: &'a str,
-        id: &'a str,
-        video_url: &'a str,
-        mime_type: &'a str,
-        thumb_url: &'a str,
-        title: &'a str,
-        caption: Option<&'a str>,
-        video_width: Option<i64>,
-        video_height: Option<i64>,
-        video_duration: Option<i64>,
-        description: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultMpeg4Gif<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub mpeg4_url: &'a str,
+    pub mpeg4_width: Option<i64>,
+    pub mpeg4_height: Option<i64>,
+    pub thumb_url: &'a str,
+    pub title: Option<&'a str>,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    Audio {
-        type_name: &'a str,
-        id: &'a str,
-        audio_url: &'a str,
-        title: &'a str,
-        caption: Option<&'a str>,
-        performer: Option<&'a str>,
-        audio_duration: Option<i64>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultVideo<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub video_url: &'a str,
+    pub mime_type: &'a str,
+    pub thumb_url: &'a str,
+    pub title: &'a str,
+    pub caption: Option<&'a str>,
+    pub video_width: Option<i64>,
+    pub video_height: Option<i64>,
+    pub video_duration: Option<i64>,
+    pub description: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    Voice {
-        type_name: &'a str,
-        id: &'a str,
-        voice_url: &'a str,
-        title: &'a str,
-        caption: Option<&'a str>,
-        voice_duration: Option<i64>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultAudio<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub audio_url: &'a str,
+    pub title: &'a str,
+    pub caption: Option<&'a str>,
+    pub performer: Option<&'a str>,
+    pub audio_duration: Option<i64>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    Document {
-        type_name: &'a str,
-        id: &'a str,
-        title: &'a str,
-        caption: Option<&'a str>,
-        document_url: &'a str,
-        mime_type: &'a str,
-        description: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-        thumb_url: Option<&'a str>,
-        thumb_width: Option<i64>,
-        thumb_height: Option<i64>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultVoice<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub voice_url: &'a str,
+    pub title: &'a str,
+    pub caption: Option<&'a str>,
+    pub voice_duration: Option<i64>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    Location {
-        type_name: &'a str,
-        id: &'a str,
-        latitude: f64,
-        longitude: f64,
-        title: &'a str,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-        thumb_url: Option<&'a str>,
-        thumb_width: Option<i64>,
-        thumb_height: Option<i64>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultDocument<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub title: &'a str,
+    pub caption: Option<&'a str>,
+    pub document_url: &'a str,
+    pub mime_type: &'a str,
+    pub description: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+    pub thumb_url: Option<&'a str>,
+    pub thumb_width: Option<i64>,
+    pub thumb_height: Option<i64>,
+}
 
-    Venue {
-        type_name: &'a str,
-        id: &'a str,
-        latitude: f64,
-        longitude: f64,
-        title: &'a str,
-        address: &'a str,
-        foursquare_id: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-        thumb_url: Option<&'a str>,
-        thumb_width: Option<i64>,
-        thumb_height: Option<i64>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultLocation<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub latitude: f64,
+    pub longitude: f64,
+    pub title: &'a str,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+    pub thumb_url: Option<&'a str>,
+    pub thumb_width: Option<i64>,
+    pub thumb_height: Option<i64>,
+}
 
-    Contact {
-        type_name: &'a str,
-        id: &'a str,
-        phone_number: &'a str,
-        first_name: &'a str,
-        last_name: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-        thumb_url: Option<&'a str>,
-        thumb_width: Option<i64>,
-        thumb_height: Option<i64>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultVenue<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub latitude: f64,
+    pub longitude: f64,
+    pub title: &'a str,
+    pub address: &'a str,
+    pub foursquare_id: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+    pub thumb_url: Option<&'a str>,
+    pub thumb_width: Option<i64>,
+    pub thumb_height: Option<i64>,
+}
 
-    Game {
-        type_name: &'a str,
-        id: &'a str,
-        game_short_name: &'a str,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultContact<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub phone_number: &'a str,
+    pub first_name: &'a str,
+    pub last_name: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+    pub thumb_url: Option<&'a str>,
+    pub thumb_width: Option<i64>,
+    pub thumb_height: Option<i64>,
+}
 
-    CachedPhoto {
-        type_name: &'a str,
-        id: &'a str,
-        photo_file_id: &'a str,
-        title: Option<&'a str>,
-        description: Option<&'a str>,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultGame<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub game_short_name: &'a str,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+}
 
-    CachedGif {
-        type_name: &'a str,
-        id: &'a str,
-        gif_file_id: &'a str,
-        title: Option<&'a str>,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultCachedPhoto<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub photo_file_id: &'a str,
+    pub title: Option<&'a str>,
+    pub description: Option<&'a str>,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    CachedMpeg4Gif {
-        type_name: &'a str,
-        id: &'a str,
-        mpeg4_file_id: &'a str,
-        title: Option<&'a str>,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultCachedGif<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub gif_file_id: &'a str,
+    pub title: Option<&'a str>,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    CachedSticker {
-        type_name: &'a str,
-        id: &'a str,
-        sticker_file_id: &'a str,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultCachedMpeg4Gif<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub mpeg4_file_id: &'a str,
+    pub title: Option<&'a str>,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    CachedDocument {
-        type_name: &'a str,
-        id: &'a str,
-        title: &'a str,
-        document_file_id: &'a str,
-        description: Option<&'a str>,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultCachedSticker<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub sticker_file_id: &'a str,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    CachedVideo {
-        type_name: &'a str,
-        id: &'a str,
-        video_file_id: &'a str,
-        title: &'a str,
-        description: Option<&'a str>,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultCachedDocument<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub title: &'a str,
+    pub document_file_id: &'a str,
+    pub description: Option<&'a str>,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    CachedVoice {
-        type_name: &'a str,
-        id: &'a str,
-        voice_file_id: &'a str,
-        title: &'a str,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultCachedVideo<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub video_file_id: &'a str,
+    pub title: &'a str,
+    pub description: Option<&'a str>,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
 
-    CachedAudio {
-        type_name: &'a str,
-        id: &'a str,
-        audio_file_id: &'a str,
-        caption: Option<&'a str>,
-        reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
-        input_message_content: Option<&'a InputMessageContent<'a>>,
-    },
+#[derive(Debug)]
+pub struct InlineQueryResultCachedVoice<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub voice_file_id: &'a str,
+    pub title: &'a str,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
+}
+
+#[derive(Debug)]
+pub struct InlineQueryResultCachedAudio<'a> {
+    pub type_name: &'a str,
+    pub id: &'a str,
+    pub audio_file_id: &'a str,
+    pub caption: Option<&'a str>,
+    pub reply_markup: Option<&'a ReplyMarkup<'a>>, // InlineKeyboardMarkup
+    pub input_message_content: Option<&'a InputMessageContent<'a>>,
 }
 
 impl<'a> Serialize for InlineQueryResult<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error> where
      S: Serializer {
         match *self {
-            InlineQueryResult::Article {
-                ref type_name,
-                ref id,
-                ref title,
-                ref input_message_content,
-
-                ref reply_markup,
-                ref url,
-                ref hide_url,
-                ref description,
-                ref thumb_url,
-                ref thumb_width,
-                ref thumb_height,
-            } => {
+            InlineQueryResult::Article(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultArticle", 4 +
-                option_int!(reply_markup, url, hide_url, description,
-                            thumb_url, thumb_width, thumb_height))?;
+                option_int!(result.reply_markup, result.url, result.hide_url, result.description,
+                            result.thumb_url, result.thumb_width, result.thumb_height))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                serializer.serialize_struct_elt(&mut state, "input_message_content", input_message_content)?;
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                serializer.serialize_struct_elt(&mut state, "input_message_content", result.input_message_content)?;
 
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup);
-                option_serialize_struct_elt!(serializer, &mut state, "url", url);
-                option_serialize_struct_elt!(serializer, &mut state, "hide_url", hide_url);
-                option_serialize_struct_elt!(serializer, &mut state, "description", description);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", thumb_url);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", thumb_width);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", thumb_height);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup);
+                option_serialize_struct_elt!(serializer, &mut state, "url", result.url);
+                option_serialize_struct_elt!(serializer, &mut state, "hide_url", result.hide_url);
+                option_serialize_struct_elt!(serializer, &mut state, "description", result.description);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", result.thumb_url);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", result.thumb_width);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", result.thumb_height);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Photo {
-                ref type_name,
-                ref id,
-                ref photo_url,
-                ref thumb_url,
-
-                ref photo_width,
-                ref photo_height,
-                ref title,
-                ref description,
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::Photo(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultPhoto", 4 +
-                    option_int!(photo_width,
-                                photo_height,
-                                title,
-                                description,
-                                caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.photo_width,
+                                result.photo_height,
+                                result.title,
+                                result.description,
+                                result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "photo_url", photo_url)?;
-                serializer.serialize_struct_elt(&mut state, "thumb_url", thumb_url)?;
-                option_serialize_struct_elt!(serializer, &mut state, "photo_width", photo_width);
-                option_serialize_struct_elt!(serializer, &mut state, "photo_height", photo_height);
-                option_serialize_struct_elt!(serializer, &mut state, "title", title);
-                option_serialize_struct_elt!(serializer, &mut state, "description", description);
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "photo_url", result.photo_url)?;
+                serializer.serialize_struct_elt(&mut state, "thumb_url", result.thumb_url)?;
+                option_serialize_struct_elt!(serializer, &mut state, "photo_width", result.photo_width);
+                option_serialize_struct_elt!(serializer, &mut state, "photo_height", result.photo_height);
+                option_serialize_struct_elt!(serializer, &mut state, "title", result.title);
+                option_serialize_struct_elt!(serializer, &mut state, "description", result.description);
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Gif {
-                ref type_name,
-                ref id,
-                ref gif_url,
-
-                ref gif_width,
-                ref gif_height,
-
-                ref thumb_url,
-
-                ref title,
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::Gif(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultGif", 4 +
-                    option_int!(gif_width,
-                                gif_height,
-                                title,
-                                caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.gif_width,
+                                result.gif_height,
+                                result.title,
+                                result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "gif_url", gif_url)?;
-                option_serialize_struct_elt!(serializer, &mut state, "gif_width", gif_width);
-                option_serialize_struct_elt!(serializer, &mut state, "gif_height", gif_height);
-                serializer.serialize_struct_elt(&mut state, "thumb_url", thumb_url)?;
-                option_serialize_struct_elt!(serializer, &mut state, "title", title);
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "gif_url", result.gif_url)?;
+                option_serialize_struct_elt!(serializer, &mut state, "gif_width", result.gif_width);
+                option_serialize_struct_elt!(serializer, &mut state, "gif_height", result.gif_height);
+                serializer.serialize_struct_elt(&mut state, "thumb_url", result.thumb_url)?;
+                option_serialize_struct_elt!(serializer, &mut state, "title", result.title);
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Mpeg4Gif {
-                ref type_name,
-                ref id,
-                ref mpeg4_url,
-
-                ref mpeg4_width,
-                ref mpeg4_height,
-
-                ref thumb_url,
-
-                ref title,
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::Mpeg4Gif(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultMpeg4Gif", 4 +
-                    option_int!(mpeg4_width,
-                                mpeg4_height,
-                                title,
-                                caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.mpeg4_width,
+                                result.mpeg4_height,
+                                result.title,
+                                result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "mpeg4_url", mpeg4_url)?;
-                option_serialize_struct_elt!(serializer, &mut state, "mpeg4_width", mpeg4_width);
-                option_serialize_struct_elt!(serializer, &mut state, "mpeg4_height", mpeg4_height);
-                serializer.serialize_struct_elt(&mut state, "thumb_url", thumb_url)?;
-                option_serialize_struct_elt!(serializer, &mut state, "title", title);
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "mpeg4_url", result.mpeg4_url)?;
+                option_serialize_struct_elt!(serializer, &mut state, "mpeg4_width", result.mpeg4_width);
+                option_serialize_struct_elt!(serializer, &mut state, "mpeg4_height", result.mpeg4_height);
+                serializer.serialize_struct_elt(&mut state, "thumb_url", result.thumb_url)?;
+                option_serialize_struct_elt!(serializer, &mut state, "title", result.title);
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Video {
-                ref type_name,
-                ref id,
-                ref video_url,
-                ref mime_type,
-                ref thumb_url,
-                ref title,
-
-                ref caption,
-                ref video_width,
-                ref video_height,
-                ref video_duration,
-                ref description,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::Video(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultVideo", 6 +
-                    option_int!(caption,
-                                video_width,
-                                video_height,
-                                video_duration,
-                                description,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.caption,
+                                result.video_width,
+                                result.video_height,
+                                result.video_duration,
+                                result.description,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "video_url", video_url)?;
-                serializer.serialize_struct_elt(&mut state, "mime_type", mime_type)?;
-                serializer.serialize_struct_elt(&mut state, "thumb_url", thumb_url)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "video_width", video_width);
-                option_serialize_struct_elt!(serializer, &mut state, "video_height", video_height);
-                option_serialize_struct_elt!(serializer, &mut state, "video_duration", video_duration);
-                option_serialize_struct_elt!(serializer, &mut state, "description", description);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "video_url", result.video_url)?;
+                serializer.serialize_struct_elt(&mut state, "mime_type", result.mime_type)?;
+                serializer.serialize_struct_elt(&mut state, "thumb_url", result.thumb_url)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "video_width", result.video_width);
+                option_serialize_struct_elt!(serializer, &mut state, "video_height", result.video_height);
+                option_serialize_struct_elt!(serializer, &mut state, "video_duration", result.video_duration);
+                option_serialize_struct_elt!(serializer, &mut state, "description", result.description);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Audio {
-                ref type_name,
-                ref id,
-                ref audio_url,
-                ref title,
-
-                ref caption,
-                ref performer,
-                ref audio_duration,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::Audio(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultAudio", 4 +
-                    option_int!(caption,
-                                performer,
-                                audio_duration,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.caption,
+                                result.performer,
+                                result.audio_duration,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "audio_url", audio_url)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "performer", performer);
-                option_serialize_struct_elt!(serializer, &mut state, "audio_duration", audio_duration);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "audio_url", result.audio_url)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "performer", result.performer);
+                option_serialize_struct_elt!(serializer, &mut state, "audio_duration", result.audio_duration);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Voice {
-                ref type_name,
-                ref id,
-                ref voice_url,
-                ref title,
-
-                ref caption,
-                ref voice_duration,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::Voice(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultVoice", 4 +
-                    option_int!(caption,
-                                voice_duration,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.caption,
+                                result.voice_duration,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "voice_url", voice_url)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "voice_duration", voice_duration);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "voice_url", result.voice_url)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "voice_duration", result.voice_duration);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Document {
-                ref type_name,
-                ref id,
-                ref title,
-
-                ref caption,
-
-                ref document_url,
-                ref mime_type,
-
-                ref description,
-                ref reply_markup,
-                ref input_message_content,
-                ref thumb_url,
-                ref thumb_width,
-                ref thumb_height,
-            } => {
+            InlineQueryResult::Document(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultDocument", 5 +
-                    option_int!(caption,
-                                description,
-                                reply_markup,
-                                input_message_content,
-                                thumb_url,
-                                thumb_width,
-                                thumb_height))?;
+                    option_int!(result.caption,
+                                result.description,
+                                result.reply_markup,
+                                result.input_message_content,
+                                result.thumb_url,
+                                result.thumb_width,
+                                result.thumb_height))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                serializer.serialize_struct_elt(&mut state, "document_url", document_url)?;
-                serializer.serialize_struct_elt(&mut state, "mime_type", mime_type)?;
-                option_serialize_struct_elt!(serializer, &mut state, "description", description);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", thumb_url);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", thumb_width);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", thumb_height);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                serializer.serialize_struct_elt(&mut state, "document_url", result.document_url)?;
+                serializer.serialize_struct_elt(&mut state, "mime_type", result.mime_type)?;
+                option_serialize_struct_elt!(serializer, &mut state, "description", result.description);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", result.thumb_url);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", result.thumb_width);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", result.thumb_height);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Location {
-                ref type_name,
-                ref id,
-                ref latitude,
-                ref longitude,
-                ref title,
-
-                ref reply_markup,
-                ref input_message_content,
-                ref thumb_url,
-                ref thumb_width,
-                ref thumb_height,
-            } => {
+            InlineQueryResult::Location(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultLocation", 5 +
-                    option_int!(reply_markup,
-                                input_message_content,
-                                thumb_url,
-                                thumb_width,
-                                thumb_height))?;
+                    option_int!(result.reply_markup,
+                                result.input_message_content,
+                                result.thumb_url,
+                                result.thumb_width,
+                                result.thumb_height))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "latitude", latitude)?;
-                serializer.serialize_struct_elt(&mut state, "longitude", longitude)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", thumb_url);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", thumb_width);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", thumb_height);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "latitude", result.latitude)?;
+                serializer.serialize_struct_elt(&mut state, "longitude", result.longitude)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", result.thumb_url);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", result.thumb_width);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", result.thumb_height);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Venue {
-                ref type_name,
-                ref id,
-                ref latitude,
-                ref longitude,
-                ref title,
-                ref address,
-
-                ref foursquare_id,
-                ref reply_markup,
-                ref input_message_content,
-                ref thumb_url,
-                ref thumb_width,
-                ref thumb_height,
-            } => {
+            InlineQueryResult::Venue(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultVenue", 6 +
-                    option_int!(foursquare_id,
-                                reply_markup,
-                                input_message_content,
-                                thumb_url,
-                                thumb_width,
-                                thumb_height))?;
+                    option_int!(result.foursquare_id,
+                                result.reply_markup,
+                                result.input_message_content,
+                                result.thumb_url,
+                                result.thumb_width,
+                                result.thumb_height))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "latitude", latitude)?;
-                serializer.serialize_struct_elt(&mut state, "longitude", longitude)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                serializer.serialize_struct_elt(&mut state, "address", address)?;
-                option_serialize_struct_elt!(serializer, &mut state, "foursquare_id", foursquare_id);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", thumb_url);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", thumb_width);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", thumb_height);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "latitude", result.latitude)?;
+                serializer.serialize_struct_elt(&mut state, "longitude", result.longitude)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                serializer.serialize_struct_elt(&mut state, "address", result.address)?;
+                option_serialize_struct_elt!(serializer, &mut state, "foursquare_id", result.foursquare_id);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", result.thumb_url);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", result.thumb_width);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", result.thumb_height);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Contact {
-                ref type_name,
-                ref id,
-                ref phone_number,
-                ref first_name,
-
-                ref last_name,
-                ref reply_markup,
-                ref input_message_content,
-                ref thumb_url,
-                ref thumb_width,
-                ref thumb_height,
-            } => {
+            InlineQueryResult::Contact(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultContact", 4 +
-                    option_int!(last_name,
-                                reply_markup,
-                                input_message_content,
-                                thumb_url,
-                                thumb_width,
-                                thumb_height))?;
+                    option_int!(result.last_name,
+                                result.reply_markup,
+                                result.input_message_content,
+                                result.thumb_url,
+                                result.thumb_width,
+                                result.thumb_height))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "phone_number", phone_number)?;
-                serializer.serialize_struct_elt(&mut state, "first_name", first_name)?;
-                option_serialize_struct_elt!(serializer, &mut state, "last_name", last_name);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", thumb_url);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", thumb_width);
-                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", thumb_height);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "phone_number", result.phone_number)?;
+                serializer.serialize_struct_elt(&mut state, "first_name", result.first_name)?;
+                option_serialize_struct_elt!(serializer, &mut state, "last_name", result.last_name);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_url", result.thumb_url);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_width", result.thumb_width);
+                option_serialize_struct_elt!(serializer, &mut state, "thumb_height", result.thumb_height);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::Game {
-                ref type_name,
-                ref id,
-                ref game_short_name,
-
-                ref reply_markup,
-            } => {
+            InlineQueryResult::Game(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultGame", 3 +
-                    option_int!(reply_markup))?;
+                    option_int!(result.reply_markup))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "game_short_name", game_short_name)?;
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "game_short_name", result.game_short_name)?;
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::CachedPhoto {
-                ref type_name,
-                ref id,
-                ref photo_file_id,
-
-                ref title,
-                ref description,
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::CachedPhoto(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultCachedPhoto", 3 +
-                    option_int!(title,
-                                description,
-                                caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.title,
+                                result.description,
+                                result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "photo_file_id", photo_file_id)?;
-                option_serialize_struct_elt!(serializer, &mut state, "title", title);
-                option_serialize_struct_elt!(serializer, &mut state, "description", description);
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "photo_file_id", result.photo_file_id)?;
+                option_serialize_struct_elt!(serializer, &mut state, "title", result.title);
+                option_serialize_struct_elt!(serializer, &mut state, "description", result.description);
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::CachedGif {
-                ref type_name,
-                ref id,
-                ref gif_file_id,
-
-                ref title,
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::CachedGif(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultCachedGif", 3 +
-                    option_int!(title,
-                                caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.title,
+                                result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "gif_file_id", gif_file_id)?;
-                option_serialize_struct_elt!(serializer, &mut state, "title", title);
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "gif_file_id", result.gif_file_id)?;
+                option_serialize_struct_elt!(serializer, &mut state, "title", result.title);
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::CachedMpeg4Gif {
-                ref type_name,
-                ref id,
-                ref mpeg4_file_id,
-
-                ref title,
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::CachedMpeg4Gif(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultCachedMpeg4Gif", 3 +
-                    option_int!(title,
-                                caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.title,
+                                result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "mpeg4_file_id", mpeg4_file_id)?;
-                option_serialize_struct_elt!(serializer, &mut state, "title", title);
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "mpeg4_file_id", result.mpeg4_file_id)?;
+                option_serialize_struct_elt!(serializer, &mut state, "title", result.title);
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::CachedSticker {
-                ref type_name,
-                ref id,
-                ref sticker_file_id,
-
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::CachedSticker(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultCachedSticker", 3 +
-                    option_int!(reply_markup, input_message_content))?;
+                    option_int!(result.reply_markup, result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "sticker_file_id", sticker_file_id)?;
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "sticker_file_id", result.sticker_file_id)?;
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::CachedDocument {
-                ref type_name,
-                ref id,
-                ref title,
-                ref document_file_id,
-
-                ref description,
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::CachedDocument(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultCachedDocument", 4 +
-                    option_int!(description,
-                                caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.description,
+                                result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                serializer.serialize_struct_elt(&mut state, "document_file_id", document_file_id)?;
-                option_serialize_struct_elt!(serializer, &mut state, "description", description);
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                serializer.serialize_struct_elt(&mut state, "document_file_id", result.document_file_id)?;
+                option_serialize_struct_elt!(serializer, &mut state, "description", result.description);
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::CachedVideo {
-                ref type_name,
-                ref id,
-                ref video_file_id,
-                ref title,
-
-                ref description,
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::CachedVideo(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultCachedVideo", 4 +
-                    option_int!(description,
-                                caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.description,
+                                result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "video_file_id", video_file_id)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                option_serialize_struct_elt!(serializer, &mut state, "description", description);
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "video_file_id", result.video_file_id)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                option_serialize_struct_elt!(serializer, &mut state, "description", result.description);
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::CachedVoice {
-                ref type_name,
-                ref id,
-                ref voice_file_id,
-                ref title,
-
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::CachedVoice(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultCachedVoice", 4 +
-                    option_int!(caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "voice_file_id", voice_file_id)?;
-                serializer.serialize_struct_elt(&mut state, "title", title)?;
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "voice_file_id", result.voice_file_id)?;
+                serializer.serialize_struct_elt(&mut state, "title", result.title)?;
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }
 
-            InlineQueryResult::CachedAudio {
-                ref type_name,
-                ref id,
-                ref audio_file_id,
-                
-                ref caption,
-                ref reply_markup,
-                ref input_message_content,
-            } => {
+            InlineQueryResult::CachedAudio(ref result) => {
                 let mut state = serializer.serialize_struct("InlineQueryResultCachedAudio", 3 +
-                    option_int!(caption,
-                                reply_markup,
-                                input_message_content))?;
+                    option_int!(result.caption,
+                                result.reply_markup,
+                                result.input_message_content))?;
 
-                serializer.serialize_struct_elt(&mut state, "type", type_name)?;
-                serializer.serialize_struct_elt(&mut state, "id", id)?;
-                serializer.serialize_struct_elt(&mut state, "audio_file_id", audio_file_id)?;
-                option_serialize_struct_elt!(serializer, &mut state, "caption", caption);
-                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", reply_markup); // InlineKeyboardMarkup
-                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", input_message_content);
+                serializer.serialize_struct_elt(&mut state, "type", result.type_name)?;
+                serializer.serialize_struct_elt(&mut state, "id", result.id)?;
+                serializer.serialize_struct_elt(&mut state, "audio_file_id", result.audio_file_id)?;
+                option_serialize_struct_elt!(serializer, &mut state, "caption", result.caption);
+                option_serialize_struct_elt!(serializer, &mut state, "reply_markup", result.reply_markup); // InlineKeyboardMarkup
+                option_serialize_struct_elt!(serializer, &mut state, "input_message_content", result.input_message_content);
 
                 serializer.serialize_struct_end(state)
             }

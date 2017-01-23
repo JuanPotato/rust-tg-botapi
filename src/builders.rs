@@ -17,6 +17,29 @@ use types::InputLocationMessageContent;
 use types::InputVenueMessageContent;
 use types::InputContactMessageContent;
 
+use types::InlineQueryResult;
+
+use types::InlineQueryResultArticle;
+use types::InlineQueryResultPhoto;
+use types::InlineQueryResultGif;
+use types::InlineQueryResultMpeg4Gif;
+use types::InlineQueryResultVideo;
+use types::InlineQueryResultAudio;
+use types::InlineQueryResultVoice;
+use types::InlineQueryResultDocument;
+use types::InlineQueryResultLocation;
+use types::InlineQueryResultVenue;
+use types::InlineQueryResultContact;
+use types::InlineQueryResultGame;
+use types::InlineQueryResultCachedPhoto;
+use types::InlineQueryResultCachedGif;
+use types::InlineQueryResultCachedMpeg4Gif;
+use types::InlineQueryResultCachedSticker;
+use types::InlineQueryResultCachedDocument;
+use types::InlineQueryResultCachedVideo;
+use types::InlineQueryResultCachedVoice;
+use types::InlineQueryResultCachedAudio;
+
 use types;
 
 // Pardon the super long lines this was mostly made by regex and I'm worried
@@ -540,8 +563,6 @@ impl<'a> ReplyMarkup<'a> {
 
     pub fn selective(mut self, selective: bool) -> ReplyMarkup<'a> {
         match self {
-            ReplyMarkup::InlineKeyboard(_) => { }
-
             ReplyMarkup::ReplyKeyboard(ref mut markup) => {
                 markup.selective = Some(selective);
             }
@@ -553,21 +574,19 @@ impl<'a> ReplyMarkup<'a> {
             ReplyMarkup::ForceReply(ref mut markup) => {
                 markup.selective = Some(selective);
             }
+
+            _ => { }
         }
         self
     }
 
     pub fn resize_keyboard(mut self, resize_keyboard: bool) -> ReplyMarkup<'a> {
         match self {
-            ReplyMarkup::InlineKeyboard(_) => { }
-
             ReplyMarkup::ReplyKeyboard(ref mut markup) => {
                 markup.resize_keyboard = Some(resize_keyboard);
             }
 
-            ReplyMarkup::ReplyKeyboardRemove(_) => { }
-
-            ReplyMarkup::ForceReply(_) => { }
+            _ => { }
         }
         self
     }
@@ -628,11 +647,7 @@ impl<'a> InputMessageContent<'a> {
                 markup.parse_mode = Some(parse_mode);
             }
 
-            InputMessageContent::Location(_) => { }
-
-            InputMessageContent::Venue(_) => { }
-
-            InputMessageContent::Contact(_) => { }
+            _ => { }
         }
         self
     }
@@ -643,46 +658,413 @@ impl<'a> InputMessageContent<'a> {
                 markup.disable_web_page_preview = Some(disable_web_page_preview);
             }
 
-            InputMessageContent::Location(_) => { }
-
-            InputMessageContent::Venue(_) => { }
-
-            InputMessageContent::Contact(_) => { }
+            _ => { }
         }
         self
     }
 
     pub fn foursquare_id(mut self, foursquare_id: &'a str) -> InputMessageContent<'a> {
         match self {
-            InputMessageContent::Text(_) => { }
-
-            InputMessageContent::Location(_) => { }
-
             InputMessageContent::Venue(ref mut markup) => {
                 markup.foursquare_id = Some(foursquare_id);
             }
 
-            InputMessageContent::Contact(_) => { }
+            _ => { }
         }
         self
     }
 
     pub fn last_name(mut self, last_name: &'a str) -> InputMessageContent<'a> {
         match self {
-            InputMessageContent::Text(_) => { }
-
-            InputMessageContent::Location(_) => { }
-
-            InputMessageContent::Venue(_) => { }
-
             InputMessageContent::Contact(ref mut markup) => {
                 markup.last_name = Some(last_name);
             }
+
+            _ => { }
         }
         self
     }
 }
 
-// impl<'a> InlineQueryResult<'a> {
+impl<'a> InlineQueryResult<'a> {
+    pub fn new_article(type_name: &'a str, id: &'a str, title: &'a str,
+                       input_message_content: &'a InputMessageContent<'a>) -> InlineQueryResult<'a> {
+        InlineQueryResult::Article(InlineQueryResultArticle {
+            type_name: type_name,
+            id: id,
+            title: title,
+            input_message_content: input_message_content,
+            reply_markup: None, // InlineKeyboardMarkup
+            url: None,
+            hide_url: None,
+            description: None,
+            thumb_url: None,
+            thumb_width: None,
+            thumb_height: None,
+        })
+    }
 
-// }
+    pub fn new_photo(type_name: &'a str, id: &'a str, photo_url: &'a str,
+                     thumb_url: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Photo(InlineQueryResultPhoto {
+            type_name: type_name,
+            id: id,
+            photo_url: photo_url,
+            thumb_url: thumb_url,
+            photo_width: None,
+            photo_height: None,
+            title: None,
+            description: None,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_gif(type_name: &'a str, id: &'a str, gif_url: &'a str,
+                   thumb_url: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Gif(InlineQueryResultGif {
+            type_name: type_name,
+            id: id,
+            gif_url: gif_url,
+            gif_width: None,
+            gif_height: None,
+            thumb_url: thumb_url,
+            title: None,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_mpeg4_gif(type_name: &'a str, id: &'a str, mpeg4_url: &'a str,
+                         thumb_url: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Mpeg4Gif(InlineQueryResultMpeg4Gif {
+            type_name: type_name,
+            id: id,
+            mpeg4_url: mpeg4_url,
+            mpeg4_width: None,
+            mpeg4_height: None,
+            thumb_url: thumb_url,
+            title: None,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_video(type_name: &'a str, id: &'a str, video_url: &'a str, mime_type: &'a str,
+                     thumb_url: &'a str, title: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Video(InlineQueryResultVideo {
+            type_name: type_name,
+            id: id,
+            video_url: video_url,
+            mime_type: mime_type,
+            thumb_url: thumb_url,
+            title: title,
+            caption: None,
+            video_width: None,
+            video_height: None,
+            video_duration: None,
+            description: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_audio(type_name: &'a str, id: &'a str, audio_url: &'a str,
+                     title: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Audio(InlineQueryResultAudio {
+            type_name: type_name,
+            id: id,
+            audio_url: audio_url,
+            title: title,
+            caption: None,
+            performer: None,
+            audio_duration: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_voice(type_name: &'a str, id: &'a str, voice_url: &'a str,
+                     title: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Voice(InlineQueryResultVoice {
+            type_name: type_name,
+            id: id,
+            voice_url: voice_url,
+            title: title,
+            caption: None,
+            voice_duration: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_document(type_name: &'a str, id: &'a str, title: &'a str, document_url: &'a str,
+                        mime_type: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Document(InlineQueryResultDocument {
+            type_name: type_name,
+            id: id,
+            title: title,
+            caption: None,
+            document_url: document_url,
+            mime_type: mime_type,
+            description: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+            thumb_url: None,
+            thumb_width: None,
+            thumb_height: None,
+        })
+    }
+
+    pub fn new_location(type_name: &'a str, id: &'a str, latitude: f64, longitude: f64,
+                        title: &'a str,) -> InlineQueryResult<'a> {
+        InlineQueryResult::Location(InlineQueryResultLocation {
+            type_name: type_name,
+            id: id,
+            latitude: latitude,
+            longitude: longitude,
+            title: title,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+            thumb_url: None,
+            thumb_width: None,
+            thumb_height: None,
+        })
+    }
+
+    pub fn new_venue(type_name: &'a str, id: &'a str, latitude: f64, longitude: f64, title: &'a str,
+                     address: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Venue(InlineQueryResultVenue {
+            type_name: type_name,
+            id: id,
+            latitude: latitude,
+            longitude: longitude,
+            title: title,
+            address: address,
+            foursquare_id: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+            thumb_url: None,
+            thumb_width: None,
+            thumb_height: None,
+        })
+    }
+
+    pub fn new_contact(type_name: &'a str, id: &'a str, phone_number: &'a str,
+                       first_name: &'a str,) -> InlineQueryResult<'a> {
+        InlineQueryResult::Contact(InlineQueryResultContact {
+            type_name: type_name,
+            id: id,
+            phone_number: phone_number,
+            first_name: first_name,
+            last_name: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+            thumb_url: None,
+            thumb_width: None,
+            thumb_height: None,
+        })
+    }
+
+    pub fn new_game(type_name: &'a str, id: &'a str,
+                    game_short_name: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::Game(InlineQueryResultGame {
+            type_name: type_name,
+            id: id,
+            game_short_name: game_short_name,
+            reply_markup: None, // InlineKeyboardMarkup
+        })
+    }
+
+    pub fn new_cached_photo(type_name: &'a str, id: &'a str,
+                            photo_file_id: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::CachedPhoto(InlineQueryResultCachedPhoto {
+            type_name: type_name,
+            id: id,
+            photo_file_id: photo_file_id,
+            title: None,
+            description: None,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_cached_gif(type_name: &'a str, id: &'a str,
+                          gif_file_id: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::CachedGif(InlineQueryResultCachedGif {
+            type_name: type_name,
+            id: id,
+            gif_file_id: gif_file_id,
+            title: None,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_cached_mpeg4_gif(type_name: &'a str, id: &'a str,
+                                mpeg4_file_id: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::CachedMpeg4Gif(InlineQueryResultCachedMpeg4Gif {
+            type_name: type_name,
+            id: id,
+            mpeg4_file_id: mpeg4_file_id,
+            title: None,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_cached_sticker(type_name: &'a str, id: &'a str,
+                              sticker_file_id: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::CachedSticker(InlineQueryResultCachedSticker {
+            type_name: type_name,
+            id: id,
+            sticker_file_id: sticker_file_id,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_cached_document(type_name: &'a str, id: &'a str, title: &'a str,
+                               document_file_id: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::CachedDocument(InlineQueryResultCachedDocument {
+            type_name: type_name,
+            id: id,
+            title: title,
+            document_file_id: document_file_id,
+            description: None,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_cached_video(type_name: &'a str, id: &'a str, video_file_id: &'a str,
+                            title: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::CachedVideo(InlineQueryResultCachedVideo {
+            type_name: type_name,
+            id: id,
+            video_file_id: video_file_id,
+            title: title,
+            description: None,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_cached_voice(type_name: &'a str, id: &'a str, voice_file_id: &'a str,
+                            title: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::CachedVoice(InlineQueryResultCachedVoice {
+            type_name: type_name,
+            id: id,
+            voice_file_id: voice_file_id,
+            title: title,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn new_cached_audio(type_name: &'a str, id: &'a str,
+                            audio_file_id: &'a str) -> InlineQueryResult<'a> {
+        InlineQueryResult::CachedAudio(InlineQueryResultCachedAudio {
+            type_name: type_name,
+            id: id,
+            audio_file_id: audio_file_id,
+            caption: None,
+            reply_markup: None, // InlineKeyboardMarkup
+            input_message_content: None,
+        })
+    }
+
+    pub fn reply_markup(mut self, reply_markup: &'a ReplyMarkup<'a>) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Article(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Photo(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Gif(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Mpeg4Gif(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Video(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Audio(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Voice(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Document(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Location(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Venue(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Contact(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::Game(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::CachedPhoto(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::CachedGif(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::CachedMpeg4Gif(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::CachedSticker(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::CachedDocument(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::CachedVideo(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::CachedVoice(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+
+            InlineQueryResult::CachedAudio(ref mut result) => {
+                result.reply_markup = Some(reply_markup);
+            }
+        }
+        self
+    }
+}
