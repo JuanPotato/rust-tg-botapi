@@ -1067,4 +1067,469 @@ impl<'a> InlineQueryResult<'a> {
         }
         self
     }
+
+    pub fn url(mut self, url: &'a str) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Article(ref mut result) => {
+                result.url = Some(url);
+            }
+
+            _ => { }
+        }
+        self
+    }
+
+    pub fn hide_url(mut self, hide_url: bool) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Article(ref mut result) => {
+                result.hide_url = Some(hide_url);
+            }
+
+            _ => { }
+        }
+        self
+    }
+
+    pub fn description(mut self, description: &'a str) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Article(ref mut result) => {
+                result.description = Some(description);
+            }
+
+            InlineQueryResult::Photo(ref mut result) => {
+                result.description = Some(description);
+            }
+
+            InlineQueryResult::Video(ref mut result) => {
+                result.description = Some(description);
+            }
+
+            InlineQueryResult::Document(ref mut result) => {
+                result.description = Some(description);
+            }
+
+            InlineQueryResult::CachedPhoto(ref mut result) => {
+                result.description = Some(description);
+            }
+
+            InlineQueryResult::CachedDocument(ref mut result) => {
+                result.description = Some(description);
+            }
+
+            InlineQueryResult::CachedVideo(ref mut result) => {
+                result.description = Some(description);
+            }
+
+            _ => { }
+        }
+        self
+    }
+
+    pub fn thumb_url(mut self, thumb_url: &'a str) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Article(ref mut result) => {
+                result.thumb_url = Some(thumb_url)
+            }
+
+            InlineQueryResult::Document(ref mut result) => {
+                result.thumb_url = Some(thumb_url)
+            }
+
+            InlineQueryResult::Location(ref mut result) => {
+                result.thumb_url = Some(thumb_url)
+            }
+
+            InlineQueryResult::Venue(ref mut result) => {
+                result.thumb_url = Some(thumb_url)
+            }
+
+            InlineQueryResult::Contact(ref mut result) => {
+                result.thumb_url = Some(thumb_url)
+            }
+
+            _ => { }
+        }
+        self
+    }
+
+    pub fn thumb_width(mut self, thumb_width: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Article(ref mut result) => {
+                result.thumb_width = Some(thumb_width)
+            }
+
+            InlineQueryResult::Document(ref mut result) => {
+                result.thumb_width = Some(thumb_width)
+            }
+
+            InlineQueryResult::Location(ref mut result) => {
+                result.thumb_width = Some(thumb_width)
+            }
+
+            InlineQueryResult::Venue(ref mut result) => {
+                result.thumb_width = Some(thumb_width)
+            }
+
+            InlineQueryResult::Contact(ref mut result) => {
+                result.thumb_width = Some(thumb_width)
+            }
+
+            _ => { }
+        }
+        self
+    }
+
+    pub fn thumb_height(mut self, thumb_height: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Article(ref mut result) => {
+                result.thumb_height = Some(thumb_height)
+            }
+
+            InlineQueryResult::Document(ref mut result) => {
+                result.thumb_height = Some(thumb_height)
+            }
+
+            InlineQueryResult::Location(ref mut result) => {
+                result.thumb_height = Some(thumb_height)
+            }
+
+            InlineQueryResult::Venue(ref mut result) => {
+                result.thumb_height = Some(thumb_height)
+            }
+
+            InlineQueryResult::Contact(ref mut result) => {
+                result.thumb_height = Some(thumb_height)
+            }
+
+            _ => { }
+        }
+        self
+    }
+
+    pub fn photo_width(mut self, photo_width: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Photo(ref mut result) => {
+                result.photo_width = Some(photo_width);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn photo_height(mut self, photo_height: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Photo(ref mut result) => {
+                result.photo_height = Some(photo_height);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn gif_width(mut self, gif_width: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Gif(ref mut result) => {
+                result.gif_width = Some(gif_width);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn gif_height(mut self, gif_height: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Gif(ref mut result) => {
+                result.gif_height = Some(gif_height);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn mpeg4_width(mut self, mpeg4_width: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Mpeg4Gif(ref mut result) => {
+                result.mpeg4_width = Some(mpeg4_width);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn mpeg4_height(mut self, mpeg4_height: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Mpeg4Gif(ref mut result) => {
+                result.mpeg4_height = Some(mpeg4_height);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn video_width(mut self, video_width: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Video(ref mut result) => {
+                result.video_width = Some(video_width);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn video_height(mut self, video_height: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Video(ref mut result) => {
+                result.video_height = Some(video_height);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn video_duration(mut self, video_duration: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Video(ref mut result) => {
+                result.video_duration = Some(video_duration);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn audio_duration(mut self, audio_duration: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Audio(ref mut result) => {
+                result.audio_duration = Some(audio_duration);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn performer(mut self, performer: &'a str) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Audio(ref mut result) => {
+                result.performer = Some(performer);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn voice_duration(mut self, voice_duration: i64) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Voice(ref mut result) => {
+                result.voice_duration = Some(voice_duration);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn title(mut self, title: &'a str) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Photo(ref mut result) => {
+                result.title = Some(title);
+            }
+
+            InlineQueryResult::Gif(ref mut result) => {
+                result.title = Some(title);
+            }
+
+            InlineQueryResult::Mpeg4Gif(ref mut result) => {
+                result.title = Some(title);
+            }
+
+            InlineQueryResult::CachedPhoto(ref mut result) => {
+                result.title = Some(title);
+            }
+
+            InlineQueryResult::CachedGif(ref mut result) => {
+                result.title = Some(title);
+            }
+
+            InlineQueryResult::CachedMpeg4Gif(ref mut result) => {
+                result.title = Some(title);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn foursquare_id(mut self, foursquare_id: &'a str) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Venue(ref mut result) => {
+                result.foursquare_id = Some(foursquare_id);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn last_name(mut self, last_name: &'a str) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Contact(ref mut result) => {
+                result.last_name = Some(last_name);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn caption(mut self, caption: &'a str) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Photo(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::Gif(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::Mpeg4Gif(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::Video(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::Audio(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::Voice(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::Document(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::CachedPhoto(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::CachedGif(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::CachedMpeg4Gif(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::CachedDocument(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::CachedVideo(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::CachedVoice(ref mut result) => {
+                result.caption = Some(caption);
+            }
+
+            InlineQueryResult::CachedAudio(ref mut result) => {
+                result.caption = Some(caption);
+            }
+            
+            _ => { }
+        }
+        self
+    }
+
+    pub fn input_message_content(mut self, input_message_content: &'a types::InputMessageContent) -> InlineQueryResult<'a> {
+        match self {
+            InlineQueryResult::Photo(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Gif(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Mpeg4Gif(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Video(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Audio(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Voice(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Document(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Location(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Venue(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::Contact(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::CachedPhoto(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::CachedGif(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::CachedMpeg4Gif(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::CachedSticker(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::CachedDocument(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::CachedVideo(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::CachedVoice(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+
+            InlineQueryResult::CachedAudio(ref mut result) => {
+                result.input_message_content = Some(input_message_content);
+            }
+            
+            _ => { }
+        }
+        self
+    }
 }
