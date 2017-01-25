@@ -446,7 +446,7 @@ impl<'a> EditMessageReplyMarkup<'a> {
 }
 
 impl<'a> AnswerInlineQuery<'a> {
-    pub fn new(inline_query_id: &'a str, results: &'a [&'a types::InlineQueryResult]) -> AnswerInlineQuery<'a> {
+    pub fn new(inline_query_id: &'a str, results: &'a [types::InlineQueryResult]) -> AnswerInlineQuery<'a> {
         AnswerInlineQuery {
             inline_query_id: inline_query_id,
             results: results,

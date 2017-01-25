@@ -119,6 +119,19 @@ fn main() {
                     }
                 }
             }
+
+            if let Some(inline_query) = update.inline_query {
+                let lenny_txt = format!("{} {}", inline_query.query, "( ͡° ͜ʖ ͡°)");
+                let shrug_txt = format!("{} {}", inline_query.query, "¯\\_(ツ)_/¯");
+                let lenny = types::InputMessageContent::new_text(&lenny_txt);
+                let shrug = types::InputMessageContent::new_text(&shrug_txt);
+                let results = &[
+                    types::InlineQueryResult::new_article("article", "lenny", &lenny_txt, &lenny),
+                    types::InlineQueryResult::new_article("article", "shrug", &shrug_txt, &shrug)
+                ];
+
+                bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id, results));
+            }
         }
     }
     update_args.limit = Some(0);

@@ -649,7 +649,7 @@ impl <'a> Serialize for EditMessageReplyMarkup<'a> {
 #[derive(Debug, Serialize)]
 pub struct AnswerInlineQuery<'a> {
     pub inline_query_id: &'a str,
-    pub results: &'a [&'a types::InlineQueryResult<'a>],
+    pub results: &'a [types::InlineQueryResult<'a>],
     
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_time: Option<i64>,
