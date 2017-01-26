@@ -687,10 +687,10 @@ impl<'a> InputMessageContent<'a> {
 }
 
 impl<'a> InlineQueryResult<'a> {
-    pub fn new_article(type_name: &'a str, id: &'a str, title: &'a str,
+    pub fn new_article(id: &'a str, title: &'a str,
                        input_message_content: &'a InputMessageContent<'a>) -> InlineQueryResult<'a> {
         InlineQueryResult::Article(InlineQueryResultArticle {
-            type_name: type_name,
+            type_name: "article",
             id: id,
             title: title,
             input_message_content: input_message_content,
@@ -704,10 +704,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_photo(type_name: &'a str, id: &'a str, photo_url: &'a str,
+    pub fn new_photo(id: &'a str, photo_url: &'a str,
                      thumb_url: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Photo(InlineQueryResultPhoto {
-            type_name: type_name,
+            type_name: "photo",
             id: id,
             photo_url: photo_url,
             thumb_url: thumb_url,
@@ -721,10 +721,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_gif(type_name: &'a str, id: &'a str, gif_url: &'a str,
+    pub fn new_gif(id: &'a str, gif_url: &'a str,
                    thumb_url: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Gif(InlineQueryResultGif {
-            type_name: type_name,
+            type_name: "gif",
             id: id,
             gif_url: gif_url,
             gif_width: None,
@@ -737,10 +737,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_mpeg4_gif(type_name: &'a str, id: &'a str, mpeg4_url: &'a str,
+    pub fn new_mpeg4_gif(id: &'a str, mpeg4_url: &'a str,
                          thumb_url: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Mpeg4Gif(InlineQueryResultMpeg4Gif {
-            type_name: type_name,
+            type_name: "mpeg4_gif",
             id: id,
             mpeg4_url: mpeg4_url,
             mpeg4_width: None,
@@ -753,10 +753,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_video(type_name: &'a str, id: &'a str, video_url: &'a str, mime_type: &'a str,
+    pub fn new_video(id: &'a str, video_url: &'a str, mime_type: &'a str,
                      thumb_url: &'a str, title: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Video(InlineQueryResultVideo {
-            type_name: type_name,
+            type_name: "video",
             id: id,
             video_url: video_url,
             mime_type: mime_type,
@@ -772,10 +772,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_audio(type_name: &'a str, id: &'a str, audio_url: &'a str,
+    pub fn new_audio(id: &'a str, audio_url: &'a str,
                      title: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Audio(InlineQueryResultAudio {
-            type_name: type_name,
+            type_name: "audio",
             id: id,
             audio_url: audio_url,
             title: title,
@@ -787,10 +787,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_voice(type_name: &'a str, id: &'a str, voice_url: &'a str,
+    pub fn new_voice(id: &'a str, voice_url: &'a str,
                      title: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Voice(InlineQueryResultVoice {
-            type_name: type_name,
+            type_name: "voice",
             id: id,
             voice_url: voice_url,
             title: title,
@@ -801,10 +801,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_document(type_name: &'a str, id: &'a str, title: &'a str, document_url: &'a str,
+    pub fn new_document(id: &'a str, title: &'a str, document_url: &'a str,
                         mime_type: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Document(InlineQueryResultDocument {
-            type_name: type_name,
+            type_name: "document",
             id: id,
             title: title,
             caption: None,
@@ -819,10 +819,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_location(type_name: &'a str, id: &'a str, latitude: f64, longitude: f64,
+    pub fn new_location(id: &'a str, latitude: f64, longitude: f64,
                         title: &'a str,) -> InlineQueryResult<'a> {
         InlineQueryResult::Location(InlineQueryResultLocation {
-            type_name: type_name,
+            type_name: "location",
             id: id,
             latitude: latitude,
             longitude: longitude,
@@ -835,10 +835,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_venue(type_name: &'a str, id: &'a str, latitude: f64, longitude: f64, title: &'a str,
+    pub fn new_venue(id: &'a str, latitude: f64, longitude: f64, title: &'a str,
                      address: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Venue(InlineQueryResultVenue {
-            type_name: type_name,
+            type_name: "venue",
             id: id,
             latitude: latitude,
             longitude: longitude,
@@ -853,10 +853,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_contact(type_name: &'a str, id: &'a str, phone_number: &'a str,
+    pub fn new_contact(id: &'a str, phone_number: &'a str,
                        first_name: &'a str,) -> InlineQueryResult<'a> {
         InlineQueryResult::Contact(InlineQueryResultContact {
-            type_name: type_name,
+            type_name: "contact",
             id: id,
             phone_number: phone_number,
             first_name: first_name,
@@ -869,20 +869,18 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_game(type_name: &'a str, id: &'a str,
-                    game_short_name: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_game(id: &'a str, game_short_name: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Game(InlineQueryResultGame {
-            type_name: type_name,
+            type_name: "game",
             id: id,
             game_short_name: game_short_name,
             reply_markup: None, // InlineKeyboardMarkup
         })
     }
 
-    pub fn new_cached_photo(type_name: &'a str, id: &'a str,
-                            photo_file_id: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_cached_photo(id: &'a str, photo_file_id: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::CachedPhoto(InlineQueryResultCachedPhoto {
-            type_name: type_name,
+            type_name: "photo",
             id: id,
             photo_file_id: photo_file_id,
             title: None,
@@ -893,10 +891,9 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_gif(type_name: &'a str, id: &'a str,
-                          gif_file_id: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_cached_gif(id: &'a str, gif_file_id: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::CachedGif(InlineQueryResultCachedGif {
-            type_name: type_name,
+            type_name: "gif",
             id: id,
             gif_file_id: gif_file_id,
             title: None,
@@ -906,10 +903,9 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_mpeg4_gif(type_name: &'a str, id: &'a str,
-                                mpeg4_file_id: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_cached_mpeg4_gif(id: &'a str, mpeg4_file_id: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::CachedMpeg4Gif(InlineQueryResultCachedMpeg4Gif {
-            type_name: type_name,
+            type_name: "mpeg4_gif",
             id: id,
             mpeg4_file_id: mpeg4_file_id,
             title: None,
@@ -919,10 +915,9 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_sticker(type_name: &'a str, id: &'a str,
-                              sticker_file_id: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_cached_sticker(id: &'a str, sticker_file_id: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::CachedSticker(InlineQueryResultCachedSticker {
-            type_name: type_name,
+            type_name: "sticker",
             id: id,
             sticker_file_id: sticker_file_id,
             reply_markup: None, // InlineKeyboardMarkup
@@ -930,10 +925,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_document(type_name: &'a str, id: &'a str, title: &'a str,
+    pub fn new_cached_document(id: &'a str, title: &'a str,
                                document_file_id: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::CachedDocument(InlineQueryResultCachedDocument {
-            type_name: type_name,
+            type_name: "document",
             id: id,
             title: title,
             document_file_id: document_file_id,
@@ -944,10 +939,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_video(type_name: &'a str, id: &'a str, video_file_id: &'a str,
+    pub fn new_cached_video(id: &'a str, video_file_id: &'a str,
                             title: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::CachedVideo(InlineQueryResultCachedVideo {
-            type_name: type_name,
+            type_name: "video",
             id: id,
             video_file_id: video_file_id,
             title: title,
@@ -958,10 +953,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_voice(type_name: &'a str, id: &'a str, voice_file_id: &'a str,
+    pub fn new_cached_voice(id: &'a str, voice_file_id: &'a str,
                             title: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::CachedVoice(InlineQueryResultCachedVoice {
-            type_name: type_name,
+            type_name: "voice",
             id: id,
             voice_file_id: voice_file_id,
             title: title,
@@ -971,10 +966,9 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_audio(type_name: &'a str, id: &'a str,
-                            audio_file_id: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_cached_audio(id: &'a str, audio_file_id: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::CachedAudio(InlineQueryResultCachedAudio {
-            type_name: type_name,
+            type_name: "audio",
             id: id,
             audio_file_id: audio_file_id,
             caption: None,

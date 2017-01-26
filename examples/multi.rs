@@ -90,22 +90,44 @@ fn main() {
                                             .reply_to_message_id(msg_id));
                             });
                         }
-                        "/inline" => {
+                        "/button" => {
                             let keyboard = [
-                                    &[
-                                        types::KeyboardButton::new("Yes"),
-                                        types::KeyboardButton::new("No"),
-                                    ][..],
-                                    &[
-                                        types::KeyboardButton::new("Eh"),
-                                        types::KeyboardButton::new("He"),
-                                    ][..]
-                                ]; // Find prettier way to do this :\
+                                &[
+                                    types::KeyboardButton::new("Yes"),
+                                    types::KeyboardButton::new("No"),
+                                ][..],
+                                &[
+                                    types::KeyboardButton::new("Eh"),
+                                    types::KeyboardButton::new("He"),
+                                ][..]
+                            ]; // Find prettier way to do this :\
                               
                             let _ = bot.send_message(&args::SendMessage
                                 ::new("Yes or No?")
                                 .chat_id(message.chat.id)
                                 .reply_markup(&types::ReplyMarkup::new_reply_keyboard(&keyboard[..]))
+                            );
+                        }
+                        "/inline" => {
+                            let keyboard = [
+                                &[
+                                    types::InlineKeyboardButton::new("Some")
+                                        .url("https://www.youtube.com/watch?v=L_jWHffIx5E"),
+                                    types::InlineKeyboardButton::new("Body")
+                                        .url("https://www.youtube.com/watch?v=rlYys58hsCU"),
+                                ][..],
+                                &[
+                                    types::InlineKeyboardButton::new("Once")
+                                        .url("https://www.youtube.com/watch?v=Q-MizNywQ94"),
+                                    types::InlineKeyboardButton::new("Told")
+                                        .url("https://www.youtube.com/watch?v=J48dqyz_C6s"),
+                                ][..]
+                            ];
+                              
+                            let _ = bot.send_message(&args::SendMessage
+                                ::new("Me")
+                                .chat_id(message.chat.id)
+                                .reply_markup(&types::ReplyMarkup::new_inline_keyboard(&keyboard[..]))
                             );
                         }
                         "/clear" | "No" => {                              
@@ -126,8 +148,8 @@ fn main() {
                 let lenny = types::InputMessageContent::new_text(&lenny_txt);
                 let shrug = types::InputMessageContent::new_text(&shrug_txt);
                 let results = &[
-                    types::InlineQueryResult::new_article("article", "lenny", &lenny_txt, &lenny),
-                    types::InlineQueryResult::new_article("article", "shrug", &shrug_txt, &shrug)
+                    types::InlineQueryResult::new_article("lenny", &lenny_txt, &lenny),
+                    types::InlineQueryResult::new_article("shrug", &shrug_txt, &shrug)
                 ];
 
                 bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id, results));
