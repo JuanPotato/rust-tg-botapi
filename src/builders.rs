@@ -1205,7 +1205,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Photo(ref mut result) => {
                 result.photo_width = Some(photo_width);
             }
-            
+
             _ => { }
         }
         self
@@ -1216,7 +1216,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Photo(ref mut result) => {
                 result.photo_height = Some(photo_height);
             }
-            
+
             _ => { }
         }
         self
@@ -1227,7 +1227,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Gif(ref mut result) => {
                 result.gif_width = Some(gif_width);
             }
-            
+
             _ => { }
         }
         self
@@ -1238,7 +1238,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Gif(ref mut result) => {
                 result.gif_height = Some(gif_height);
             }
-            
+
             _ => { }
         }
         self
@@ -1249,7 +1249,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Mpeg4Gif(ref mut result) => {
                 result.mpeg4_width = Some(mpeg4_width);
             }
-            
+
             _ => { }
         }
         self
@@ -1260,7 +1260,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Mpeg4Gif(ref mut result) => {
                 result.mpeg4_height = Some(mpeg4_height);
             }
-            
+
             _ => { }
         }
         self
@@ -1271,7 +1271,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Video(ref mut result) => {
                 result.video_width = Some(video_width);
             }
-            
+
             _ => { }
         }
         self
@@ -1282,7 +1282,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Video(ref mut result) => {
                 result.video_height = Some(video_height);
             }
-            
+
             _ => { }
         }
         self
@@ -1293,7 +1293,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Video(ref mut result) => {
                 result.video_duration = Some(video_duration);
             }
-            
+
             _ => { }
         }
         self
@@ -1304,7 +1304,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Audio(ref mut result) => {
                 result.audio_duration = Some(audio_duration);
             }
-            
+
             _ => { }
         }
         self
@@ -1315,7 +1315,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Audio(ref mut result) => {
                 result.performer = Some(performer);
             }
-            
+
             _ => { }
         }
         self
@@ -1326,7 +1326,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Voice(ref mut result) => {
                 result.voice_duration = Some(voice_duration);
             }
-            
+
             _ => { }
         }
         self
@@ -1357,7 +1357,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::CachedMpeg4Gif(ref mut result) => {
                 result.title = Some(title);
             }
-            
+
             _ => { }
         }
         self
@@ -1368,7 +1368,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Venue(ref mut result) => {
                 result.foursquare_id = Some(foursquare_id);
             }
-            
+
             _ => { }
         }
         self
@@ -1379,7 +1379,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::Contact(ref mut result) => {
                 result.last_name = Some(last_name);
             }
-            
+
             _ => { }
         }
         self
@@ -1442,7 +1442,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::CachedAudio(ref mut result) => {
                 result.caption = Some(caption);
             }
-            
+
             _ => { }
         }
         self
@@ -1521,7 +1521,7 @@ impl<'a> InlineQueryResult<'a> {
             InlineQueryResult::CachedAudio(ref mut result) => {
                 result.input_message_content = Some(input_message_content);
             }
-            
+
             _ => { }
         }
         self

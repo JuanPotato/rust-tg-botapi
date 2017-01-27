@@ -18,7 +18,7 @@ macro_rules! option_serialize_struct_elt {
     }};
 }
 
-    
+
 #[derive(Debug, Serialize)]
 pub struct GetUpdates<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,13 +37,13 @@ pub struct GetUpdates<'a> {
 #[derive(Debug, Serialize)]
 pub struct SetWebhook<'a> {
     pub url: &'a str,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub certificate: Option<&'a str>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_connections: Option<i64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_updates: Option<&'a [&'a str]>,
 }
@@ -337,10 +337,10 @@ impl <'a> Serialize for SendContact<'a> {
 #[derive(Debug, Serialize)]
 pub struct GetUserProfilePhotos {
     pub user_id: i64,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
 }
@@ -523,16 +523,16 @@ impl <'a> Serialize for GetChatMember<'a> {
 #[derive(Debug, Serialize)]
 pub struct AnswerCallbackQuery<'a> {
     pub callback_query_id: &'a str,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub text: Option<&'a str>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub show_alert: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_time: Option<i64>,
 }
@@ -650,19 +650,19 @@ impl <'a> Serialize for EditMessageReplyMarkup<'a> {
 pub struct AnswerInlineQuery<'a> {
     pub inline_query_id: &'a str,
     pub results: &'a [types::InlineQueryResult<'a>],
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_time: Option<i64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_personal: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_offset: Option<&'a str>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub switch_pm_text: Option<&'a str>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub switch_pm_parameter: Option<&'a str>,
 }
@@ -671,13 +671,13 @@ pub struct AnswerInlineQuery<'a> {
 pub struct SendGame<'a> {
     pub chat_id: i64,
     pub game_short_name: &'a str,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<&'a types::ReplyMarkup<'a>>, // InlineKeyboardMarkup
 }
@@ -686,19 +686,19 @@ pub struct SendGame<'a> {
 pub struct SetGameScore<'a> {
     pub user_id: i64,
     pub score: i64,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_edit_message: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<&'a str>,
 }
@@ -706,13 +706,13 @@ pub struct SetGameScore<'a> {
 #[derive(Debug, Serialize)]
 pub struct GetGameHighScores<'a> {
     pub user_id: i64,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<&'a str>,
 }

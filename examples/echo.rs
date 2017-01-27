@@ -12,7 +12,7 @@ fn main() {
     let bot_arc = Arc::new(BotApi::new(token));
 
     let mut update_args = args::GetUpdates::new().timeout(600).offset(0);
-            
+
     'update_loop: loop {
         let updates = bot_arc.get_updates(&update_args).unwrap();
 

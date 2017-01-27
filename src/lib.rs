@@ -61,12 +61,14 @@ impl error::Error for BotError {
     }
 }
 
-fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>) -> Result<Value, BotError> {
+fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>, debug: bool) -> Result<Value, BotError> {
     match respon_result {
         Ok(mut response) => {
             let mut body = String::new();
             response.read_to_string(&mut body).unwrap();
-            println!("{}", body);
+            if debug {
+                println!("{}", body);
+            }
             let result: ApiResult = serde_json::from_str(&body).unwrap();
             if let Some(val) = result.result {
                 Ok(val)
@@ -89,10 +91,11 @@ fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>) -
 pub struct BotApi {
     base_url: Url,
     client: Client,
+    debug: bool,
 }
 
 impl BotApi {
-    pub fn new(bot_token: &str) -> BotApi {
+    fn new_bot(bot_token: &str, debug: bool) -> BotApi {
         let url = format!("https://api.telegram.org/bot{}/", bot_token);
         // TODO validate this token
 
@@ -102,13 +105,21 @@ impl BotApi {
         BotApi {
             base_url: url.parse().unwrap(),
             client: c,
+            debug: debug,
         }
+    }
+
+    pub fn new(bot_token: &str) -> BotApi {
+        BotApi::new_bot(bot_token, false)
+    }
+
+    pub fn new_debug(bot_token: &str) -> BotApi {
+        BotApi::new_bot(bot_token, true)
     }
 
     pub fn get_me(&self) -> Result<User, BotError> {
         let url = self.base_url.join("getMe").unwrap();
-        let res = parse_request(self.client.get(url).send());
-        match res {
+        match parse_request(self.client.get(url).send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -133,7 +144,7 @@ impl BotApi {
                              .header(hyper::header::ContentType::json())
                              .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -147,12 +158,12 @@ impl BotApi {
                              .header(hyper::header::ContentType::json())
                              .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
     }
-    
+
     pub fn forward_message(&self, params: &args::ForwardMessage) -> Result<Message, BotError> {
         let url = self.base_url.join("forwardMessage").unwrap();
         let body = serde_json::to_string(params).unwrap();
@@ -161,7 +172,7 @@ impl BotApi {
                              .header(hyper::header::ContentType::json())
                              .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -200,7 +211,7 @@ impl BotApi {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
-        match parse_request(multi.send()) {
+        match parse_request(multi.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -251,7 +262,7 @@ impl BotApi {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
-        match parse_request(multi.send()) {
+        match parse_request(multi.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -290,7 +301,7 @@ impl BotApi {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
-        match parse_request(multi.send()) {
+        match parse_request(multi.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -325,7 +336,7 @@ impl BotApi {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
-        match parse_request(multi.send()) {
+        match parse_request(multi.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -376,7 +387,7 @@ impl BotApi {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
-        match parse_request(multi.send()) {
+        match parse_request(multi.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -419,7 +430,7 @@ impl BotApi {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
-        match parse_request(multi.send()) {
+        match parse_request(multi.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -433,7 +444,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -447,7 +458,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -461,7 +472,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -475,7 +486,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -489,7 +500,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -503,7 +514,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -517,7 +528,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -531,13 +542,13 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
     }
 
-    pub fn get_chat_members(&self, params: &args::GetChatMember) -> Result<ChatMember, BotError> {
+    pub fn get_chat_member(&self, params: &args::GetChatMember) -> Result<ChatMember, BotError> {
         let url = self.base_url.join("getChatMember").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
@@ -545,7 +556,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -559,7 +570,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -573,7 +584,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => {
                 match val {
                     Value::Bool(b) => Ok(MessageOrBool::B(b)),
@@ -597,7 +608,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => {
                 match val {
                     Value::Bool(b) => Ok(MessageOrBool::B(b)),
@@ -621,7 +632,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => {
                 match val {
                     Value::Bool(b) => Ok(MessageOrBool::B(b)),
@@ -645,7 +656,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -659,7 +670,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
@@ -673,7 +684,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => {
                 match val {
                     Value::Bool(b) => Ok(MessageOrBool::B(b)),
@@ -697,7 +708,7 @@ impl BotApi {
                          .header(hyper::header::ContentType::json())
                          .body(&body);
 
-        match parse_request(res.send()) {
+        match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
             Err(e) => Err(e),
         }
