@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate serde_derive;
+
 extern crate hyper;
 extern crate multipart;
 extern crate serde_json;
@@ -18,14 +21,8 @@ use std::io::Read;
 use std::{fmt, error};
 use std::time::Duration;
 
-pub mod types {
-    include!(concat!(env!("OUT_DIR"), "/types.rs"));
-}
-
-pub mod args {
-    include!(concat!(env!("OUT_DIR"), "/args.rs"));
-}
-
+pub mod types;
+pub mod args;
 pub mod builders;
 
 use types::*;
