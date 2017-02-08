@@ -1,9 +1,15 @@
 #[macro_use]
-extern crate serde_derive;
-
 extern crate hyper;
 extern crate multipart;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
 extern crate serde_json;
+
+use std::result::Result;
+use std::io::Read;
+use std::{fmt, error};
+use std::time::Duration;
 
 use hyper::net::Streaming;
 use hyper::method::Method;
@@ -16,14 +22,9 @@ use multipart::client::Multipart;
 
 use serde_json::value::Value;
 
-use std::result::Result;
-use std::io::Read;
-use std::{fmt, error};
-use std::time::Duration;
-
 pub mod types;
 pub mod args;
-pub mod builders;
+// pub mod builders;
 
 use types::*;
 
@@ -31,20 +32,18 @@ use types::*;
 
 #[derive(Debug)]
 pub enum BotError {
-    Http (hyper::error::Error),
+    Http(hyper::error::Error),
     Api {
         error_code: i64,
         description: String,
-        parameters: Option<ResponseParameters>
-    }
+        parameters: Option<ResponseParameters>,
+    },
 }
 
 impl fmt::Display for BotError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            &BotError::Http(ref e) => {
-                write!(f, "{}", e)
-            },
+            &BotError::Http(ref e) => write!(f, "{}", e),
             &BotError::Api { error_code, ref description, parameters: _ } => {
                 write!(f, "Error {0}: {1}", error_code, description)
             }
@@ -58,7 +57,9 @@ impl error::Error for BotError {
     }
 }
 
-fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>, debug: bool) -> Result<Value, BotError> {
+fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>,
+                 debug: bool)
+                 -> Result<Value, BotError> {
     match respon_result {
         Ok(mut response) => {
             let mut body = String::new();
@@ -70,16 +71,14 @@ fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>, d
             if let Some(val) = result.result {
                 Ok(val)
             } else {
-                Err(BotError::Api{
+                Err(BotError::Api {
                     error_code: result.error_code.unwrap(),
                     description: result.description.unwrap(),
-                    parameters: result.parameters
+                    parameters: result.parameters,
                 })
             }
-        },
-        Err(e) => {
-            Err(BotError::Http(e))
         }
+        Err(e) => Err(BotError::Http(e)),
     }
 }
 
@@ -137,9 +136,10 @@ impl BotApi {
 
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                             .header(hyper::header::ContentType::json())
-                             .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -151,9 +151,10 @@ impl BotApi {
         let url = self.base_url.join("sendMessage").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                             .header(hyper::header::ContentType::json())
-                             .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -165,9 +166,10 @@ impl BotApi {
         let url = self.base_url.join("forwardMessage").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                             .header(hyper::header::ContentType::json())
-                             .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -180,11 +182,10 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        match params.chat_id {
+            args::ChatId::Id(id) => multi.write_text("chat_id", id.to_string()).unwrap(),
+            args::ChatId::Username(ref username) => multi.write_text("chat_id", username).unwrap(),
+        };
 
         if let Some(photo) = params.photo {
             multi.write_file("photo", photo).unwrap();
@@ -205,7 +206,9 @@ impl BotApi {
         }
 
         if let Some(reply_markup) = params.reply_markup {
-            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+            value_to_multi(&mut multi,
+                           "reply_markup",
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -219,11 +222,10 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        match params.chat_id {
+            args::ChatId::Id(id) => multi.write_text("chat_id", id.to_string()).unwrap(),
+            args::ChatId::Username(ref username) => multi.write_text("chat_id", username).unwrap(),
+        };
 
         if let Some(audio) = params.audio {
             multi.write_file("audio", audio).unwrap();
@@ -256,7 +258,9 @@ impl BotApi {
         }
 
         if let Some(reply_markup) = params.reply_markup {
-            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+            value_to_multi(&mut multi,
+                           "reply_markup",
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -270,11 +274,10 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        match params.chat_id {
+            args::ChatId::Id(id) => multi.write_text("chat_id", id.to_string()).unwrap(),
+            args::ChatId::Username(ref username) => multi.write_text("chat_id", username).unwrap(),
+        };
 
         if let Some(document) = params.document {
             multi.write_file("document", document).unwrap();
@@ -295,7 +298,9 @@ impl BotApi {
         }
 
         if let Some(reply_markup) = params.reply_markup {
-            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+            value_to_multi(&mut multi,
+                           "reply_markup",
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -309,11 +314,10 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        match params.chat_id {
+            args::ChatId::Id(id) => multi.write_text("chat_id", id.to_string()).unwrap(),
+            args::ChatId::Username(ref username) => multi.write_text("chat_id", username).unwrap(),
+        };
 
         if let Some(sticker) = params.sticker {
             multi.write_file("sticker", sticker).unwrap();
@@ -330,7 +334,9 @@ impl BotApi {
         }
 
         if let Some(reply_markup) = params.reply_markup {
-            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+            value_to_multi(&mut multi,
+                           "reply_markup",
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -344,11 +350,10 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        match params.chat_id {
+            args::ChatId::Id(id) => multi.write_text("chat_id", id.to_string()).unwrap(),
+            args::ChatId::Username(ref username) => multi.write_text("chat_id", username).unwrap(),
+        };
 
         if let Some(video) = params.video {
             multi.write_file("video", video).unwrap();
@@ -381,7 +386,9 @@ impl BotApi {
         }
 
         if let Some(reply_markup) = params.reply_markup {
-            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+            value_to_multi(&mut multi,
+                           "reply_markup",
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -395,11 +402,10 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        match params.chat_id {
+            args::ChatId::Id(id) => multi.write_text("chat_id", id.to_string()).unwrap(),
+            args::ChatId::Username(ref username) => multi.write_text("chat_id", username).unwrap(),
+        };
 
         if let Some(voice) = params.voice {
             multi.write_file("voice", voice).unwrap();
@@ -424,7 +430,9 @@ impl BotApi {
         }
 
         if let Some(reply_markup) = params.reply_markup {
-            value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
+            value_to_multi(&mut multi,
+                           "reply_markup",
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -433,13 +441,16 @@ impl BotApi {
         }
     }
 
-    pub fn get_user_profile_photos(&self, params: &args::GetUserProfilePhotos) -> Result<UserProfilePhotos, BotError> {
+    pub fn get_user_profile_photos(&self,
+                                   params: &args::GetUserProfilePhotos)
+                                   -> Result<UserProfilePhotos, BotError> {
         let url = self.base_url.join("getUserProfilePhotos").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -451,9 +462,10 @@ impl BotApi {
         let url = self.base_url.join("getFile").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -465,9 +477,10 @@ impl BotApi {
         let url = self.base_url.join("kickChatMember").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -479,9 +492,10 @@ impl BotApi {
         let url = self.base_url.join("leaveChat").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -493,9 +507,10 @@ impl BotApi {
         let url = self.base_url.join("unbanChatMember").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -507,9 +522,10 @@ impl BotApi {
         let url = self.base_url.join("getChat").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -517,13 +533,16 @@ impl BotApi {
         }
     }
 
-    pub fn get_chat_administrators(&self, params: &args::GetChatAdministrators) -> Result<Vec<ChatMember>, BotError> {
+    pub fn get_chat_administrators(&self,
+                                   params: &args::GetChatAdministrators)
+                                   -> Result<Vec<ChatMember>, BotError> {
         let url = self.base_url.join("getChatAdministrators").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -531,13 +550,16 @@ impl BotApi {
         }
     }
 
-    pub fn get_chat_members_count(&self, params: &args::GetChatMembersCount) -> Result<i64, BotError> {
+    pub fn get_chat_members_count(&self,
+                                  params: &args::GetChatMembersCount)
+                                  -> Result<i64, BotError> {
         let url = self.base_url.join("getChatMembersCount").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -549,9 +571,10 @@ impl BotApi {
         let url = self.base_url.join("getChatMember").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -559,13 +582,16 @@ impl BotApi {
         }
     }
 
-    pub fn answer_callback_query(&self, params: &args::AnswerCallbackQuery) -> Result<bool, BotError> {
+    pub fn answer_callback_query(&self,
+                                 params: &args::AnswerCallbackQuery)
+                                 -> Result<bool, BotError> {
         let url = self.base_url.join("answerCallbackQuery").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -573,74 +599,77 @@ impl BotApi {
         }
     }
 
-    pub fn edit_message_text(&self, params: &args::EditMessageText) -> Result<MessageOrBool, BotError> {
+    pub fn edit_message_text(&self,
+                             params: &args::EditMessageText)
+                             -> Result<MessageOrBool, BotError> {
         let url = self.base_url.join("editMessageText").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => {
                 match val {
                     Value::Bool(b) => Ok(MessageOrBool::B(b)),
                     Value::Object(_) => {
-                        Ok(MessageOrBool::M(
-                            serde_json::value::from_value(val).unwrap()
-                        ))
-                    },
-                    _ => Ok(MessageOrBool::B(false))
+                        Ok(MessageOrBool::M(serde_json::value::from_value(val).unwrap()))
+                    }
+                    _ => Ok(MessageOrBool::B(false)),
                 }
-            },
+            }
             Err(e) => Err(e),
         }
     }
 
-    pub fn edit_message_caption(&self, params: &args::EditMessageCaption) -> Result<MessageOrBool, BotError> {
+    pub fn edit_message_caption(&self,
+                                params: &args::EditMessageCaption)
+                                -> Result<MessageOrBool, BotError> {
         let url = self.base_url.join("editMessageCaption").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => {
                 match val {
                     Value::Bool(b) => Ok(MessageOrBool::B(b)),
                     Value::Object(_) => {
-                        Ok(MessageOrBool::M(
-                            serde_json::value::from_value(val).unwrap()
-                        ))
-                    },
-                    _ => Ok(MessageOrBool::B(false))
+                        Ok(MessageOrBool::M(serde_json::value::from_value(val).unwrap()))
+                    }
+                    _ => Ok(MessageOrBool::B(false)),
                 }
-            },
+            }
             Err(e) => Err(e),
         }
     }
 
-    pub fn edit_message_reply_markup(&self, params: &args::EditMessageReplyMarkup) -> Result<MessageOrBool, BotError> {
+    pub fn edit_message_reply_markup(&self,
+                                     params: &args::EditMessageReplyMarkup)
+                                     -> Result<MessageOrBool, BotError> {
         let url = self.base_url.join("editMessageReplyMarkup").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => {
                 match val {
                     Value::Bool(b) => Ok(MessageOrBool::B(b)),
                     Value::Object(_) => {
-                        Ok(MessageOrBool::M(
-                            serde_json::value::from_value(val).unwrap()
-                        ))
-                    },
-                    _ => Ok(MessageOrBool::B(false))
+                        Ok(MessageOrBool::M(serde_json::value::from_value(val).unwrap()))
+                    }
+                    _ => Ok(MessageOrBool::B(false)),
                 }
-            },
+            }
             Err(e) => Err(e),
         }
     }
@@ -649,9 +678,10 @@ impl BotApi {
         let url = self.base_url.join("answerInlineQuery").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -663,9 +693,10 @@ impl BotApi {
         let url = self.base_url.join("sendGame").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -677,33 +708,35 @@ impl BotApi {
         let url = self.base_url.join("setGameScore").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => {
                 match val {
                     Value::Bool(b) => Ok(MessageOrBool::B(b)),
                     Value::Object(_) => {
-                        Ok(MessageOrBool::M(
-                            serde_json::value::from_value(val).unwrap()
-                        ))
-                    },
-                    _ => Ok(MessageOrBool::B(false))
+                        Ok(MessageOrBool::M(serde_json::value::from_value(val).unwrap()))
+                    }
+                    _ => Ok(MessageOrBool::B(false)),
                 }
-            },
+            }
             Err(e) => Err(e),
         }
     }
 
-    pub fn get_game_high_scores(&self, params: &args::GetGameHighScores) -> Result<Vec<GameHighScore>, BotError> {
+    pub fn get_game_high_scores(&self,
+                                params: &args::GetGameHighScores)
+                                -> Result<Vec<GameHighScore>, BotError> {
         let url = self.base_url.join("getGameHighScores").unwrap();
         let body = serde_json::to_string(params).unwrap();
 
-        let res = self.client.post(url)
-                         .header(hyper::header::ContentType::json())
-                         .body(&body);
+        let res = self.client
+            .post(url)
+            .header(hyper::header::ContentType::json())
+            .body(&body);
 
         match parse_request(res.send(), self.debug) {
             Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
@@ -720,14 +753,8 @@ fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, val: Val
         Value::Bool(b) => {
             multi.write_text(key, b.to_string()).unwrap();
         }
-        Value::I64(i) => {
-            multi.write_text(key, i.to_string()).unwrap();
-        }
-        Value::U64(u) => {
-            multi.write_text(key, u.to_string()).unwrap();
-        }
-        Value::F64(f) => {
-            multi.write_text(key, f.to_string()).unwrap();
+        Value::Number(n) => {
+            multi.write_text(key, n.to_string()).unwrap();
         }
         Value::String(s) => {
             multi.write_text(key, s.to_string()).unwrap();
@@ -739,12 +766,8 @@ fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, val: Val
             let mut index = 0;
             for item in a {
                 let final_key = match item {
-                    Value::Array(_) | Value::Object(_) => {
-                        new_key.replace("[]", &index.to_string())
-                    }
-                    _ => {
-                        new_key.replace("[]", "")
-                    }
+                    Value::Array(_) | Value::Object(_) => new_key.replace("[]", &index.to_string()),
+                    _ => new_key.replace("[]", ""),
                 };
 
                 value_to_multi(multi, &final_key, item);

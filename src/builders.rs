@@ -299,9 +299,7 @@ impl GetUserProfilePhotos {
 
 impl<'a> GetFile<'a> {
     pub fn new(file_id: &'a str) -> GetFile<'a> {
-        GetFile {
-            file_id: file_id,
-        }
+        GetFile { file_id: file_id }
     }
 }
 
@@ -446,7 +444,9 @@ impl<'a> EditMessageReplyMarkup<'a> {
 }
 
 impl<'a> AnswerInlineQuery<'a> {
-    pub fn new(inline_query_id: &'a str, results: &'a [types::InlineQueryResult]) -> AnswerInlineQuery<'a> {
+    pub fn new(inline_query_id: &'a str,
+               results: &'a [types::InlineQueryResult])
+               -> AnswerInlineQuery<'a> {
         AnswerInlineQuery {
             inline_query_id: inline_query_id,
             results: results,
@@ -533,9 +533,7 @@ impl<'a> InlineKeyboardButton<'a> {
 
 impl<'a> ReplyMarkup<'a> {
     pub fn new_inline_keyboard(keyboard: &'a [&'a [InlineKeyboardButton<'a>]]) -> ReplyMarkup<'a> {
-        ReplyMarkup::InlineKeyboard(InlineKeyboardMarkup {
-            inline_keyboard: keyboard,
-        })
+        ReplyMarkup::InlineKeyboard(InlineKeyboardMarkup { inline_keyboard: keyboard })
     }
 
     pub fn new_reply_keyboard(keyboard: &'a [&'a [KeyboardButton<'a>]]) -> ReplyMarkup<'a> {
@@ -575,7 +573,7 @@ impl<'a> ReplyMarkup<'a> {
                 markup.selective = Some(selective);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -586,22 +584,22 @@ impl<'a> ReplyMarkup<'a> {
                 markup.resize_keyboard = Some(resize_keyboard);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
     pub fn one_time_keyboard(mut self, one_time_keyboard: bool) -> ReplyMarkup<'a> {
         match self {
-            ReplyMarkup::InlineKeyboard(_) => { }
+            ReplyMarkup::InlineKeyboard(_) => {}
 
             ReplyMarkup::ReplyKeyboard(ref mut markup) => {
                 markup.one_time_keyboard = Some(one_time_keyboard);
             }
 
-            ReplyMarkup::ReplyKeyboardRemove(_) => { }
+            ReplyMarkup::ReplyKeyboardRemove(_) => {}
 
-            ReplyMarkup::ForceReply(_) => { }
+            ReplyMarkup::ForceReply(_) => {}
         }
         self
     }
@@ -623,7 +621,11 @@ impl<'a> InputMessageContent<'a> {
         })
     }
 
-    pub fn new_venue(latitude: f64, longitude: f64, title: &'a str, address: &'a str) -> InputMessageContent<'a> {
+    pub fn new_venue(latitude: f64,
+                     longitude: f64,
+                     title: &'a str,
+                     address: &'a str)
+                     -> InputMessageContent<'a> {
         InputMessageContent::Venue(InputVenueMessageContent {
             latitude: latitude,
             longitude: longitude,
@@ -647,18 +649,20 @@ impl<'a> InputMessageContent<'a> {
                 markup.parse_mode = Some(parse_mode);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
-    pub fn disable_web_page_preview(mut self, disable_web_page_preview: bool) -> InputMessageContent<'a> {
+    pub fn disable_web_page_preview(mut self,
+                                    disable_web_page_preview: bool)
+                                    -> InputMessageContent<'a> {
         match self {
             InputMessageContent::Text(ref mut markup) => {
                 markup.disable_web_page_preview = Some(disable_web_page_preview);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -669,7 +673,7 @@ impl<'a> InputMessageContent<'a> {
                 markup.foursquare_id = Some(foursquare_id);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -680,15 +684,17 @@ impl<'a> InputMessageContent<'a> {
                 markup.last_name = Some(last_name);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 }
 
 impl<'a> InlineQueryResult<'a> {
-    pub fn new_article(id: &'a str, title: &'a str,
-                       input_message_content: &'a InputMessageContent<'a>) -> InlineQueryResult<'a> {
+    pub fn new_article(id: &'a str,
+                       title: &'a str,
+                       input_message_content: &'a InputMessageContent<'a>)
+                       -> InlineQueryResult<'a> {
         InlineQueryResult::Article(InlineQueryResultArticle {
             type_name: "article",
             id: id,
@@ -704,8 +710,7 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_photo(id: &'a str, photo_url: &'a str,
-                     thumb_url: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_photo(id: &'a str, photo_url: &'a str, thumb_url: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Photo(InlineQueryResultPhoto {
             type_name: "photo",
             id: id,
@@ -721,8 +726,7 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_gif(id: &'a str, gif_url: &'a str,
-                   thumb_url: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_gif(id: &'a str, gif_url: &'a str, thumb_url: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Gif(InlineQueryResultGif {
             type_name: "gif",
             id: id,
@@ -737,8 +741,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_mpeg4_gif(id: &'a str, mpeg4_url: &'a str,
-                         thumb_url: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_mpeg4_gif(id: &'a str,
+                         mpeg4_url: &'a str,
+                         thumb_url: &'a str)
+                         -> InlineQueryResult<'a> {
         InlineQueryResult::Mpeg4Gif(InlineQueryResultMpeg4Gif {
             type_name: "mpeg4_gif",
             id: id,
@@ -753,8 +759,12 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_video(id: &'a str, video_url: &'a str, mime_type: &'a str,
-                     thumb_url: &'a str, title: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_video(id: &'a str,
+                     video_url: &'a str,
+                     mime_type: &'a str,
+                     thumb_url: &'a str,
+                     title: &'a str)
+                     -> InlineQueryResult<'a> {
         InlineQueryResult::Video(InlineQueryResultVideo {
             type_name: "video",
             id: id,
@@ -772,8 +782,7 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_audio(id: &'a str, audio_url: &'a str,
-                     title: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_audio(id: &'a str, audio_url: &'a str, title: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Audio(InlineQueryResultAudio {
             type_name: "audio",
             id: id,
@@ -787,8 +796,7 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_voice(id: &'a str, voice_url: &'a str,
-                     title: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_voice(id: &'a str, voice_url: &'a str, title: &'a str) -> InlineQueryResult<'a> {
         InlineQueryResult::Voice(InlineQueryResultVoice {
             type_name: "voice",
             id: id,
@@ -801,8 +809,11 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_document(id: &'a str, title: &'a str, document_url: &'a str,
-                        mime_type: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_document(id: &'a str,
+                        title: &'a str,
+                        document_url: &'a str,
+                        mime_type: &'a str)
+                        -> InlineQueryResult<'a> {
         InlineQueryResult::Document(InlineQueryResultDocument {
             type_name: "document",
             id: id,
@@ -819,8 +830,11 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_location(id: &'a str, latitude: f64, longitude: f64,
-                        title: &'a str,) -> InlineQueryResult<'a> {
+    pub fn new_location(id: &'a str,
+                        latitude: f64,
+                        longitude: f64,
+                        title: &'a str)
+                        -> InlineQueryResult<'a> {
         InlineQueryResult::Location(InlineQueryResultLocation {
             type_name: "location",
             id: id,
@@ -835,8 +849,12 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_venue(id: &'a str, latitude: f64, longitude: f64, title: &'a str,
-                     address: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_venue(id: &'a str,
+                     latitude: f64,
+                     longitude: f64,
+                     title: &'a str,
+                     address: &'a str)
+                     -> InlineQueryResult<'a> {
         InlineQueryResult::Venue(InlineQueryResultVenue {
             type_name: "venue",
             id: id,
@@ -853,8 +871,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_contact(id: &'a str, phone_number: &'a str,
-                       first_name: &'a str,) -> InlineQueryResult<'a> {
+    pub fn new_contact(id: &'a str,
+                       phone_number: &'a str,
+                       first_name: &'a str)
+                       -> InlineQueryResult<'a> {
         InlineQueryResult::Contact(InlineQueryResultContact {
             type_name: "contact",
             id: id,
@@ -925,8 +945,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_document(id: &'a str, title: &'a str,
-                               document_file_id: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_cached_document(id: &'a str,
+                               title: &'a str,
+                               document_file_id: &'a str)
+                               -> InlineQueryResult<'a> {
         InlineQueryResult::CachedDocument(InlineQueryResultCachedDocument {
             type_name: "document",
             id: id,
@@ -939,8 +961,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_video(id: &'a str, video_file_id: &'a str,
-                            title: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_cached_video(id: &'a str,
+                            video_file_id: &'a str,
+                            title: &'a str)
+                            -> InlineQueryResult<'a> {
         InlineQueryResult::CachedVideo(InlineQueryResultCachedVideo {
             type_name: "video",
             id: id,
@@ -953,8 +977,10 @@ impl<'a> InlineQueryResult<'a> {
         })
     }
 
-    pub fn new_cached_voice(id: &'a str, voice_file_id: &'a str,
-                            title: &'a str) -> InlineQueryResult<'a> {
+    pub fn new_cached_voice(id: &'a str,
+                            voice_file_id: &'a str,
+                            title: &'a str)
+                            -> InlineQueryResult<'a> {
         InlineQueryResult::CachedVoice(InlineQueryResultCachedVoice {
             type_name: "voice",
             id: id,
@@ -1068,7 +1094,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.url = Some(url);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1079,7 +1105,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.hide_url = Some(hide_url);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1114,88 +1140,58 @@ impl<'a> InlineQueryResult<'a> {
                 result.description = Some(description);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
     pub fn thumb_url(mut self, thumb_url: &'a str) -> InlineQueryResult<'a> {
         match self {
-            InlineQueryResult::Article(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Article(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            InlineQueryResult::Document(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Document(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            InlineQueryResult::Location(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Location(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            InlineQueryResult::Venue(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Venue(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            InlineQueryResult::Contact(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Contact(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
     pub fn thumb_width(mut self, thumb_width: i64) -> InlineQueryResult<'a> {
         match self {
-            InlineQueryResult::Article(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Article(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            InlineQueryResult::Document(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Document(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            InlineQueryResult::Location(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Location(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            InlineQueryResult::Venue(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Venue(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            InlineQueryResult::Contact(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Contact(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
     pub fn thumb_height(mut self, thumb_height: i64) -> InlineQueryResult<'a> {
         match self {
-            InlineQueryResult::Article(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Article(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            InlineQueryResult::Document(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Document(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            InlineQueryResult::Location(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Location(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            InlineQueryResult::Venue(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Venue(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            InlineQueryResult::Contact(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Contact(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1206,7 +1202,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.photo_width = Some(photo_width);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1217,7 +1213,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.photo_height = Some(photo_height);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1228,7 +1224,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.gif_width = Some(gif_width);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1239,7 +1235,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.gif_height = Some(gif_height);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1250,7 +1246,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.mpeg4_width = Some(mpeg4_width);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1261,7 +1257,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.mpeg4_height = Some(mpeg4_height);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1272,7 +1268,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.video_width = Some(video_width);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1283,7 +1279,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.video_height = Some(video_height);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1294,7 +1290,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.video_duration = Some(video_duration);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1305,7 +1301,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.audio_duration = Some(audio_duration);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1316,7 +1312,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.performer = Some(performer);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1327,7 +1323,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.voice_duration = Some(voice_duration);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1358,7 +1354,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.title = Some(title);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1369,7 +1365,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.foursquare_id = Some(foursquare_id);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1380,7 +1376,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.last_name = Some(last_name);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1443,12 +1439,14 @@ impl<'a> InlineQueryResult<'a> {
                 result.caption = Some(caption);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
-    pub fn input_message_content(mut self, input_message_content: &'a types::InputMessageContent) -> InlineQueryResult<'a> {
+    pub fn input_message_content(mut self,
+                                 input_message_content: &'a types::InputMessageContent)
+                                 -> InlineQueryResult<'a> {
         match self {
             InlineQueryResult::Photo(ref mut result) => {
                 result.input_message_content = Some(input_message_content);
@@ -1522,7 +1520,7 @@ impl<'a> InlineQueryResult<'a> {
                 result.input_message_content = Some(input_message_content);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }

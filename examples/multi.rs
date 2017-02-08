@@ -105,10 +105,12 @@ fn main() {
                                 ][..]
                             ]; // Find prettier way to do this :\
 
-                            let _ = bot.send_message(&args::SendMessage
-                                ::new("Yes or No?")
-                                .chat_id(message.chat.id)
-                                .reply_markup(&types::ReplyMarkup::new_reply_keyboard(&keyboard[..]))
+                            bot.send_message(
+                                &args::SendMessage::new("Yes or No?")
+                                    .chat_id(message.chat.id)
+                                    .reply_markup(
+                                        &types::ReplyMarkup::new_reply_keyboard(&keyboard[..])
+                                    )
                             );
                         }
                         "/inline" => {
@@ -127,10 +129,12 @@ fn main() {
                                 ][..]
                             ];
 
-                            let _ = bot.send_message(&args::SendMessage
-                                ::new("Me")
-                                .chat_id(message.chat.id)
-                                .reply_markup(&types::ReplyMarkup::new_inline_keyboard(&keyboard[..]))
+                            bot.send_message(
+                                &args::SendMessage::new("Me")
+                                    .chat_id(message.chat.id)
+                                    .reply_markup(
+                                        &types::ReplyMarkup::new_inline_keyboard(&keyboard[..])
+                                    )
                             );
                         }
                         "/clear" | "No" => {
@@ -148,8 +152,9 @@ fn main() {
                     if new_chat_member.id == me_irl.id {
                         let text = "Hi, thanks for adding me to this group, but I don't want to \
                                     be here.\nSee ya!";
-                        let _ = bot.send_message(&args::SendMessage::new(text)
-                                    .chat_id(message.chat.id));
+                        let _ =
+                            bot.send_message(&args::SendMessage::new(text)
+                                .chat_id(message.chat.id));
                         let _ = bot.leave_chat(&args::LeaveChat::new().chat_id(message.chat.id));
                     }
                 }
@@ -163,7 +168,9 @@ fn main() {
                 let results = &[types::InlineQueryResult::new_article("lenny", &lenny_txt, &lenny),
                                 types::InlineQueryResult::new_article("shrug", &shrug_txt, &shrug)];
 
-                let _ = bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id, results));
+                let _ =
+                    bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id,
+                                                                          results));
             }
         }
     }
