@@ -1,12 +1,11 @@
 extern crate tg_botapi;
 
-use tg_botapi::args;
-use tg_botapi::types;
-use tg_botapi::BotApi;
+use tg_botapi::{args, BotApi, BotError, BotResult, types};
+use types::Message;
 
+use std::env;
 use std::sync::Arc;
 use std::thread;
-use std::env;
 
 fn main() {
     let token = &env::var("TOKEN")
@@ -15,7 +14,8 @@ fn main() {
 
     let me_irl = bot.get_me().expect("Could not establish a connection :\\");
 
-    let mut update_args = args::GetUpdates::new().timeout(600).offset(0);
+    let mut update_args =
+        args::GetUpdatesBuilder::default().timeout(600).offset(0).build().unwrap();
 
     'update_loop: loop {
         let updates = bot.get_updates(&update_args).unwrap();
@@ -26,48 +26,23 @@ fn main() {
             if let Some(message) = update.message {
                 // let from = message.from.unwrap();
 
-                let message_text = message.text.unwrap_or(String::new());
+                let message_text = message.text.as_ref().map_or(String::new(), |s| s.clone());
                 let mut split_text = message_text.split_whitespace();
 
                 if let Some(cmd) = split_text.next() {
                     match cmd {
                         "/exit" => {
-                            let _ = bot.send_message(&args::SendMessage::new("Goodbye!")
-                                .chat_id(message.chat.id)
-                                .reply_to_message_id(message.message_id));
+                            let _ = cmd::exit(&bot, &message);
                             break 'update_loop;
                         }
                         "/start" | "/help" => {
-                            let _ = bot.send_message(&args::SendMessage::new("Hi, I'm a bot!")
-                                .chat_id(message.chat.id)
-                                .reply_to_message_id(message.message_id));
+                            let _ = cmd::help(&bot, &message);
                         }
                         "/photo" => {
-                            let _ = bot.send_photo(&args::SendPhoto::new()
-                                .chat_id(message.chat.id)
-                                .reply_to_message_id(message.message_id)
-                                .photo("/home/juan/Documents/JuanPotato.png"));
+                            let _ = cmd::photo(&bot, &message);
                         }
                         "/edit" => {
-                            let sent = bot.send_message(&args::SendMessage::new("Editing")
-                                .chat_id(message.chat.id)
-                                .reply_to_message_id(message.message_id));
-
-                            match sent {
-                                Ok(sent_message) => {
-                                    let mut edit_args = args::EditMessageText::new("Edited")
-                                        .chat_id(message.chat.id)
-                                        .message_id(sent_message.message_id)
-                                        .parse_mode("Markdown");
-
-                                    if let Some(arg) = split_text.next() {
-                                        edit_args.text = &arg;
-                                    }
-
-                                    let _ = bot.edit_message_text(&edit_args);
-                                }
-                                Err(_) => {}
-                            }
+                            let _ = cmd::edit(&bot, &message, split_text.next().map(String::from));
                         }
                         "/thread" | "/threads" => {
                             let bot1 = bot.clone();
@@ -78,71 +53,38 @@ fn main() {
                             let msg_id = message.message_id;
 
                             thread::spawn(move || {
-                                let _ = bot1.send_message(&args::SendMessage::new("Thread 1")
+                                let _ = bot1.send_message(&args::SendMessageBuilder::default()
+                                    .text("Thread 1")
                                     .chat_id(chat_id)
-                                    .reply_to_message_id(msg_id));
+                                    .reply_to_message_id(msg_id)
+                                    .build()
+                                    .unwrap());
                             });
                             thread::spawn(move || {
-                                let _ = bot2.send_message(&args::SendMessage::new("Thread 2")
+                                let _ = bot2.send_message(&args::SendMessageBuilder::default()
+                                    .text("Thread 2")
                                     .chat_id(chat_id)
-                                    .reply_to_message_id(msg_id));
+                                    .reply_to_message_id(msg_id)
+                                    .build()
+                                    .unwrap());
                             });
                             thread::spawn(move || {
-                                let _ = bot3.send_message(&args::SendMessage::new("Thread 3")
+                                let _ = bot3.send_message(&args::SendMessageBuilder::default()
+                                    .text("Thread 3")
                                     .chat_id(chat_id)
-                                    .reply_to_message_id(msg_id));
+                                    .reply_to_message_id(msg_id)
+                                    .build()
+                                    .unwrap());
                             });
                         }
                         "/button" => {
-                            let keyboard = [
-                                &[
-                                    types::KeyboardButton::new("Yes"),
-                                    types::KeyboardButton::new("No"),
-                                ][..],
-                                &[
-                                    types::KeyboardButton::new("Eh"),
-                                    types::KeyboardButton::new("He"),
-                                ][..]
-                            ]; // Find prettier way to do this :\
-
-                            bot.send_message(
-                                &args::SendMessage::new("Yes or No?")
-                                    .chat_id(message.chat.id)
-                                    .reply_markup(
-                                        &types::ReplyMarkup::new_reply_keyboard(&keyboard[..])
-                                    )
-                            );
+                            let _ = cmd::button(&bot, &message);
                         }
                         "/inline" => {
-                            let keyboard = [
-                                &[
-                                    types::InlineKeyboardButton::new("Some")
-                                        .url("https://www.youtube.com/watch?v=L_jWHffIx5E"),
-                                    types::InlineKeyboardButton::new("Body")
-                                        .url("https://www.youtube.com/watch?v=rlYys58hsCU"),
-                                ][..],
-                                &[
-                                    types::InlineKeyboardButton::new("Once")
-                                        .url("https://www.youtube.com/watch?v=Q-MizNywQ94"),
-                                    types::InlineKeyboardButton::new("Told")
-                                        .url("https://www.youtube.com/watch?v=J48dqyz_C6s"),
-                                ][..]
-                            ];
-
-                            bot.send_message(
-                                &args::SendMessage::new("Me")
-                                    .chat_id(message.chat.id)
-                                    .reply_markup(
-                                        &types::ReplyMarkup::new_inline_keyboard(&keyboard[..])
-                                    )
-                            );
+                            let _ = cmd::inline(&bot, &message);
                         }
                         "/clear" | "No" => {
-                            let _ = bot.send_message(&args::SendMessage
-                                ::new("Me too")
-                                .chat_id(message.chat.id)
-                                .reply_markup(&types::ReplyMarkup::new_reply_keyboard_remove(true)),
-                            );
+                            let _ = cmd::clear(&bot, &message);
                         }
                         _ => {}
                     }
@@ -152,10 +94,15 @@ fn main() {
                     if new_chat_member.id == me_irl.id {
                         let text = "Hi, thanks for adding me to this group, but I don't want to \
                                     be here.\nSee ya!";
-                        let _ =
-                            bot.send_message(&args::SendMessage::new(text)
-                                .chat_id(message.chat.id));
-                        let _ = bot.leave_chat(&args::LeaveChat::new().chat_id(message.chat.id));
+                        let _ = bot.send_message(&args::SendMessageBuilder::default()
+                            .text(text)
+                            .chat_id(message.chat.id)
+                            .build()
+                            .unwrap());
+                        let _ = bot.leave_chat(&args::LeaveChatBuilder::default()
+                            .chat_id(message.chat.id)
+                            .build()
+                            .unwrap());
                     }
                 }
             }
@@ -163,13 +110,25 @@ fn main() {
             if let Some(inline_query) = update.inline_query {
                 let lenny_txt = format!("{} {}", inline_query.query, "( ͡° ͜ʖ ͡°)");
                 let shrug_txt = format!("{} {}", inline_query.query, "¯\\_(ツ)_/¯");
-                let lenny = types::InputMessageContent::new_text(&lenny_txt);
-                let shrug = types::InputMessageContent::new_text(&shrug_txt);
-                let results = &[types::InlineQueryResult::new_article("lenny", &lenny_txt, &lenny),
-                                types::InlineQueryResult::new_article("shrug", &shrug_txt, &shrug)];
+                let lenny = types::InputTextMessageContent::new(lenny_txt.clone());
+                let shrug = types::InputTextMessageContent::new(shrug_txt.clone());
+                let results = vec![types::InlineQueryResultArticleBuilder::default()
+                                       .id("lenny")
+                                       .title(lenny_txt)
+                                       .input_message_content(lenny)
+                                       .build()
+                                       .unwrap()
+                                       .into(),
+                                   types::InlineQueryResultArticleBuilder::default()
+                                       .id("shrug")
+                                       .title(shrug_txt)
+                                       .input_message_content(shrug)
+                                       .build()
+                                       .unwrap()
+                                       .into()];
 
                 let _ =
-                    bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id,
+                    bot.answer_inline_query(&args::AnswerInlineQuery::new(inline_query.id,
                                                                           results));
             }
         }
@@ -186,4 +145,125 @@ fn main() {
     // command. Because telegram only will stop sending you the update
     // after you have used an offset greater than its. So if you never make
     // another getUpdates, you will boot up, and terminate, forever. :)
+}
+
+mod cmd {
+    use super::*;
+
+    pub fn exit(bot: &BotApi, message: &Message) -> BotResult {
+        let args = args::SendMessageBuilder::default()
+            .text("Goodbye!")
+            .chat_id(message.chat.id)
+            .reply_to_message_id(message.message_id)
+            .build()
+            .unwrap();
+        bot.send_message(&args)
+    }
+
+    pub fn help(bot: &BotApi, message: &Message) -> BotResult {
+        let args = args::SendMessageBuilder::default()
+            .text("Hi, I'm a bot!")
+            .chat_id(message.chat.id)
+            .reply_to_message_id(message.message_id)
+            .build()
+            .unwrap();
+        bot.send_message(&args)
+    }
+
+    pub fn photo(bot: &BotApi, message: &Message) -> BotResult {
+        let args = args::SendPhotoBuilder::default()
+            .chat_id(message.chat.id)
+            .reply_to_message_id(message.message_id)
+            .photo(String::from("/home/juan/Documents/JuanPotato.png"))
+            .build()
+            .unwrap();
+        bot.send_photo(&args)
+    }
+
+    pub fn edit(bot: &BotApi,
+                message: &Message,
+                edit_text: Option<String>)
+                -> Result<types::MessageOrBool, BotError> {
+        let args = args::SendMessageBuilder::default()
+            .text("Editing")
+            .chat_id(message.chat.id)
+            .reply_to_message_id(message.message_id)
+            .build()
+            .unwrap();
+        bot.send_message(&args).and_then(move |sent_message| {
+            let mut edit_args = args::EditMessageTextBuilder::default()
+                .text("Edited")
+                .chat_id(message.chat.id)
+                .message_id(sent_message.message_id)
+                .parse_mode(String::from("Markdown"))
+                .build()
+                .unwrap();
+            if let Some(arg) = edit_text {
+                edit_args.text = arg;
+            }
+            bot.edit_message_text(&edit_args)
+        })
+    }
+
+    pub fn button(bot: &BotApi, message: &Message) -> BotResult {
+        let keyboard =
+            types::ReplyKeyboardMarkup::new(vec![vec![types::KeyboardButton::new("Yes".into()),
+                                                      types::KeyboardButton::new("No".into())],
+                                                 vec![types::KeyboardButton::new("Eh".into()),
+                                                      types::KeyboardButton::new("He".into())]]);
+
+        let args = args::SendMessageBuilder::default()
+            .text("Yes or No?")
+            .chat_id(message.chat.id)
+            .reply_markup(types::ReplyMarkup::from(keyboard))
+            .build()
+            .unwrap();
+
+        bot.send_message(&args)
+    }
+
+    pub fn inline(bot: &BotApi, message: &Message) -> BotResult {
+        let keyboard = types::InlineKeyboardMarkup::new(vec![vec![
+                types::InlineKeyboardButtonBuilder::default()
+                    .text("Some")
+                    .url(String::from("https://www.youtube.com/watch?v=L_jWHffIx5E"))
+                    .build()
+                    .unwrap(),
+                types::InlineKeyboardButtonBuilder::default()
+                    .text("Body")
+                    .url(String::from("https://www.youtube.com/watch?v=rlYys58hsCU"))
+                    .build()
+                    .unwrap()
+            ],
+                                                             vec![
+                types::InlineKeyboardButtonBuilder::default()
+                    .text("Once")
+                    .url(String::from("https://www.youtube.com/watch?v=Q-MizNywQ94"))
+                    .build()
+                    .unwrap(),
+                types::InlineKeyboardButtonBuilder::default()
+                    .text("Told")
+                    .url(String::from("https://www.youtube.com/watch?v=J48dqyz_C6s"))
+                    .build()
+                    .unwrap()
+            ]]);
+        let args = args::SendMessageBuilder::default()
+            .text("Me")
+            .chat_id(message.chat.id)
+            .reply_markup(Some(keyboard.into()))
+            .build()
+            .unwrap();
+
+        bot.send_message(&args)
+    }
+
+    pub fn clear(bot: &BotApi, message: &Message) -> BotResult {
+        let args = args::SendMessageBuilder::default()
+            .text("Me too")
+            .chat_id(message.chat.id)
+            .reply_markup(Some(types::ReplyKeyboardRemoveMarkup::new(true).into()))
+            .build()
+            .unwrap();
+        bot.send_message(&args)
+    }
 }
