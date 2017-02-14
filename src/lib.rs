@@ -7,17 +7,16 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
+use std::{error, fmt};
 use std::result::Result;
 use std::io::Read;
-use std::{fmt, error};
 use std::time::Duration;
 
 use hyper::net::Streaming;
 use hyper::method::Method;
 use hyper::client::Request;
 
-use hyper::Client;
-use hyper::Url;
+use hyper::{Client, Url};
 
 use multipart::client::Multipart;
 
@@ -25,7 +24,6 @@ use serde_json::value::Value;
 
 pub mod types;
 pub mod args;
-// pub mod builders;
 
 use types::*;
 

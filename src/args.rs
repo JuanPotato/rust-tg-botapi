@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use super::types;
 
 #[derive(Debug, Builder, Serialize)]
@@ -76,7 +78,7 @@ pub struct ForwardMessage {
 #[derive(Debug, Builder, Serialize)]
 pub struct SendPhoto {
     pub chat_id: ChatId,
-    pub photo: Option<String>,
+    pub photo: Option<PathBuf>,
     pub file_id: Option<String>,
     pub caption: Option<String>,
     pub disable_notification: Option<bool>,
@@ -87,7 +89,7 @@ pub struct SendPhoto {
 #[derive(Debug, Builder, Serialize)]
 pub struct SendAudio {
     pub chat_id: ChatId,
-    pub audio: Option<String>,
+    pub audio: Option<PathBuf>,
     pub file_id: Option<String>,
     pub caption: Option<String>,
     pub duration: Option<i64>,
@@ -101,7 +103,7 @@ pub struct SendAudio {
 #[derive(Debug, Builder, Serialize)]
 pub struct SendDocument {
     pub chat_id: ChatId,
-    pub document: Option<String>,
+    pub document: Option<PathBuf>,
     pub file_id: Option<String>,
     pub caption: Option<String>,
     pub disable_notification: Option<bool>,
@@ -112,7 +114,7 @@ pub struct SendDocument {
 #[derive(Debug, Builder, Serialize)]
 pub struct SendSticker {
     pub chat_id: ChatId,
-    pub sticker: Option<String>,
+    pub sticker: Option<PathBuf>,
     pub file_id: Option<String>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
@@ -122,7 +124,7 @@ pub struct SendSticker {
 #[derive(Debug, Builder, Serialize)]
 pub struct SendVideo {
     pub chat_id: ChatId,
-    pub video: Option<String>,
+    pub video: Option<PathBuf>,
     pub file_id: Option<String>,
     pub duration: Option<i64>,
     pub width: Option<i64>,
@@ -136,7 +138,7 @@ pub struct SendVideo {
 #[derive(Debug, Builder, Serialize)]
 pub struct SendVoice {
     pub chat_id: ChatId,
-    pub voice: Option<String>,
+    pub voice: Option<PathBuf>,
     pub file_id: Option<String>,
     pub caption: Option<String>,
     pub duration: Option<i64>,
@@ -215,6 +217,12 @@ pub struct KickChatMember {
 #[derive(Debug, Builder, Serialize)]
 pub struct LeaveChat {
     pub chat_id: ChatId,
+}
+
+impl LeaveChat {
+    pub fn new(chat_id: ChatId) -> LeaveChat {
+        LeaveChat { chat_id: chat_id }
+    }
 }
 
 #[derive(Debug, Builder, Serialize)]

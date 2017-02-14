@@ -4,6 +4,7 @@ use tg_botapi::{args, BotApi, BotError, BotResult, types};
 use types::Message;
 
 use std::env;
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::thread;
 
@@ -14,8 +15,13 @@ fn main() {
 
     let me_irl = bot.get_me().expect("Could not establish a connection :\\");
 
-    let mut update_args =
-        args::GetUpdatesBuilder::default().timeout(600).offset(0).build().unwrap();
+    let mut update_args = args::GetUpdatesBuilder::default()
+        .timeout(600)
+        .offset(0)
+        .limit(None)
+        .allowed_updates(None)
+        .build()
+        .unwrap();
 
     'update_loop: loop {
         let updates = bot.get_updates(&update_args).unwrap();
@@ -53,28 +59,43 @@ fn main() {
                             let msg_id = message.message_id;
 
                             thread::spawn(move || {
-                                let _ = bot1.send_message(&args::SendMessageBuilder::default()
+                                let args = args::SendMessageBuilder::default()
                                     .text("Thread 1")
                                     .chat_id(chat_id)
                                     .reply_to_message_id(msg_id)
+                                    .parse_mode(None)
+                                    .disable_web_page_preview(None)
+                                    .disable_notification(None)
+                                    .reply_markup(None)
                                     .build()
-                                    .unwrap());
+                                    .unwrap();
+                                let _ = bot1.send_message(&args);
                             });
                             thread::spawn(move || {
-                                let _ = bot2.send_message(&args::SendMessageBuilder::default()
+                                let args = args::SendMessageBuilder::default()
                                     .text("Thread 2")
                                     .chat_id(chat_id)
                                     .reply_to_message_id(msg_id)
+                                    .parse_mode(None)
+                                    .disable_web_page_preview(None)
+                                    .disable_notification(None)
+                                    .reply_markup(None)
                                     .build()
-                                    .unwrap());
+                                    .unwrap();
+                                let _ = bot2.send_message(&args);
                             });
                             thread::spawn(move || {
-                                let _ = bot3.send_message(&args::SendMessageBuilder::default()
+                                let args = args::SendMessageBuilder::default()
                                     .text("Thread 3")
                                     .chat_id(chat_id)
                                     .reply_to_message_id(msg_id)
+                                    .parse_mode(None)
+                                    .disable_web_page_preview(None)
+                                    .disable_notification(None)
+                                    .reply_markup(None)
                                     .build()
-                                    .unwrap());
+                                    .unwrap();
+                                let _ = bot3.send_message(&args);
                             });
                         }
                         "/button" => {
@@ -94,15 +115,19 @@ fn main() {
                     if new_chat_member.id == me_irl.id {
                         let text = "Hi, thanks for adding me to this group, but I don't want to \
                                     be here.\nSee ya!";
-                        let _ = bot.send_message(&args::SendMessageBuilder::default()
+                        let msg_args = args::SendMessageBuilder::default()
                             .text(text)
                             .chat_id(message.chat.id)
+                            .parse_mode(None)
+                            .disable_web_page_preview(None)
+                            .disable_notification(None)
+                            .reply_to_message_id(None)
+                            .reply_markup(None)
                             .build()
-                            .unwrap());
-                        let _ = bot.leave_chat(&args::LeaveChatBuilder::default()
-                            .chat_id(message.chat.id)
-                            .build()
-                            .unwrap());
+                            .unwrap();
+                        let _ = bot.send_message(&msg_args);
+                        let leave_args = args::LeaveChat::new(message.chat.id.into());
+                        let _ = bot.leave_chat(&leave_args);
                     }
                 }
             }
@@ -116,6 +141,13 @@ fn main() {
                                        .id("lenny")
                                        .title(lenny_txt)
                                        .input_message_content(lenny)
+                                       .reply_markup(None)
+                                       .url(None)
+                                       .hide_url(None)
+                                       .description(None)
+                                       .thumb_url(None)
+                                       .thumb_width(None)
+                                       .thumb_height(None)
                                        .build()
                                        .unwrap()
                                        .into(),
@@ -123,6 +155,13 @@ fn main() {
                                        .id("shrug")
                                        .title(shrug_txt)
                                        .input_message_content(shrug)
+                                       .reply_markup(None)
+                                       .url(None)
+                                       .hide_url(None)
+                                       .description(None)
+                                       .thumb_url(None)
+                                       .thumb_width(None)
+                                       .thumb_height(None)
                                        .build()
                                        .unwrap()
                                        .into()];
@@ -155,6 +194,10 @@ mod cmd {
             .text("Goodbye!")
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
+            .parse_mode(None)
+            .disable_web_page_preview(None)
+            .disable_notification(None)
+            .reply_markup(None)
             .build()
             .unwrap();
         bot.send_message(&args)
@@ -165,6 +208,10 @@ mod cmd {
             .text("Hi, I'm a bot!")
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
+            .parse_mode(None)
+            .disable_web_page_preview(None)
+            .disable_notification(None)
+            .reply_markup(None)
             .build()
             .unwrap();
         bot.send_message(&args)
@@ -174,7 +221,11 @@ mod cmd {
         let args = args::SendPhotoBuilder::default()
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
-            .photo(String::from("/home/juan/Documents/JuanPotato.png"))
+            .photo(PathBuf::from("../multi_photo.png"))
+            .file_id(None)
+            .caption(None)
+            .disable_notification(None)
+            .reply_markup(None)
             .build()
             .unwrap();
         bot.send_photo(&args)
@@ -188,6 +239,10 @@ mod cmd {
             .text("Editing")
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
+            .parse_mode(None)
+            .disable_web_page_preview(None)
+            .disable_notification(None)
+            .reply_markup(None)
             .build()
             .unwrap();
         bot.send_message(&args).and_then(move |sent_message| {
@@ -196,6 +251,9 @@ mod cmd {
                 .chat_id(message.chat.id)
                 .message_id(sent_message.message_id)
                 .parse_mode(String::from("Markdown"))
+                .inline_message_id(None)
+                .disable_web_page_preview(None)
+                .reply_markup(None)
                 .build()
                 .unwrap();
             if let Some(arg) = edit_text {
@@ -216,6 +274,10 @@ mod cmd {
             .text("Yes or No?")
             .chat_id(message.chat.id)
             .reply_markup(types::ReplyMarkup::from(keyboard))
+            .parse_mode(None)
+            .disable_web_page_preview(None)
+            .disable_notification(None)
+            .reply_to_message_id(None)
             .build()
             .unwrap();
 
@@ -227,11 +289,19 @@ mod cmd {
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Some")
                     .url(String::from("https://www.youtube.com/watch?v=L_jWHffIx5E"))
+                    .callback_data(None)
+                    .switch_inline_query(None)
+                    .switch_inline_query_current_chat(None)
+                    .callback_game(None)
                     .build()
                     .unwrap(),
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Body")
                     .url(String::from("https://www.youtube.com/watch?v=rlYys58hsCU"))
+                    .callback_data(None)
+                    .switch_inline_query(None)
+                    .switch_inline_query_current_chat(None)
+                    .callback_game(None)
                     .build()
                     .unwrap()
             ],
@@ -239,11 +309,19 @@ mod cmd {
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Once")
                     .url(String::from("https://www.youtube.com/watch?v=Q-MizNywQ94"))
+                    .callback_data(None)
+                    .switch_inline_query(None)
+                    .switch_inline_query_current_chat(None)
+                    .callback_game(None)
                     .build()
                     .unwrap(),
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Told")
                     .url(String::from("https://www.youtube.com/watch?v=J48dqyz_C6s"))
+                    .callback_data(None)
+                    .switch_inline_query(None)
+                    .switch_inline_query_current_chat(None)
+                    .callback_game(None)
                     .build()
                     .unwrap()
             ]]);
@@ -251,6 +329,10 @@ mod cmd {
             .text("Me")
             .chat_id(message.chat.id)
             .reply_markup(Some(keyboard.into()))
+            .parse_mode(None)
+            .disable_web_page_preview(None)
+            .disable_notification(None)
+            .reply_to_message_id(None)
             .build()
             .unwrap();
 
@@ -262,6 +344,10 @@ mod cmd {
             .text("Me too")
             .chat_id(message.chat.id)
             .reply_markup(Some(types::ReplyKeyboardRemoveMarkup::new(true).into()))
+            .parse_mode(None)
+            .disable_web_page_preview(None)
+            .disable_notification(None)
+            .reply_to_message_id(None)
             .build()
             .unwrap();
         bot.send_message(&args)

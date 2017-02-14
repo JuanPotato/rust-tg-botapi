@@ -12,8 +12,13 @@ fn main() {
         .expect("No bot token provided, please set the environment variable TOKEN");
     let bot_arc = Arc::new(BotApi::new(token));
 
-    let mut update_args =
-        args::GetUpdatesBuilder::default().timeout(600).offset(0).build().unwrap();
+    let mut update_args = args::GetUpdatesBuilder::default()
+        .timeout(600)
+        .offset(0)
+        .limit(None)
+        .allowed_updates(None)
+        .build()
+        .unwrap();
 
     loop {
         let updates = bot_arc.get_updates(&update_args).unwrap();
@@ -30,12 +35,17 @@ fn main() {
                     let message_text = format!("\"{}\"\n    - <i>You, CURRENT_YEAR</i>",
                                                message.text.unwrap_or(String::new()));
 
-                    let _ = bot.send_message(&args::SendMessageBuilder::default()
+                    let args = args::SendMessageBuilder::default()
                         .text(&*message_text)
                         .chat_id(chat_id)
                         .parse_mode(String::from("HTML"))
+                        .disable_web_page_preview(None)
+                        .disable_notification(None)
+                        .reply_to_message_id(None)
+                        .reply_markup(None)
                         .build()
-                        .unwrap());
+                        .unwrap();
+                    let _ = bot.send_message(&args);
                 });
             }
         }
