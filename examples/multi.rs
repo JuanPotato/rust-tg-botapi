@@ -94,43 +94,43 @@ fn main() {
                             });
                         }
                         "/button" => {
-                            let keyboard = [
-                                &[
-                                    types::KeyboardButton::new("Yes"),
-                                    types::KeyboardButton::new("No"),
-                                ][..],
-                                &[
-                                    types::KeyboardButton::new("Eh"),
-                                    types::KeyboardButton::new("He"),
-                                ][..]
+                            let keyboard = vec![
+                                vec![
+                                    types::KeyboardButton::new("Yes".into()),
+                                    types::KeyboardButton::new("No".into()),
+                                ],
+                                vec![
+                                    types::KeyboardButton::new("Eh".into()),
+                                    types::KeyboardButton::new("He".into()),
+                                ]
                             ]; // Find prettier way to do this :\
 
                             let _ = bot.send_message(&args::SendMessage
                                 ::new("Yes or No?")
                                 .chat_id(message.chat.id)
-                                .reply_markup(&types::ReplyMarkup::new_reply_keyboard(&keyboard[..]))
+                                .reply_markup(&types::ReplyMarkup::new_reply_keyboard(keyboard))
                             );
                         }
                         "/inline" => {
-                            let keyboard = [
-                                &[
-                                    types::InlineKeyboardButton::new("Some")
-                                        .url("https://www.youtube.com/watch?v=L_jWHffIx5E"),
-                                    types::InlineKeyboardButton::new("Body")
-                                        .url("https://www.youtube.com/watch?v=rlYys58hsCU"),
-                                ][..],
-                                &[
-                                    types::InlineKeyboardButton::new("Once")
-                                        .url("https://www.youtube.com/watch?v=Q-MizNywQ94"),
-                                    types::InlineKeyboardButton::new("Told")
-                                        .url("https://www.youtube.com/watch?v=J48dqyz_C6s"),
-                                ][..]
+                            let keyboard = vec![
+                                vec![
+                                    types::InlineKeyboardButton::new("Some".into())
+                                        .url("https://www.youtube.com/watch?v=L_jWHffIx5E".into()),
+                                    types::InlineKeyboardButton::new("Body".into())
+                                        .url("https://www.youtube.com/watch?v=rlYys58hsCU".into()),
+                                ],
+                                vec![
+                                    types::InlineKeyboardButton::new("Once".into())
+                                        .url("https://www.youtube.com/watch?v=Q-MizNywQ94".into()),
+                                    types::InlineKeyboardButton::new("Told".into())
+                                        .url("https://www.youtube.com/watch?v=J48dqyz_C6s".into()),
+                                ]
                             ];
 
                             let _ = bot.send_message(&args::SendMessage
                                 ::new("Me")
                                 .chat_id(message.chat.id)
-                                .reply_markup(&types::ReplyMarkup::new_inline_keyboard(&keyboard[..]))
+                                .reply_markup(&types::ReplyMarkup::new_inline_keyboard(keyboard))
                             );
                         }
                         "/clear" | "No" => {
@@ -158,10 +158,10 @@ fn main() {
             if let Some(inline_query) = update.inline_query {
                 let lenny_txt = format!("{} {}", inline_query.query, "( ͡° ͜ʖ ͡°)");
                 let shrug_txt = format!("{} {}", inline_query.query, "¯\\_(ツ)_/¯");
-                let lenny = types::InputMessageContent::new_text(&lenny_txt);
-                let shrug = types::InputMessageContent::new_text(&shrug_txt);
-                let results = &[types::InlineQueryResult::new_article("lenny", &lenny_txt, &lenny),
-                                types::InlineQueryResult::new_article("shrug", &shrug_txt, &shrug)];
+                let lenny = types::InputMessageContent::new_text(lenny_txt.clone());
+                let shrug = types::InputMessageContent::new_text(shrug_txt.clone());
+                let results = &[types::InlineQueryResult::new_article("lenny".into(), lenny_txt, lenny),
+                                types::InlineQueryResult::new_article("shrug".into(), shrug_txt, shrug)];
 
                 let _ = bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id, results));
             }
