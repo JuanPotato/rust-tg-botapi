@@ -4,8 +4,8 @@ extern crate serde;
 use self::serde::ser::Serialize;
 use self::serde::ser::Serializer;
 
-use super::types;
 use types::ReplyMarkup;
+use types::InlineQueryResult;
 
 macro_rules! option_int {
     ( $( $x:expr ),* ) => {{ (0 $( + if $x.is_some() { 1 } else { 0 } )* ) }};
@@ -58,7 +58,7 @@ pub struct SendMessage<'a> {
     pub disable_web_page_preview: Option<bool>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 impl <'a> Serialize for SendMessage<'a> {
@@ -142,7 +142,7 @@ pub struct SendPhoto<'a> {
     pub caption: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 #[derive(Debug)]
@@ -157,7 +157,7 @@ pub struct SendAudio<'a> {
     pub title: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 #[derive(Debug)]
@@ -169,7 +169,7 @@ pub struct SendDocument<'a> {
     pub caption: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 #[derive(Debug)]
@@ -180,7 +180,7 @@ pub struct SendSticker<'a> {
     pub file_id: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 #[derive(Debug)]
@@ -195,7 +195,7 @@ pub struct SendVideo<'a> {
     pub caption: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 #[derive(Debug)]
@@ -208,7 +208,7 @@ pub struct SendVoice<'a> {
     pub duration: Option<i64>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 #[derive(Debug)]
@@ -219,7 +219,7 @@ pub struct SendLocation<'a> {
     pub longitude: f64,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 impl <'a> Serialize for SendLocation<'a> {
@@ -260,7 +260,7 @@ pub struct SendVenue<'a> {
     pub foursquare_id: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 impl <'a> Serialize for SendVenue<'a> {
@@ -303,7 +303,7 @@ pub struct SendContact<'a> {
     pub last_name: Option<&'a str>,
     pub disable_notification: Option<bool>,
     pub reply_to_message_id: Option<i64>,
-    pub reply_markup: Option<&'a ReplyMarkup>,
+    pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
 impl <'a> Serialize for SendContact<'a> {
@@ -547,7 +547,7 @@ pub struct EditMessageText<'a> {
     pub text: &'a str,
     pub parse_mode: Option<&'a str>,
     pub disable_web_page_preview: Option<bool>,
-    pub reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
+    pub reply_markup: Option<Box<ReplyMarkup>>, // InlineKeyboardMarkup
 }
 
 impl <'a> Serialize for EditMessageText<'a> {
@@ -585,7 +585,7 @@ pub struct EditMessageCaption<'a> {
     pub message_id: Option<i64>,
     pub inline_message_id: Option<&'a str>,
     pub caption: Option<&'a str>,
-    pub reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
+    pub reply_markup: Option<Box<ReplyMarkup>>, // InlineKeyboardMarkup
 }
 
 impl <'a> Serialize for EditMessageCaption<'a> {
@@ -620,7 +620,7 @@ pub struct EditMessageReplyMarkup<'a> {
     pub chat_username: Option<&'a str>,
     pub message_id: Option<i64>,
     pub inline_message_id: Option<&'a str>,
-    pub reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
+    pub reply_markup: Option<Box<ReplyMarkup>>, // InlineKeyboardMarkup
 }
 
 impl <'a> Serialize for EditMessageReplyMarkup<'a> {
@@ -650,7 +650,7 @@ impl <'a> Serialize for EditMessageReplyMarkup<'a> {
 #[derive(Debug, Serialize)]
 pub struct AnswerInlineQuery<'a> {
     pub inline_query_id: &'a str,
-    pub results: &'a [types::InlineQueryResult],
+    pub results: Vec<InlineQueryResult>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_time: Option<i64>,
@@ -680,7 +680,7 @@ pub struct SendGame<'a> {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<&'a ReplyMarkup>, // InlineKeyboardMarkup
+    pub reply_markup: Option<Box<ReplyMarkup>>, // InlineKeyboardMarkup
 }
 
 #[derive(Debug, Serialize)]

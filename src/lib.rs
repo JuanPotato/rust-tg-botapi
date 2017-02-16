@@ -204,7 +204,7 @@ impl BotApi {
             multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
         }
 
-        if let Some(reply_markup) = params.reply_markup {
+        if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
@@ -255,7 +255,7 @@ impl BotApi {
             multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
         }
 
-        if let Some(reply_markup) = params.reply_markup {
+        if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
@@ -294,7 +294,7 @@ impl BotApi {
             multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
         }
 
-        if let Some(reply_markup) = params.reply_markup {
+        if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
@@ -329,7 +329,7 @@ impl BotApi {
             multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
         }
 
-        if let Some(reply_markup) = params.reply_markup {
+        if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
@@ -380,7 +380,7 @@ impl BotApi {
             multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
         }
 
-        if let Some(reply_markup) = params.reply_markup {
+        if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 
@@ -423,7 +423,7 @@ impl BotApi {
             multi.write_text("reply_to_message_id", reply_to_message_id.to_string()).unwrap();
         }
 
-        if let Some(reply_markup) = params.reply_markup {
+        if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi, "reply_markup", serde_json::to_value(reply_markup));
         }
 

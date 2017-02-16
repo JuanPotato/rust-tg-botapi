@@ -108,7 +108,7 @@ fn main() {
                             let _ = bot.send_message(&args::SendMessage
                                 ::new("Yes or No?")
                                 .chat_id(message.chat.id)
-                                .reply_markup(&types::ReplyMarkup::new_reply_keyboard(keyboard))
+                                .reply_markup(types::ReplyMarkup::new_reply_keyboard(keyboard).into())
                             );
                         }
                         "/inline" => {
@@ -130,14 +130,14 @@ fn main() {
                             let _ = bot.send_message(&args::SendMessage
                                 ::new("Me")
                                 .chat_id(message.chat.id)
-                                .reply_markup(&types::ReplyMarkup::new_inline_keyboard(keyboard))
+                                .reply_markup(types::ReplyMarkup::new_inline_keyboard(keyboard).into())
                             );
                         }
                         "/clear" | "No" => {
                             let _ = bot.send_message(&args::SendMessage
                                 ::new("Me too")
                                 .chat_id(message.chat.id)
-                                .reply_markup(&types::ReplyMarkup::new_reply_keyboard_remove(true)),
+                                .reply_markup(types::ReplyMarkup::new_reply_keyboard_remove(true).into()),
                             );
                         }
                         _ => {}
@@ -160,8 +160,8 @@ fn main() {
                 let shrug_txt = format!("{} {}", inline_query.query, "¯\\_(ツ)_/¯");
                 let lenny = types::InputMessageContent::new_text(lenny_txt.clone());
                 let shrug = types::InputMessageContent::new_text(shrug_txt.clone());
-                let results = &[types::InlineQueryResult::new_article("lenny".into(), lenny_txt, lenny),
-                                types::InlineQueryResult::new_article("shrug".into(), shrug_txt, shrug)];
+                let results = vec![types::InlineQueryResult::new_article("lenny".into(), lenny_txt, lenny),
+                                   types::InlineQueryResult::new_article("shrug".into(), shrug_txt, shrug)];
 
                 let _ = bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id, results));
             }

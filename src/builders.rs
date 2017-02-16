@@ -107,7 +107,7 @@ impl<'a> SendMessage<'a> {
         }
     }
 
-    buildera!(SendMessage; chat_id, i64; chat_username, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendMessage; chat_id, i64; chat_username, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> ForwardMessage<'a> {
@@ -139,7 +139,7 @@ impl<'a> SendPhoto<'a> {
         }
     }
 
-    buildera!(SendPhoto; chat_id, i64; chat_username, &'a str; photo, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendPhoto; chat_id, i64; chat_username, &'a str; photo, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendAudio<'a> {
@@ -159,7 +159,7 @@ impl<'a> SendAudio<'a> {
         }
     }
 
-    buildera!(SendAudio; chat_id, i64; chat_username, &'a str; audio, &'a str; file_id, &'a str; caption, &'a str; duration, i64; performer, &'a str; title, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendAudio; chat_id, i64; chat_username, &'a str; audio, &'a str; file_id, &'a str; caption, &'a str; duration, i64; performer, &'a str; title, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendDocument<'a> {
@@ -176,7 +176,7 @@ impl<'a> SendDocument<'a> {
         }
     }
 
-    buildera!(SendDocument; chat_id, i64; chat_username, &'a str; document, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendDocument; chat_id, i64; chat_username, &'a str; document, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendSticker<'a> {
@@ -192,7 +192,7 @@ impl<'a> SendSticker<'a> {
         }
     }
 
-    buildera!(SendSticker; chat_id, i64; chat_username, &'a str; sticker, &'a str; file_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendSticker; chat_id, i64; chat_username, &'a str; sticker, &'a str; file_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendVideo<'a> {
@@ -212,7 +212,7 @@ impl<'a> SendVideo<'a> {
         }
     }
 
-    buildera!(SendVideo; chat_id, i64; chat_username, &'a str; video, &'a str; file_id, &'a str; duration, i64; width, i64; height, i64; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendVideo; chat_id, i64; chat_username, &'a str; video, &'a str; file_id, &'a str; duration, i64; width, i64; height, i64; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendVoice<'a> {
@@ -230,7 +230,7 @@ impl<'a> SendVoice<'a> {
         }
     }
 
-    buildera!(SendVoice; chat_id, i64; chat_username, &'a str; voice, &'a str; file_id, &'a str; caption, &'a str; duration, i64; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendVoice; chat_id, i64; chat_username, &'a str; voice, &'a str; file_id, &'a str; caption, &'a str; duration, i64; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendLocation<'a> {
@@ -246,7 +246,7 @@ impl<'a> SendLocation<'a> {
         }
     }
 
-    buildera!(SendLocation; chat_id, i64; chat_username, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendLocation; chat_id, i64; chat_username, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendVenue<'a> {
@@ -265,7 +265,7 @@ impl<'a> SendVenue<'a> {
         }
     }
 
-    buildera!(SendVenue; chat_id, i64; chat_username, &'a str; foursquare_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendVenue; chat_id, i64; chat_username, &'a str; foursquare_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendContact<'a> {
@@ -282,7 +282,7 @@ impl<'a> SendContact<'a> {
         }
     }
 
-    buildera!(SendContact; chat_id, i64; chat_username, &'a str; last_name, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup);
+    buildera!(SendContact; chat_id, i64; chat_username, &'a str; last_name, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
 }
 
 impl GetUserProfilePhotos {
@@ -413,7 +413,7 @@ impl<'a> EditMessageText<'a> {
         }
     }
 
-    buildera!(EditMessageText; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; reply_markup, &'a ReplyMarkup); // InlineKeyboardMarkup
+    buildera!(EditMessageText; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
 }
 
 impl<'a> EditMessageCaption<'a> {
@@ -428,7 +428,7 @@ impl<'a> EditMessageCaption<'a> {
         }
     }
 
-    buildera!(EditMessageCaption; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; caption, &'a str; reply_markup, &'a ReplyMarkup); // InlineKeyboardMarkup
+    buildera!(EditMessageCaption; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; caption, &'a str; reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
 }
 
 impl<'a> EditMessageReplyMarkup<'a> {
@@ -442,11 +442,11 @@ impl<'a> EditMessageReplyMarkup<'a> {
         }
     }
 
-    buildera!(EditMessageReplyMarkup; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; reply_markup, &'a ReplyMarkup); // InlineKeyboardMarkup
+    buildera!(EditMessageReplyMarkup; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
 }
 
 impl<'a> AnswerInlineQuery<'a> {
-    pub fn new(inline_query_id: &'a str, results: &'a [types::InlineQueryResult]) -> AnswerInlineQuery<'a> {
+    pub fn new(inline_query_id: &'a str, results: Vec<types::InlineQueryResult>) -> AnswerInlineQuery<'a> {
         AnswerInlineQuery {
             inline_query_id: inline_query_id,
             results: results,
@@ -472,7 +472,7 @@ impl<'a> SendGame<'a> {
         }
     }
 
-    buildera!(SendGame; disable_notification, bool; reply_to_message_id, i64; reply_markup, &'a ReplyMarkup); // InlineKeyboardMarkup
+    buildera!(SendGame; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
 }
 
 impl<'a> SetGameScore<'a> {
