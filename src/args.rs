@@ -61,17 +61,21 @@ pub struct SendMessage<'a> {
     pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
-impl <'a> Serialize for SendMessage<'a> {
+impl<'a> Serialize for SendMessage<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("SendMessage",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 } +
-            option_int!(&self.parse_mode,
-                        &self.disable_web_page_preview,
-                        &self.disable_notification,
-                        &self.reply_to_message_id,
-                        &self.reply_markup))?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  2
+                              } else {
+                                  1
+                              } +
+                              option_int!(&self.parse_mode,
+                                          &self.disable_web_page_preview,
+                                          &self.disable_notification,
+                                          &self.reply_to_message_id,
+                                          &self.reply_markup))?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -82,9 +86,18 @@ impl <'a> Serialize for SendMessage<'a> {
         serializer.serialize_struct_elt(&mut state, "text", &self.text)?;
 
         option_serialize_struct_elt!(serializer, &mut state, "parse_mode", &self.parse_mode);
-        option_serialize_struct_elt!(serializer, &mut state, "disable_web_page_preview", &self.disable_web_page_preview);
-        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
-        option_serialize_struct_elt!(serializer, &mut state, "reply_to_message_id", &self.reply_to_message_id);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "disable_web_page_preview",
+                                     &self.disable_web_page_preview);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "disable_notification",
+                                     &self.disable_notification);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "reply_to_message_id",
+                                     &self.reply_to_message_id);
 
         if self.reply_markup.is_some() {
             serializer.serialize_struct_elt(&mut state, "reply_markup", &self.reply_markup)?;
@@ -104,14 +117,23 @@ pub struct ForwardMessage<'a> {
     pub message_id: i64,
 }
 
-impl <'a> Serialize for ForwardMessage<'a> {
+impl<'a> Serialize for ForwardMessage<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("ForwardMessage",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 } +
-            if self.from_chat_username.is_some() || self.from_chat_id.is_some() { 1 } else { 0 } +
-            option_int!(&self.disable_notification))?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  2
+                              } else {
+                                  1
+                              } +
+                              if self.from_chat_username.is_some() ||
+                                 self.from_chat_id.is_some() {
+                                  1
+                              } else {
+                                  0
+                              } +
+                              option_int!(&self.disable_notification))?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -125,7 +147,10 @@ impl <'a> Serialize for ForwardMessage<'a> {
             serializer.serialize_struct_elt(&mut state, "from_chat_id", &self.from_chat_id)?;
         }
 
-        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "disable_notification",
+                                     &self.disable_notification);
 
         serializer.serialize_struct_elt(&mut state, "message_id", &self.message_id)?;
 
@@ -222,15 +247,19 @@ pub struct SendLocation<'a> {
     pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
-impl <'a> Serialize for SendLocation<'a> {
+impl<'a> Serialize for SendLocation<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("SendLocation",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 3 } else { 2 } +
-            option_int!(&self.disable_notification,
-                        &self.reply_to_message_id,
-                        &self.reply_markup))?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  3
+                              } else {
+                                  2
+                              } +
+                              option_int!(&self.disable_notification,
+                                          &self.reply_to_message_id,
+                                          &self.reply_markup))?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -241,8 +270,14 @@ impl <'a> Serialize for SendLocation<'a> {
         serializer.serialize_struct_elt(&mut state, "latitude", &self.latitude)?;
         serializer.serialize_struct_elt(&mut state, "longitude", &self.longitude)?;
 
-        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
-        option_serialize_struct_elt!(serializer, &mut state, "reply_to_message_id", &self.reply_to_message_id);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "disable_notification",
+                                     &self.disable_notification);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "reply_to_message_id",
+                                     &self.reply_to_message_id);
         option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
 
         serializer.serialize_struct_end(state)
@@ -263,16 +298,20 @@ pub struct SendVenue<'a> {
     pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
-impl <'a> Serialize for SendVenue<'a> {
+impl<'a> Serialize for SendVenue<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("SendVenue",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 5 } else { 4 } +
-            option_int!(&self.foursquare_id,
-                        &self.disable_notification,
-                        &self.reply_to_message_id,
-                        &self.reply_markup))?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  5
+                              } else {
+                                  4
+                              } +
+                              option_int!(&self.foursquare_id,
+                                          &self.disable_notification,
+                                          &self.reply_to_message_id,
+                                          &self.reply_markup))?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -286,8 +325,14 @@ impl <'a> Serialize for SendVenue<'a> {
         serializer.serialize_struct_elt(&mut state, "address", &self.address)?;
 
         option_serialize_struct_elt!(serializer, &mut state, "foursquare_id", &self.foursquare_id);
-        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
-        option_serialize_struct_elt!(serializer, &mut state, "reply_to_message_id", &self.reply_to_message_id);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "disable_notification",
+                                     &self.disable_notification);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "reply_to_message_id",
+                                     &self.reply_to_message_id);
         option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
 
         serializer.serialize_struct_end(state)
@@ -306,16 +351,20 @@ pub struct SendContact<'a> {
     pub reply_markup: Option<Box<ReplyMarkup>>,
 }
 
-impl <'a> Serialize for SendContact<'a> {
+impl<'a> Serialize for SendContact<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("SendContact",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 3 } else { 2 } +
-            option_int!(&self.last_name,
-                        &self.disable_notification,
-                        &self.reply_to_message_id,
-                        &self.reply_markup))?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  3
+                              } else {
+                                  2
+                              } +
+                              option_int!(&self.last_name,
+                                          &self.disable_notification,
+                                          &self.reply_to_message_id,
+                                          &self.reply_markup))?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -327,8 +376,14 @@ impl <'a> Serialize for SendContact<'a> {
         serializer.serialize_struct_elt(&mut state, "first_name", &self.first_name)?;
 
         option_serialize_struct_elt!(serializer, &mut state, "last_name", &self.last_name);
-        option_serialize_struct_elt!(serializer, &mut state, "disable_notification", &self.disable_notification);
-        option_serialize_struct_elt!(serializer, &mut state, "reply_to_message_id", &self.reply_to_message_id);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "disable_notification",
+                                     &self.disable_notification);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "reply_to_message_id",
+                                     &self.reply_to_message_id);
         option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
 
         serializer.serialize_struct_end(state)
@@ -358,12 +413,16 @@ pub struct KickChatMember<'a> {
     pub user_id: i64,
 }
 
-impl <'a> Serialize for KickChatMember<'a> {
+impl<'a> Serialize for KickChatMember<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("KickChatMember",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 })?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  2
+                              } else {
+                                  1
+                              })?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -383,12 +442,16 @@ pub struct LeaveChat<'a> {
     pub chat_username: Option<&'a str>,
 }
 
-impl <'a> Serialize for LeaveChat<'a> {
+impl<'a> Serialize for LeaveChat<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("LeaveChat",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 })?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  1
+                              } else {
+                                  0
+                              })?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -407,12 +470,16 @@ pub struct UnbanChatMember<'a> {
     pub user_id: i64,
 }
 
-impl <'a> Serialize for UnbanChatMember<'a> {
+impl<'a> Serialize for UnbanChatMember<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("UnbanChatMember",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 })?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  2
+                              } else {
+                                  1
+                              })?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -432,12 +499,16 @@ pub struct GetChat<'a> {
     pub chat_username: Option<&'a str>,
 }
 
-impl <'a> Serialize for GetChat<'a> {
+impl<'a> Serialize for GetChat<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("GetChat",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 })?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  1
+                              } else {
+                                  0
+                              })?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -455,12 +526,16 @@ pub struct GetChatAdministrators<'a> {
     pub chat_username: Option<&'a str>,
 }
 
-impl <'a> Serialize for GetChatAdministrators<'a> {
+impl<'a> Serialize for GetChatAdministrators<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("GetChatAdministrators",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 })?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  1
+                              } else {
+                                  0
+                              })?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -478,12 +553,16 @@ pub struct GetChatMembersCount<'a> {
     pub chat_username: Option<&'a str>,
 }
 
-impl <'a> Serialize for GetChatMembersCount<'a> {
+impl<'a> Serialize for GetChatMembersCount<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("GetChatMembersCount",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 })?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  1
+                              } else {
+                                  0
+                              })?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -502,12 +581,16 @@ pub struct GetChatMember<'a> {
     pub user_id: i64,
 }
 
-impl <'a> Serialize for GetChatMember<'a> {
+impl<'a> Serialize for GetChatMember<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("GetChatMember",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 })?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  2
+                              } else {
+                                  1
+                              })?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -550,16 +633,20 @@ pub struct EditMessageText<'a> {
     pub reply_markup: Option<Box<ReplyMarkup>>, // InlineKeyboardMarkup
 }
 
-impl <'a> Serialize for EditMessageText<'a> {
+impl<'a> Serialize for EditMessageText<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("EditMessageText",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 2 } else { 1 } +
-            option_int!(&self.message_id,
-                        &self.parse_mode,
-                        &self.disable_web_page_preview,
-                        &self.reply_markup))?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  2
+                              } else {
+                                  1
+                              } +
+                              option_int!(&self.message_id,
+                                          &self.parse_mode,
+                                          &self.disable_web_page_preview,
+                                          &self.reply_markup))?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -571,7 +658,10 @@ impl <'a> Serialize for EditMessageText<'a> {
 
         option_serialize_struct_elt!(serializer, &mut state, "message_id", &self.message_id);
         option_serialize_struct_elt!(serializer, &mut state, "parse_mode", &self.parse_mode);
-        option_serialize_struct_elt!(serializer, &mut state, "disable_web_page_preview", &self.disable_web_page_preview);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "disable_web_page_preview",
+                                     &self.disable_web_page_preview);
         option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
 
         serializer.serialize_struct_end(state)
@@ -588,16 +678,20 @@ pub struct EditMessageCaption<'a> {
     pub reply_markup: Option<Box<ReplyMarkup>>, // InlineKeyboardMarkup
 }
 
-impl <'a> Serialize for EditMessageCaption<'a> {
+impl<'a> Serialize for EditMessageCaption<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("EditMessageCaption",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 } +
-            option_int!(&self.message_id,
-                        &self.inline_message_id,
-                        &self.caption,
-                        &self.reply_markup))?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  1
+                              } else {
+                                  0
+                              } +
+                              option_int!(&self.message_id,
+                                          &self.inline_message_id,
+                                          &self.caption,
+                                          &self.reply_markup))?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -606,7 +700,10 @@ impl <'a> Serialize for EditMessageCaption<'a> {
         }
 
         option_serialize_struct_elt!(serializer, &mut state, "message_id", &self.message_id);
-        option_serialize_struct_elt!(serializer, &mut state, "inline_message_id", &self.inline_message_id);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "inline_message_id",
+                                     &self.inline_message_id);
         option_serialize_struct_elt!(serializer, &mut state, "caption", &self.caption);
         option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
 
@@ -623,15 +720,19 @@ pub struct EditMessageReplyMarkup<'a> {
     pub reply_markup: Option<Box<ReplyMarkup>>, // InlineKeyboardMarkup
 }
 
-impl <'a> Serialize for EditMessageReplyMarkup<'a> {
+impl<'a> Serialize for EditMessageReplyMarkup<'a> {
     fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
         where S: Serializer
     {
         let mut state = serializer.serialize_struct("EditMessageReplyMarkup",
-            if self.chat_username.is_some() || self.chat_id.is_some() { 1 } else { 0 } +
-            option_int!(&self.message_id,
-                        &self.inline_message_id,
-                        &self.reply_markup))?;
+                              if self.chat_username.is_some() || self.chat_id.is_some() {
+                                  1
+                              } else {
+                                  0
+                              } +
+                              option_int!(&self.message_id,
+                                          &self.inline_message_id,
+                                          &self.reply_markup))?;
 
         if self.chat_username.is_some() {
             serializer.serialize_struct_elt(&mut state, "chat_id", &self.chat_username)?;
@@ -640,7 +741,10 @@ impl <'a> Serialize for EditMessageReplyMarkup<'a> {
         }
 
         option_serialize_struct_elt!(serializer, &mut state, "message_id", &self.message_id);
-        option_serialize_struct_elt!(serializer, &mut state, "inline_message_id", &self.inline_message_id);
+        option_serialize_struct_elt!(serializer,
+                                     &mut state,
+                                     "inline_message_id",
+                                     &self.inline_message_id);
         option_serialize_struct_elt!(serializer, &mut state, "reply_markup", &self.reply_markup);
 
         serializer.serialize_struct_end(state)

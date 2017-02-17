@@ -77,7 +77,11 @@ impl<'a> GetUpdates<'a> {
         }
     }
 
-    buildera!(GetUpdates; offset, i64; limit, i64; timeout, i64; allowed_updates, &'a [&'a str]);
+    buildera!(GetUpdates;
+              offset, i64;
+              limit, i64;
+              timeout, i64;
+              allowed_updates, &'a [&'a str]);
 }
 
 impl<'a> SetWebhook<'a> {
@@ -90,7 +94,11 @@ impl<'a> SetWebhook<'a> {
         }
     }
 
-    buildera!(SetWebhook; certificate, &'a str; max_connections, i64; allowed_updates, &'a [&'a str]);
+    buildera!(SetWebhook;
+              certificate, &'a str;
+              certificate, &'a str;
+              max_connections, i64;
+              allowed_updates, &'a [&'a str]);
 }
 
 impl<'a> SendMessage<'a> {
@@ -107,7 +115,14 @@ impl<'a> SendMessage<'a> {
         }
     }
 
-    buildera!(SendMessage; chat_id, i64; chat_username, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendMessage;
+              chat_id, i64;
+              chat_username, &'a str;
+              parse_mode, &'a str;
+              disable_web_page_preview, bool;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> ForwardMessage<'a> {
@@ -122,7 +137,12 @@ impl<'a> ForwardMessage<'a> {
         }
     }
 
-    buildera!(ForwardMessage; chat_id, i64; chat_username, &'a str; from_chat_id, i64; from_chat_username, &'a str; disable_notification, bool);
+    buildera!(ForwardMessage;
+              chat_id, i64;
+              chat_username, &'a str;
+              from_chat_id, i64;
+              from_chat_username, &'a str;
+              disable_notification, bool);
 }
 
 impl<'a> SendPhoto<'a> {
@@ -139,7 +159,15 @@ impl<'a> SendPhoto<'a> {
         }
     }
 
-    buildera!(SendPhoto; chat_id, i64; chat_username, &'a str; photo, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendPhoto;
+              chat_id, i64;
+              chat_username, &'a str;
+              photo, &'a str;
+              file_id, &'a str;
+              caption, &'a str;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendAudio<'a> {
@@ -159,7 +187,18 @@ impl<'a> SendAudio<'a> {
         }
     }
 
-    buildera!(SendAudio; chat_id, i64; chat_username, &'a str; audio, &'a str; file_id, &'a str; caption, &'a str; duration, i64; performer, &'a str; title, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendAudio;
+              chat_id, i64;
+              chat_username, &'a str;
+              audio, &'a str;
+              file_id, &'a str;
+              caption, &'a str;
+              duration, i64;
+              performer, &'a str;
+              title, &'a str;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendDocument<'a> {
@@ -176,7 +215,15 @@ impl<'a> SendDocument<'a> {
         }
     }
 
-    buildera!(SendDocument; chat_id, i64; chat_username, &'a str; document, &'a str; file_id, &'a str; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendDocument;
+              chat_id, i64;
+              chat_username, &'a str;
+              document, &'a str;
+              file_id, &'a str;
+              caption, &'a str;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendSticker<'a> {
@@ -192,7 +239,14 @@ impl<'a> SendSticker<'a> {
         }
     }
 
-    buildera!(SendSticker; chat_id, i64; chat_username, &'a str; sticker, &'a str; file_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendSticker;
+              chat_id, i64;
+              chat_username, &'a str;
+              sticker, &'a str;
+              file_id, &'a str;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendVideo<'a> {
@@ -212,7 +266,18 @@ impl<'a> SendVideo<'a> {
         }
     }
 
-    buildera!(SendVideo; chat_id, i64; chat_username, &'a str; video, &'a str; file_id, &'a str; duration, i64; width, i64; height, i64; caption, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendVideo;
+              chat_id, i64;
+              chat_username, &'a str;
+              video, &'a str;
+              file_id, &'a str;
+              duration, i64;
+              width, i64;
+              height, i64;
+              caption, &'a str;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendVoice<'a> {
@@ -230,7 +295,16 @@ impl<'a> SendVoice<'a> {
         }
     }
 
-    buildera!(SendVoice; chat_id, i64; chat_username, &'a str; voice, &'a str; file_id, &'a str; caption, &'a str; duration, i64; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendVoice;
+              chat_id, i64;
+              chat_username, &'a str;
+              voice, &'a str;
+              file_id, &'a str;
+              caption, &'a str;
+              duration, i64;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendLocation<'a> {
@@ -246,7 +320,12 @@ impl<'a> SendLocation<'a> {
         }
     }
 
-    buildera!(SendLocation; chat_id, i64; chat_username, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendLocation;
+              chat_id, i64;
+              chat_username, &'a str;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendVenue<'a> {
@@ -265,7 +344,13 @@ impl<'a> SendVenue<'a> {
         }
     }
 
-    buildera!(SendVenue; chat_id, i64; chat_username, &'a str; foursquare_id, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendVenue;
+              chat_id, i64;
+              chat_username, &'a str;
+              foursquare_id, &'a str;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl<'a> SendContact<'a> {
@@ -282,7 +367,13 @@ impl<'a> SendContact<'a> {
         }
     }
 
-    buildera!(SendContact; chat_id, i64; chat_username, &'a str; last_name, &'a str; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>);
+    buildera!(SendContact;
+              chat_id, i64;
+              chat_username, &'a str;
+              last_name, &'a str;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>);
 }
 
 impl GetUserProfilePhotos {
@@ -294,14 +385,14 @@ impl GetUserProfilePhotos {
         }
     }
 
-    builder!(GetUserProfilePhotos; offset, i64; limit, i64);
+    builder!(GetUserProfilePhotos;
+              offset, i64;
+              limit, i64);
 }
 
 impl<'a> GetFile<'a> {
     pub fn new(file_id: &'a str) -> GetFile<'a> {
-        GetFile {
-            file_id: file_id,
-        }
+        GetFile { file_id: file_id }
     }
 }
 
@@ -314,7 +405,9 @@ impl<'a> KickChatMember<'a> {
         }
     }
 
-    buildera!(KickChatMember; chat_id, i64; chat_username, &'a str);
+    buildera!(KickChatMember;
+              chat_id, i64;
+              chat_username, &'a str);
 }
 
 impl<'a> LeaveChat<'a> {
@@ -325,7 +418,9 @@ impl<'a> LeaveChat<'a> {
         }
     }
 
-    buildera!(LeaveChat; chat_id, i64; chat_username, &'a str);
+    buildera!(LeaveChat;
+              chat_id, i64;
+              chat_username, &'a str);
 }
 
 impl<'a> UnbanChatMember<'a> {
@@ -337,7 +432,9 @@ impl<'a> UnbanChatMember<'a> {
         }
     }
 
-    buildera!(UnbanChatMember; chat_id, i64; chat_username, &'a str);
+    buildera!(UnbanChatMember;
+              chat_id, i64;
+              chat_username, &'a str);
 }
 
 impl<'a> GetChat<'a> {
@@ -348,7 +445,9 @@ impl<'a> GetChat<'a> {
         }
     }
 
-    buildera!(GetChat; chat_id, i64; chat_username, &'a str);
+    buildera!(GetChat;
+              chat_id, i64;
+              chat_username, &'a str);
 }
 
 impl<'a> GetChatAdministrators<'a> {
@@ -359,7 +458,9 @@ impl<'a> GetChatAdministrators<'a> {
         }
     }
 
-    buildera!(GetChatAdministrators; chat_id, i64; chat_username, &'a str);
+    buildera!(GetChatAdministrators;
+              chat_id, i64;
+              chat_username, &'a str);
 }
 
 impl<'a> GetChatMembersCount<'a> {
@@ -370,7 +471,9 @@ impl<'a> GetChatMembersCount<'a> {
         }
     }
 
-    buildera!(GetChatMembersCount; chat_id, i64; chat_username, &'a str);
+    buildera!(GetChatMembersCount;
+              chat_id, i64;
+              chat_username, &'a str);
 }
 
 impl<'a> GetChatMember<'a> {
@@ -382,7 +485,9 @@ impl<'a> GetChatMember<'a> {
         }
     }
 
-    buildera!(GetChatMember; chat_id, i64; chat_username, &'a str);
+    buildera!(GetChatMember;
+              chat_id, i64;
+              chat_username, &'a str);
 }
 
 impl<'a> AnswerCallbackQuery<'a> {
@@ -396,7 +501,11 @@ impl<'a> AnswerCallbackQuery<'a> {
         }
     }
 
-    buildera!(AnswerCallbackQuery; text, &'a str; show_alert, bool; url, &'a str; cache_time, i64);
+    buildera!(AnswerCallbackQuery;
+              text, &'a str;
+              show_alert, bool;
+              url, &'a str;
+              cache_time, i64);
 }
 
 impl<'a> EditMessageText<'a> {
@@ -413,7 +522,14 @@ impl<'a> EditMessageText<'a> {
         }
     }
 
-    buildera!(EditMessageText; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; parse_mode, &'a str; disable_web_page_preview, bool; reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
+    buildera!(EditMessageText;
+              chat_id, i64;
+              chat_username, &'a str;
+              message_id, i64;
+              inline_message_id, &'a str;
+              parse_mode, &'a str;
+              disable_web_page_preview, bool;
+              reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
 }
 
 impl<'a> EditMessageCaption<'a> {
@@ -428,7 +544,13 @@ impl<'a> EditMessageCaption<'a> {
         }
     }
 
-    buildera!(EditMessageCaption; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; caption, &'a str; reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
+    buildera!(EditMessageCaption;
+              chat_id, i64;
+              chat_username, &'a str;
+              message_id, i64;
+              inline_message_id, &'a str;
+              caption, &'a str;
+              reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
 }
 
 impl<'a> EditMessageReplyMarkup<'a> {
@@ -442,11 +564,18 @@ impl<'a> EditMessageReplyMarkup<'a> {
         }
     }
 
-    buildera!(EditMessageReplyMarkup; chat_id, i64; chat_username, &'a str; message_id, i64; inline_message_id, &'a str; reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
+    buildera!(EditMessageReplyMarkup;
+              chat_id, i64;
+              chat_username, &'a str;
+              message_id, i64;
+              inline_message_id, &'a str;
+              reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
 }
 
 impl<'a> AnswerInlineQuery<'a> {
-    pub fn new(inline_query_id: &'a str, results: Vec<types::InlineQueryResult>) -> AnswerInlineQuery<'a> {
+    pub fn new(inline_query_id: &'a str,
+               results: Vec<types::InlineQueryResult>)
+               -> AnswerInlineQuery<'a> {
         AnswerInlineQuery {
             inline_query_id: inline_query_id,
             results: results,
@@ -458,7 +587,12 @@ impl<'a> AnswerInlineQuery<'a> {
         }
     }
 
-    buildera!(AnswerInlineQuery; cache_time, i64; is_personal, bool; next_offset, &'a str; switch_pm_text, &'a str; switch_pm_parameter, &'a str);
+    buildera!(AnswerInlineQuery;
+              cache_time, i64;
+              is_personal, bool;
+              next_offset, &'a str;
+              switch_pm_text, &'a str;
+              switch_pm_parameter, &'a str);
 }
 
 impl<'a> SendGame<'a> {
@@ -472,7 +606,10 @@ impl<'a> SendGame<'a> {
         }
     }
 
-    buildera!(SendGame; disable_notification, bool; reply_to_message_id, i64; reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
+    buildera!(SendGame;
+              disable_notification, bool;
+              reply_to_message_id, i64;
+              reply_markup, Box<ReplyMarkup>); // InlineKeyboardMarkup
 }
 
 impl<'a> SetGameScore<'a> {
@@ -488,7 +625,12 @@ impl<'a> SetGameScore<'a> {
         }
     }
 
-    buildera!(SetGameScore; force, bool; disable_edit_message, bool; chat_id, i64; message_id, i64; inline_message_id, &'a str);
+    buildera!(SetGameScore;
+              force, bool;
+              disable_edit_message, bool;
+              chat_id, i64;
+              message_id, i64;
+              inline_message_id, &'a str);
 }
 
 impl<'a> GetGameHighScores<'a> {
@@ -501,7 +643,10 @@ impl<'a> GetGameHighScores<'a> {
         }
     }
 
-    buildera!(GetGameHighScores; chat_id, i64; message_id, i64; inline_message_id, &'a str);
+    buildera!(GetGameHighScores;
+              chat_id, i64;
+              message_id, i64;
+              inline_message_id, &'a str);
 }
 
 impl KeyboardButton {
@@ -513,7 +658,9 @@ impl KeyboardButton {
         }
     }
 
-    builder!(KeyboardButton; request_contact, bool; request_location, bool);
+    builder!(KeyboardButton;
+              request_contact, bool;
+              request_location, bool);
 }
 
 impl InlineKeyboardButton {
@@ -528,14 +675,17 @@ impl InlineKeyboardButton {
         }
     }
 
-    builder!(InlineKeyboardButton; url, String; callback_data, String; switch_inline_query, String; switch_inline_query_current_chat, String; callback_game, types::CallbackGame);
+    builder!(InlineKeyboardButton;
+              url, String;
+              callback_data, String;
+              switch_inline_query, String;
+              switch_inline_query_current_chat, String;
+              callback_game, types::CallbackGame);
 }
 
 impl ReplyMarkup {
     pub fn new_inline_keyboard(keyboard: Vec<Vec<InlineKeyboardButton>>) -> ReplyMarkup {
-        ReplyMarkup::InlineKeyboard(InlineKeyboardMarkup {
-            inline_keyboard: keyboard,
-        })
+        ReplyMarkup::InlineKeyboard(InlineKeyboardMarkup { inline_keyboard: keyboard })
     }
 
     pub fn new_reply_keyboard(keyboard: Vec<Vec<KeyboardButton>>) -> ReplyMarkup {
@@ -575,7 +725,7 @@ impl ReplyMarkup {
                 markup.selective = Some(selective);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -586,7 +736,7 @@ impl ReplyMarkup {
                 markup.resize_keyboard = Some(resize_keyboard);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -597,7 +747,7 @@ impl ReplyMarkup {
                 markup.one_time_keyboard = Some(one_time_keyboard);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -619,7 +769,11 @@ impl InputMessageContent {
         })
     }
 
-    pub fn new_venue(latitude: f64, longitude: f64, title: String, address: String) -> InputMessageContent {
+    pub fn new_venue(latitude: f64,
+                     longitude: f64,
+                     title: String,
+                     address: String)
+                     -> InputMessageContent {
         InputMessageContent::Venue(InputVenueMessageContent {
             latitude: latitude,
             longitude: longitude,
@@ -643,18 +797,20 @@ impl InputMessageContent {
                 markup.parse_mode = Some(parse_mode);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
-    pub fn disable_web_page_preview(mut self, disable_web_page_preview: bool) -> InputMessageContent {
+    pub fn disable_web_page_preview(mut self,
+                                    disable_web_page_preview: bool)
+                                    -> InputMessageContent {
         match self {
             InputMessageContent::Text(ref mut markup) => {
                 markup.disable_web_page_preview = Some(disable_web_page_preview);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -665,7 +821,7 @@ impl InputMessageContent {
                 markup.foursquare_id = Some(foursquare_id);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -676,15 +832,17 @@ impl InputMessageContent {
                 markup.last_name = Some(last_name);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 }
 
 impl InlineQueryResult {
-    pub fn new_article(id: String, title: String,
-                       input_message_content: InputMessageContent) -> InlineQueryResult {
+    pub fn new_article(id: String,
+                       title: String,
+                       input_message_content: InputMessageContent)
+                       -> InlineQueryResult {
         InlineQueryResult::Article(InlineQueryResultArticle {
             type_name: "article".into(),
             id: id,
@@ -700,8 +858,7 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_photo(id: String, photo_url: String,
-                     thumb_url: String) -> InlineQueryResult {
+    pub fn new_photo(id: String, photo_url: String, thumb_url: String) -> InlineQueryResult {
         InlineQueryResult::Photo(InlineQueryResultPhoto {
             type_name: "photo".into(),
             id: id,
@@ -717,8 +874,7 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_gif(id: String, gif_url: String,
-                   thumb_url: String) -> InlineQueryResult {
+    pub fn new_gif(id: String, gif_url: String, thumb_url: String) -> InlineQueryResult {
         InlineQueryResult::Gif(InlineQueryResultGif {
             type_name: "gif".into(),
             id: id,
@@ -733,8 +889,7 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_mpeg4_gif(id: String, mpeg4_url: String,
-                         thumb_url: String) -> InlineQueryResult {
+    pub fn new_mpeg4_gif(id: String, mpeg4_url: String, thumb_url: String) -> InlineQueryResult {
         InlineQueryResult::Mpeg4Gif(InlineQueryResultMpeg4Gif {
             type_name: "mpeg4_gif".into(),
             id: id,
@@ -749,8 +904,12 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_video(id: String, video_url: String, mime_type: String,
-                     thumb_url: String, title: String) -> InlineQueryResult {
+    pub fn new_video(id: String,
+                     video_url: String,
+                     mime_type: String,
+                     thumb_url: String,
+                     title: String)
+                     -> InlineQueryResult {
         InlineQueryResult::Video(InlineQueryResultVideo {
             type_name: "video".into(),
             id: id,
@@ -768,8 +927,7 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_audio(id: String, audio_url: String,
-                     title: String) -> InlineQueryResult {
+    pub fn new_audio(id: String, audio_url: String, title: String) -> InlineQueryResult {
         InlineQueryResult::Audio(InlineQueryResultAudio {
             type_name: "audio".into(),
             id: id,
@@ -783,8 +941,7 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_voice(id: String, voice_url: String,
-                     title: String) -> InlineQueryResult {
+    pub fn new_voice(id: String, voice_url: String, title: String) -> InlineQueryResult {
         InlineQueryResult::Voice(InlineQueryResultVoice {
             type_name: "voice".into(),
             id: id,
@@ -797,8 +954,11 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_document(id: String, title: String, document_url: String,
-                        mime_type: String) -> InlineQueryResult {
+    pub fn new_document(id: String,
+                        title: String,
+                        document_url: String,
+                        mime_type: String)
+                        -> InlineQueryResult {
         InlineQueryResult::Document(InlineQueryResultDocument {
             type_name: "document".into(),
             id: id,
@@ -815,8 +975,11 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_location(id: String, latitude: f64, longitude: f64,
-                        title: String,) -> InlineQueryResult {
+    pub fn new_location(id: String,
+                        latitude: f64,
+                        longitude: f64,
+                        title: String)
+                        -> InlineQueryResult {
         InlineQueryResult::Location(InlineQueryResultLocation {
             type_name: "location".into(),
             id: id,
@@ -831,8 +994,12 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_venue(id: String, latitude: f64, longitude: f64, title: String,
-                     address: String) -> InlineQueryResult {
+    pub fn new_venue(id: String,
+                     latitude: f64,
+                     longitude: f64,
+                     title: String,
+                     address: String)
+                     -> InlineQueryResult {
         InlineQueryResult::Venue(InlineQueryResultVenue {
             type_name: "venue".into(),
             id: id,
@@ -849,8 +1016,7 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_contact(id: String, phone_number: String,
-                       first_name: String,) -> InlineQueryResult {
+    pub fn new_contact(id: String, phone_number: String, first_name: String) -> InlineQueryResult {
         InlineQueryResult::Contact(InlineQueryResultContact {
             type_name: "contact".into(),
             id: id,
@@ -921,8 +1087,10 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_cached_document(id: String, title: String,
-                               document_file_id: String) -> InlineQueryResult {
+    pub fn new_cached_document(id: String,
+                               title: String,
+                               document_file_id: String)
+                               -> InlineQueryResult {
         InlineQueryResult::CachedDocument(InlineQueryResultCachedDocument {
             type_name: "document".into(),
             id: id,
@@ -935,8 +1103,7 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_cached_video(id: String, video_file_id: String,
-                            title: String) -> InlineQueryResult {
+    pub fn new_cached_video(id: String, video_file_id: String, title: String) -> InlineQueryResult {
         InlineQueryResult::CachedVideo(InlineQueryResultCachedVideo {
             type_name: "video".into(),
             id: id,
@@ -949,8 +1116,7 @@ impl InlineQueryResult {
         })
     }
 
-    pub fn new_cached_voice(id: String, voice_file_id: String,
-                            title: String) -> InlineQueryResult {
+    pub fn new_cached_voice(id: String, voice_file_id: String, title: String) -> InlineQueryResult {
         InlineQueryResult::CachedVoice(InlineQueryResultCachedVoice {
             type_name: "voice".into(),
             id: id,
@@ -1064,7 +1230,7 @@ impl InlineQueryResult {
                 result.url = Some(url);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1075,7 +1241,7 @@ impl InlineQueryResult {
                 result.hide_url = Some(hide_url);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1110,88 +1276,58 @@ impl InlineQueryResult {
                 result.description = Some(description);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
     pub fn thumb_url(mut self, thumb_url: String) -> InlineQueryResult {
         match self {
-            InlineQueryResult::Article(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Article(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            InlineQueryResult::Document(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Document(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            InlineQueryResult::Location(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Location(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            InlineQueryResult::Venue(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Venue(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            InlineQueryResult::Contact(ref mut result) => {
-                result.thumb_url = Some(thumb_url)
-            }
+            InlineQueryResult::Contact(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
     pub fn thumb_width(mut self, thumb_width: i64) -> InlineQueryResult {
         match self {
-            InlineQueryResult::Article(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Article(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            InlineQueryResult::Document(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Document(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            InlineQueryResult::Location(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Location(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            InlineQueryResult::Venue(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Venue(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            InlineQueryResult::Contact(ref mut result) => {
-                result.thumb_width = Some(thumb_width)
-            }
+            InlineQueryResult::Contact(ref mut result) => result.thumb_width = Some(thumb_width),
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
     pub fn thumb_height(mut self, thumb_height: i64) -> InlineQueryResult {
         match self {
-            InlineQueryResult::Article(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Article(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            InlineQueryResult::Document(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Document(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            InlineQueryResult::Location(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Location(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            InlineQueryResult::Venue(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Venue(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            InlineQueryResult::Contact(ref mut result) => {
-                result.thumb_height = Some(thumb_height)
-            }
+            InlineQueryResult::Contact(ref mut result) => result.thumb_height = Some(thumb_height),
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1202,7 +1338,7 @@ impl InlineQueryResult {
                 result.photo_width = Some(photo_width);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1213,7 +1349,7 @@ impl InlineQueryResult {
                 result.photo_height = Some(photo_height);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1224,7 +1360,7 @@ impl InlineQueryResult {
                 result.gif_width = Some(gif_width);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1235,7 +1371,7 @@ impl InlineQueryResult {
                 result.gif_height = Some(gif_height);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1246,7 +1382,7 @@ impl InlineQueryResult {
                 result.mpeg4_width = Some(mpeg4_width);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1257,7 +1393,7 @@ impl InlineQueryResult {
                 result.mpeg4_height = Some(mpeg4_height);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1268,7 +1404,7 @@ impl InlineQueryResult {
                 result.video_width = Some(video_width);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1279,7 +1415,7 @@ impl InlineQueryResult {
                 result.video_height = Some(video_height);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1290,7 +1426,7 @@ impl InlineQueryResult {
                 result.video_duration = Some(video_duration);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1301,7 +1437,7 @@ impl InlineQueryResult {
                 result.audio_duration = Some(audio_duration);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1312,7 +1448,7 @@ impl InlineQueryResult {
                 result.performer = Some(performer);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1323,7 +1459,7 @@ impl InlineQueryResult {
                 result.voice_duration = Some(voice_duration);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1354,7 +1490,7 @@ impl InlineQueryResult {
                 result.title = Some(title);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1365,7 +1501,7 @@ impl InlineQueryResult {
                 result.foursquare_id = Some(foursquare_id);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1376,7 +1512,7 @@ impl InlineQueryResult {
                 result.last_name = Some(last_name);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
@@ -1439,12 +1575,14 @@ impl InlineQueryResult {
                 result.caption = Some(caption);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }
 
-    pub fn input_message_content(mut self, input_message_content: types::InputMessageContent) -> InlineQueryResult {
+    pub fn input_message_content(mut self,
+                                 input_message_content: types::InputMessageContent)
+                                 -> InlineQueryResult {
         match self {
             InlineQueryResult::Photo(ref mut result) => {
                 result.input_message_content = Some(input_message_content);
@@ -1518,7 +1656,7 @@ impl InlineQueryResult {
                 result.input_message_content = Some(input_message_content);
             }
 
-            _ => { }
+            _ => {}
         }
         self
     }

@@ -8,7 +8,8 @@ use std::thread;
 use std::env;
 
 fn main() {
-    let token = &env::var("TOKEN").expect("No bot token provided, please set the environment variable TOKEN");
+    let token = &env::var("TOKEN")
+        .expect("No bot token provided, please set the environment variable TOKEN");
     let bot_arc = Arc::new(BotApi::new(token));
 
     let mut update_args = args::GetUpdates::new().timeout(600).offset(0);
@@ -30,7 +31,8 @@ fn main() {
                                                message.text.unwrap_or(String::new()));
 
                     let _ = bot.send_message(&args::SendMessage::new(&message_text)
-                                            .chat_id(chat_id).parse_mode("HTML"));
+                        .chat_id(chat_id)
+                        .parse_mode("HTML"));
                 });
             }
         }
