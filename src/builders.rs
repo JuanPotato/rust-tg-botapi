@@ -96,7 +96,6 @@ impl<'a> SetWebhook<'a> {
 
     buildera!(SetWebhook;
               certificate, &'a str;
-              certificate, &'a str;
               max_connections, i64;
               allowed_updates, &'a [&'a str]);
 }
