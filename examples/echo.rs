@@ -2,7 +2,6 @@ extern crate tg_botapi;
 
 use tg_botapi::args;
 use tg_botapi::BotApi;
-use tg_botapi::args::ChatId;
 
 use std::sync::Arc;
 use std::thread;
@@ -31,7 +30,7 @@ fn main() {
                     let message_text = format!("\"{}\"\n    - <i>You, CURRENT_YEAR</i>",
                                                message.text.unwrap_or(String::new()));
 
-                    let _ = bot.send_message(&args::SendMessage::new(ChatId::Id(chat_id),
+                    let _ = bot.send_message(&args::SendMessage::new(chat_id.into(),
                                                                      &message_text)
                                                       .parse_mode("HTML"));
                 });

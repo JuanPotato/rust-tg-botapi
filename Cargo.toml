@@ -9,10 +9,15 @@ repository = "https://github.com/JuanPotato/rust-tg-botapi"
 version = "0.2.0"
 
 [dependencies]
+derive_more = "0.6.1"
 hyper = "0.9.18"
 serde = "0.9.11"
 serde_derive = "0.9.11"
 serde_json = "0.9.9"
+
+[dependencies.derive-new]
+git = "https://github.com/nrc/derive-new.git"
+optional = false
 
 [dependencies.multipart]
 default-features = false

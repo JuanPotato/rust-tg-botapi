@@ -9,13 +9,13 @@ pub struct ApiResult {
     pub parameters: Option<ResponseParameters>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 pub enum MessageOrBool {
     M(Message),
     B(bool),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ReplyMarkup {
     InlineKeyboard(InlineKeyboardMarkup),
@@ -49,7 +49,7 @@ pub struct ForceReplyMarkup {
     pub selective: Option<bool>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum InlineQueryResult {
     #[serde(rename = "article")]
@@ -80,49 +80,49 @@ pub enum InlineQueryResult {
     CachedSticker(InlineQueryResultCachedSticker),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum InlineQueryResultMetaPhoto {
     Fresh(InlineQueryResultPhoto),
     Cached(InlineQueryResultCachedPhoto),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum InlineQueryResultMetaGif {
     Fresh(InlineQueryResultGif),
     Cached(InlineQueryResultCachedGif),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum InlineQueryResultMetaMpeg4Gif {
     Fresh(InlineQueryResultMpeg4Gif),
     Cached(InlineQueryResultCachedMpeg4Gif),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum InlineQueryResultMetaVideo {
     Fresh(InlineQueryResultVideo),
     Cached(InlineQueryResultCachedVideo),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum InlineQueryResultMetaAudio {
     Fresh(InlineQueryResultAudio),
     Cached(InlineQueryResultCachedAudio),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum InlineQueryResultMetaVoice {
     Fresh(InlineQueryResultVoice),
     Cached(InlineQueryResultCachedVoice),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum InlineQueryResultMetaDocument {
     Fresh(InlineQueryResultDocument),
@@ -385,7 +385,7 @@ pub struct InlineQueryResultCachedAudio {
     pub input_message_content: Option<InputMessageContent>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, From, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum InputMessageContent {
     Text(InputTextMessageContent),
@@ -605,34 +605,41 @@ pub struct File {
     pub file_path: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, new, Serialize, Deserialize)]
 pub struct KeyboardButton {
     pub text: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[new(default)]
     pub request_contact: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[new(default)]
     pub request_location: Option<bool>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, new, Serialize, Deserialize)]
 pub struct InlineKeyboardButton {
     pub text: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[new(default)]
     pub url: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[new(default)]
     pub callback_data: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[new(default)]
     pub switch_inline_query: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[new(default)]
     pub switch_inline_query_current_chat: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[new(default)]
     pub callback_game: Option<CallbackGame>,
 }
 
