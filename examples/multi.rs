@@ -1,6 +1,7 @@
 extern crate tg_botapi;
 
 use tg_botapi::args;
+use tg_botapi::args::ChatId;
 use tg_botapi::types;
 use tg_botapi::BotApi;
 
@@ -30,33 +31,31 @@ fn main() {
                 let mut split_text = message_text.split_whitespace();
 
                 if let Some(cmd) = split_text.next() {
+                    let chat_id = ChatId::Id(message.chat.id);
+                    let msg_id = message.message_id;
+
                     match cmd {
                         "/exit" => {
-                            let _ = bot.send_message(&args::SendMessage::new("Goodbye!")
-                                .chat_id(message.chat.id)
-                                .reply_to_message_id(message.message_id));
+                            let _ = bot.send_message(&args::SendMessage::new(chat_id, "Goodbye!")
+                                .reply_to_message_id(msg_id));
                             break 'update_loop;
                         }
                         "/start" | "/help" => {
-                            let _ = bot.send_message(&args::SendMessage::new("Hi, I'm a bot!")
-                                .chat_id(message.chat.id)
-                                .reply_to_message_id(message.message_id));
+                            let _ = bot.send_message(&args::SendMessage::new(chat_id, "Hi, I'm a bot!")
+                                .reply_to_message_id(msg_id));
                         }
                         "/photo" => {
-                            let _ = bot.send_photo(&args::SendPhoto::new()
-                                .chat_id(message.chat.id)
-                                .reply_to_message_id(message.message_id)
+                            let _ = bot.send_photo(&args::SendPhoto::new(chat_id)
+                                .reply_to_message_id(msg_id)
                                 .photo("/home/juan/Documents/JuanPotato.png"));
                         }
                         "/edit" => {
-                            let sent = bot.send_message(&args::SendMessage::new("Editing")
-                                .chat_id(message.chat.id)
-                                .reply_to_message_id(message.message_id));
+                            let sent = bot.send_message(&args::SendMessage::new(chat_id, "Editing")
+                                .reply_to_message_id(msg_id));
 
                             match sent {
                                 Ok(sent_message) => {
-                                    let mut edit_args = args::EditMessageText::new("Edited")
-                                        .chat_id(message.chat.id)
+                                    let mut edit_args = args::EditMessageText::new(chat_id, "Edited")
                                         .message_id(sent_message.message_id)
                                         .parse_mode("Markdown");
 
@@ -74,22 +73,16 @@ fn main() {
                             let bot2 = bot.clone();
                             let bot3 = bot.clone();
 
-                            let chat_id = message.chat.id;
-                            let msg_id = message.message_id;
-
                             thread::spawn(move || {
-                                let _ = bot1.send_message(&args::SendMessage::new("Thread 1")
-                                    .chat_id(chat_id)
+                                let _ = bot1.send_message(&args::SendMessage::new(chat_id, "Thread 1")
                                     .reply_to_message_id(msg_id));
                             });
                             thread::spawn(move || {
-                                let _ = bot2.send_message(&args::SendMessage::new("Thread 2")
-                                    .chat_id(chat_id)
+                                let _ = bot2.send_message(&args::SendMessage::new(chat_id, "Thread 2")
                                     .reply_to_message_id(msg_id));
                             });
                             thread::spawn(move || {
-                                let _ = bot3.send_message(&args::SendMessage::new("Thread 3")
-                                    .chat_id(chat_id)
+                                let _ = bot3.send_message(&args::SendMessage::new(chat_id, "Thread 3")
                                     .reply_to_message_id(msg_id));
                             });
                         }
@@ -106,8 +99,7 @@ fn main() {
                             ]; // Find prettier way to do this :\
 
                             let _ = bot.send_message(&args::SendMessage
-                                ::new("Yes or No?")
-                                .chat_id(message.chat.id)
+                                ::new(chat_id, "Yes or No?")
                                 .reply_markup(types::ReplyMarkup
                                     ::new_reply_keyboard(keyboard)
                                     .into())
@@ -130,8 +122,7 @@ fn main() {
                             ];
 
                             let _ = bot.send_message(&args::SendMessage
-                                ::new("Me")
-                                .chat_id(message.chat.id)
+                                ::new(chat_id, "Me")
                                 .reply_markup(types::ReplyMarkup
                                     ::new_inline_keyboard(keyboard)
                                     .into())
@@ -139,8 +130,7 @@ fn main() {
                         }
                         "/clear" | "No" => {
                             let _ = bot.send_message(&args::SendMessage
-                                ::new("Me too")
-                                .chat_id(message.chat.id)
+                                ::new(chat_id, "Me too")
                                 .reply_markup(types::ReplyMarkup
                                     ::new_reply_keyboard_remove(true)
                                     .into()),
@@ -152,12 +142,12 @@ fn main() {
 
                 if let Some(new_chat_member) = message.new_chat_member {
                     if new_chat_member.id == me_irl.id {
+                        let chat_id = ChatId::Id(message.chat.id);
                         let text = "Hi, thanks for adding me to this group, but I don't want to \
                                     be here.\nSee ya!";
                         let _ =
-                            bot.send_message(&args::SendMessage::new(text)
-                                .chat_id(message.chat.id));
-                        let _ = bot.leave_chat(&args::LeaveChat::new().chat_id(message.chat.id));
+                            bot.send_message(&args::SendMessage::new(chat_id, text));
+                        let _ = bot.leave_chat(&args::LeaveChat::new(chat_id));
                     }
                 }
             }
