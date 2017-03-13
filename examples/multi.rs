@@ -37,27 +37,31 @@ fn main() {
                     match cmd {
                         "/exit" => {
                             let _ = bot.send_message(&args::SendMessage::new(chat_id, "Goodbye!")
-                                .reply_to_message_id(msg_id));
+                                                          .reply_to_message_id(msg_id));
                             break 'update_loop;
                         }
                         "/start" | "/help" => {
-                            let _ = bot.send_message(&args::SendMessage::new(chat_id, "Hi, I'm a bot!")
-                                .reply_to_message_id(msg_id));
+                            let _ = bot.send_message(&args::SendMessage::new(chat_id,
+                                                                             "Hi, I'm a bot!")
+                                                              .reply_to_message_id(msg_id));
                         }
                         "/photo" => {
-                            let _ = bot.send_photo(&args::SendPhoto::new(chat_id)
-                                .reply_to_message_id(msg_id)
-                                .photo("/home/juan/Documents/JuanPotato.png"));
+                            let _ =
+                                bot.send_photo(&args::SendPhoto::new(chat_id)
+                                                    .reply_to_message_id(msg_id)
+                                                    .photo("/home/juan/Documents/JuanPotato.png"));
                         }
                         "/edit" => {
-                            let sent = bot.send_message(&args::SendMessage::new(chat_id, "Editing")
-                                .reply_to_message_id(msg_id));
+                            let sent =
+                                bot.send_message(&args::SendMessage::new(chat_id, "Editing")
+                                                      .reply_to_message_id(msg_id));
 
                             match sent {
                                 Ok(sent_message) => {
-                                    let mut edit_args = args::EditMessageText::new(chat_id, "Edited")
-                                        .message_id(sent_message.message_id)
-                                        .parse_mode("Markdown");
+                                    let mut edit_args = args::EditMessageText::new(chat_id,
+                                                                                   "Edited")
+                                            .message_id(sent_message.message_id)
+                                            .parse_mode("Markdown");
 
                                     if let Some(arg) = split_text.next() {
                                         edit_args.text = &arg;
@@ -74,29 +78,27 @@ fn main() {
                             let bot3 = bot.clone();
 
                             thread::spawn(move || {
-                                let _ = bot1.send_message(&args::SendMessage::new(chat_id, "Thread 1")
-                                    .reply_to_message_id(msg_id));
-                            });
+                                              let _ =
+                                    bot1.send_message(&args::SendMessage::new(chat_id, "Thread 1")
+                                                           .reply_to_message_id(msg_id));
+                                          });
                             thread::spawn(move || {
-                                let _ = bot2.send_message(&args::SendMessage::new(chat_id, "Thread 2")
-                                    .reply_to_message_id(msg_id));
-                            });
+                                              let _ =
+                                    bot2.send_message(&args::SendMessage::new(chat_id, "Thread 2")
+                                                           .reply_to_message_id(msg_id));
+                                          });
                             thread::spawn(move || {
-                                let _ = bot3.send_message(&args::SendMessage::new(chat_id, "Thread 3")
-                                    .reply_to_message_id(msg_id));
-                            });
+                                              let _ =
+                                    bot3.send_message(&args::SendMessage::new(chat_id, "Thread 3")
+                                                           .reply_to_message_id(msg_id));
+                                          });
                         }
                         "/button" => {
-                            let keyboard = vec![
-                                vec![
-                                    types::KeyboardButton::new("Yes".into()),
-                                    types::KeyboardButton::new("No".into()),
-                                ],
-                                vec![
-                                    types::KeyboardButton::new("Eh".into()),
-                                    types::KeyboardButton::new("He".into()),
-                                ]
-                            ]; // Find prettier way to do this :\
+                            let keyboard = vec![vec![types::KeyboardButton::new("Yes".into()),
+                                                     types::KeyboardButton::new("No".into())],
+                                                vec![types::KeyboardButton::new("Eh".into()),
+                                                     types::KeyboardButton::new("He".into())]];
+                            // Find prettier way to do this :\
 
                             let _ = bot.send_message(&args::SendMessage
                                 ::new(chat_id, "Yes or No?")
@@ -106,20 +108,18 @@ fn main() {
                             );
                         }
                         "/inline" => {
-                            let keyboard = vec![
-                                vec![
+                            let keyboard = vec![vec![
                                     types::InlineKeyboardButton::new("Some".into())
                                         .url("https://www.youtube.com/watch?v=L_jWHffIx5E".into()),
                                     types::InlineKeyboardButton::new("Body".into())
                                         .url("https://www.youtube.com/watch?v=rlYys58hsCU".into()),
                                 ],
-                                vec![
+                                                vec![
                                     types::InlineKeyboardButton::new("Once".into())
                                         .url("https://www.youtube.com/watch?v=Q-MizNywQ94".into()),
                                     types::InlineKeyboardButton::new("Told".into())
                                         .url("https://www.youtube.com/watch?v=J48dqyz_C6s".into()),
-                                ]
-                            ];
+                                ]];
 
                             let _ = bot.send_message(&args::SendMessage
                                 ::new(chat_id, "Me")
@@ -145,8 +145,7 @@ fn main() {
                         let chat_id = ChatId::Id(message.chat.id);
                         let text = "Hi, thanks for adding me to this group, but I don't want to \
                                     be here.\nSee ya!";
-                        let _ =
-                            bot.send_message(&args::SendMessage::new(chat_id, text));
+                        let _ = bot.send_message(&args::SendMessage::new(chat_id, text));
                         let _ = bot.leave_chat(&args::LeaveChat::new(chat_id));
                     }
                 }
@@ -161,9 +160,8 @@ fn main() {
                     vec![types::InlineQueryResult::new_article("lenny".into(), lenny_txt, lenny),
                          types::InlineQueryResult::new_article("shrug".into(), shrug_txt, shrug)];
 
-                let _ =
-                    bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id,
-                                                                          results));
+                let _ = bot.answer_inline_query(&args::AnswerInlineQuery::new(&inline_query.id,
+                                                                              results));
             }
         }
     }

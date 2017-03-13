@@ -31,8 +31,9 @@ fn main() {
                     let message_text = format!("\"{}\"\n    - <i>You, CURRENT_YEAR</i>",
                                                message.text.unwrap_or(String::new()));
 
-                    let _ = bot.send_message(&args::SendMessage::new(ChatId::Id(chat_id), &message_text)
-                        .parse_mode("HTML"));
+                    let _ = bot.send_message(&args::SendMessage::new(ChatId::Id(chat_id),
+                                                                     &message_text)
+                                                      .parse_mode("HTML"));
                 });
             }
         }

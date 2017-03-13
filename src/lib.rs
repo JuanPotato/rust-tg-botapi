@@ -71,10 +71,10 @@ fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>,
                 Ok(val)
             } else {
                 Err(BotError::Api {
-                    error_code: result.error_code.unwrap(),
-                    description: result.description.unwrap(),
-                    parameters: result.parameters,
-                })
+                        error_code: result.error_code.unwrap(),
+                        description: result.description.unwrap(),
+                        parameters: result.parameters,
+                    })
             }
         }
         Err(e) => Err(BotError::Http(e)),

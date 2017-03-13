@@ -129,7 +129,10 @@ impl<'a> SendMessage<'a> {
 }
 
 impl<'a> ForwardMessage<'a> {
-    pub fn new(chat_id: ChatId<'a>, from_chat_id: ChatId<'a>, message_id: i64) -> ForwardMessage<'a> {
+    pub fn new(chat_id: ChatId<'a>,
+               from_chat_id: ChatId<'a>,
+               message_id: i64)
+               -> ForwardMessage<'a> {
         ForwardMessage {
             chat_id: chat_id,
             from_chat_id: from_chat_id,
@@ -305,7 +308,12 @@ impl<'a> SendLocation<'a> {
 }
 
 impl<'a> SendVenue<'a> {
-    pub fn new(chat_id: ChatId<'a>, latitude: f64, longitude: f64, title: &'a str, address: &'a str) -> SendVenue<'a> {
+    pub fn new(chat_id: ChatId<'a>,
+               latitude: f64,
+               longitude: f64,
+               title: &'a str,
+               address: &'a str)
+               -> SendVenue<'a> {
         SendVenue {
             chat_id: chat_id,
             latitude: latitude,
@@ -377,9 +385,7 @@ impl<'a> KickChatMember<'a> {
 
 impl<'a> LeaveChat<'a> {
     pub fn new(chat_id: ChatId<'a>) -> LeaveChat<'a> {
-        LeaveChat {
-            chat_id: chat_id,
-        }
+        LeaveChat { chat_id: chat_id }
     }
 }
 
@@ -394,25 +400,19 @@ impl<'a> UnbanChatMember<'a> {
 
 impl<'a> GetChat<'a> {
     pub fn new(chat_id: ChatId<'a>) -> GetChat<'a> {
-        GetChat {
-            chat_id: chat_id,
-        }
+        GetChat { chat_id: chat_id }
     }
 }
 
 impl<'a> GetChatAdministrators<'a> {
     pub fn new(chat_id: ChatId<'a>) -> GetChatAdministrators<'a> {
-        GetChatAdministrators {
-            chat_id: chat_id,
-        }
+        GetChatAdministrators { chat_id: chat_id }
     }
 }
 
 impl<'a> GetChatMembersCount<'a> {
     pub fn new(chat_id: ChatId<'a>) -> GetChatMembersCount<'a> {
-        GetChatMembersCount {
-            chat_id: chat_id,
-        }
+        GetChatMembersCount { chat_id: chat_id }
     }
 }
 
@@ -616,25 +616,25 @@ impl ReplyMarkup {
 
     pub fn new_reply_keyboard(keyboard: Vec<Vec<KeyboardButton>>) -> ReplyMarkup {
         ReplyMarkup::ReplyKeyboard(ReplyKeyboardMarkup {
-            keyboard: keyboard,
-            resize_keyboard: None,
-            one_time_keyboard: None,
-            selective: None,
-        })
+                                       keyboard: keyboard,
+                                       resize_keyboard: None,
+                                       one_time_keyboard: None,
+                                       selective: None,
+                                   })
     }
 
     pub fn new_reply_keyboard_remove(remove_keyboard: bool) -> ReplyMarkup {
         ReplyMarkup::ReplyKeyboardRemove(ReplyKeyboardRemoveMarkup {
-            remove_keyboard: remove_keyboard,
-            selective: None,
-        })
+                                             remove_keyboard: remove_keyboard,
+                                             selective: None,
+                                         })
     }
 
     pub fn new_force_reply(force_reply: bool) -> ReplyMarkup {
         ReplyMarkup::ForceReply(ForceReplyMarkup {
-            force_reply: force_reply,
-            selective: None,
-        })
+                                    force_reply: force_reply,
+                                    selective: None,
+                                })
     }
 
     pub fn selective(mut self, selective: bool) -> ReplyMarkup {
@@ -682,17 +682,17 @@ impl ReplyMarkup {
 impl InputMessageContent {
     pub fn new_text(message_text: String) -> InputMessageContent {
         InputMessageContent::Text(InputTextMessageContent {
-            message_text: message_text,
-            parse_mode: None,
-            disable_web_page_preview: None,
-        })
+                                      message_text: message_text,
+                                      parse_mode: None,
+                                      disable_web_page_preview: None,
+                                  })
     }
 
     pub fn new_location(latitude: f64, longitude: f64) -> InputMessageContent {
         InputMessageContent::Location(InputLocationMessageContent {
-            latitude: latitude,
-            longitude: longitude,
-        })
+                                          latitude: latitude,
+                                          longitude: longitude,
+                                      })
     }
 
     pub fn new_venue(latitude: f64,
@@ -701,20 +701,20 @@ impl InputMessageContent {
                      address: String)
                      -> InputMessageContent {
         InputMessageContent::Venue(InputVenueMessageContent {
-            latitude: latitude,
-            longitude: longitude,
-            title: title,
-            address: address,
-            foursquare_id: None,
-        })
+                                       latitude: latitude,
+                                       longitude: longitude,
+                                       title: title,
+                                       address: address,
+                                       foursquare_id: None,
+                                   })
     }
 
     pub fn new_contact(phone_number: String, first_name: String) -> InputMessageContent {
         InputMessageContent::Contact(InputContactMessageContent {
-            phone_number: phone_number,
-            first_name: first_name,
-            last_name: None,
-        })
+                                         phone_number: phone_number,
+                                         first_name: first_name,
+                                         last_name: None,
+                                     })
     }
 
     pub fn parse_mode(mut self, parse_mode: String) -> InputMessageContent {
@@ -770,49 +770,52 @@ impl InlineQueryResult {
                        input_message_content: InputMessageContent)
                        -> InlineQueryResult {
         InlineQueryResult::Article(InlineQueryResultArticle {
-            type_name: "article".into(),
-            id: id,
-            title: title,
-            input_message_content: input_message_content,
-            reply_markup: None, // InlineKeyboardMarkup
-            url: None,
-            hide_url: None,
-            description: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        })
+                                       type_name: "article".into(),
+                                       id: id,
+                                       title: title,
+                                       input_message_content: input_message_content,
+                                       // InlineKeyboardMarkup
+                                       reply_markup: None,
+                                       url: None,
+                                       hide_url: None,
+                                       description: None,
+                                       thumb_url: None,
+                                       thumb_width: None,
+                                       thumb_height: None,
+                                   })
     }
 
     pub fn new_photo(id: String, photo_url: String, thumb_url: String) -> InlineQueryResult {
         InlineQueryResult::Photo(InlineQueryResultMetaPhoto::Fresh(InlineQueryResultPhoto {
-            type_name: "photo".into(),
-            id: id,
-            photo_url: photo_url,
-            thumb_url: thumb_url,
-            photo_width: None,
-            photo_height: None,
-            title: None,
-            description: None,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                       type_name: "photo".into(),
+                                                                       id: id,
+                                                                       photo_url: photo_url,
+                                                                       thumb_url: thumb_url,
+                                                                       photo_width: None,
+                                                                       photo_height: None,
+                                                                       title: None,
+                                                                       description: None,
+                                                                       caption: None,
+                                                                       // InlineKeyboardMarkup
+                                                                       reply_markup: None,
+                                                                       input_message_content: None,
+                                                                   }))
     }
 
     pub fn new_gif(id: String, gif_url: String, thumb_url: String) -> InlineQueryResult {
         InlineQueryResult::Gif(InlineQueryResultMetaGif::Fresh(InlineQueryResultGif {
-            type_name: "gif".into(),
-            id: id,
-            gif_url: gif_url,
-            gif_width: None,
-            gif_height: None,
-            thumb_url: thumb_url,
-            title: None,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                   type_name: "gif".into(),
+                                                                   id: id,
+                                                                   gif_url: gif_url,
+                                                                   gif_width: None,
+                                                                   gif_height: None,
+                                                                   thumb_url: thumb_url,
+                                                                   title: None,
+                                                                   caption: None,
+                                                                   // InlineKeyboardMarkup
+                                                                   reply_markup: None,
+                                                                   input_message_content: None,
+                                                               }))
     }
 
     pub fn new_mpeg4_gif(id: String, mpeg4_url: String, thumb_url: String) -> InlineQueryResult {
@@ -825,7 +828,8 @@ impl InlineQueryResult {
             thumb_url: thumb_url,
             title: None,
             caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
+            // InlineKeyboardMarkup
+            reply_markup: None,
             input_message_content: None,
         }))
     }
@@ -837,47 +841,50 @@ impl InlineQueryResult {
                      title: String)
                      -> InlineQueryResult {
         InlineQueryResult::Video(InlineQueryResultMetaVideo::Fresh(InlineQueryResultVideo {
-            type_name: "video".into(),
-            id: id,
-            video_url: video_url,
-            mime_type: mime_type,
-            thumb_url: thumb_url,
-            title: title,
-            caption: None,
-            video_width: None,
-            video_height: None,
-            video_duration: None,
-            description: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                       type_name: "video".into(),
+                                                                       id: id,
+                                                                       video_url: video_url,
+                                                                       mime_type: mime_type,
+                                                                       thumb_url: thumb_url,
+                                                                       title: title,
+                                                                       caption: None,
+                                                                       video_width: None,
+                                                                       video_height: None,
+                                                                       video_duration: None,
+                                                                       description: None,
+                                                                       // InlineKeyboardMarkup
+                                                                       reply_markup: None,
+                                                                       input_message_content: None,
+                                                                   }))
     }
 
     pub fn new_audio(id: String, audio_url: String, title: String) -> InlineQueryResult {
         InlineQueryResult::Audio(InlineQueryResultMetaAudio::Fresh(InlineQueryResultAudio {
-            type_name: "audio".into(),
-            id: id,
-            audio_url: audio_url,
-            title: title,
-            caption: None,
-            performer: None,
-            audio_duration: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                       type_name: "audio".into(),
+                                                                       id: id,
+                                                                       audio_url: audio_url,
+                                                                       title: title,
+                                                                       caption: None,
+                                                                       performer: None,
+                                                                       audio_duration: None,
+                                                                       // InlineKeyboardMarkup
+                                                                       reply_markup: None,
+                                                                       input_message_content: None,
+                                                                   }))
     }
 
     pub fn new_voice(id: String, voice_url: String, title: String) -> InlineQueryResult {
         InlineQueryResult::Voice(InlineQueryResultMetaVoice::Fresh(InlineQueryResultVoice {
-            type_name: "voice".into(),
-            id: id,
-            voice_url: voice_url,
-            title: title,
-            caption: None,
-            voice_duration: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                       type_name: "voice".into(),
+                                                                       id: id,
+                                                                       voice_url: voice_url,
+                                                                       title: title,
+                                                                       caption: None,
+                                                                       voice_duration: None,
+                                                                       // InlineKeyboardMarkup
+                                                                       reply_markup: None,
+                                                                       input_message_content: None,
+                                                                   }))
     }
 
     pub fn new_document(id: String,
@@ -893,7 +900,8 @@ impl InlineQueryResult {
             document_url: document_url,
             mime_type: mime_type,
             description: None,
-            reply_markup: None, // InlineKeyboardMarkup
+            // InlineKeyboardMarkup
+            reply_markup: None,
             input_message_content: None,
             thumb_url: None,
             thumb_width: None,
@@ -907,17 +915,18 @@ impl InlineQueryResult {
                         title: String)
                         -> InlineQueryResult {
         InlineQueryResult::Location(InlineQueryResultLocation {
-            type_name: "location".into(),
-            id: id,
-            latitude: latitude,
-            longitude: longitude,
-            title: title,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        })
+                                        type_name: "location".into(),
+                                        id: id,
+                                        latitude: latitude,
+                                        longitude: longitude,
+                                        title: title,
+                                        // InlineKeyboardMarkup
+                                        reply_markup: None,
+                                        input_message_content: None,
+                                        thumb_url: None,
+                                        thumb_width: None,
+                                        thumb_height: None,
+                                    })
     }
 
     pub fn new_venue(id: String,
@@ -927,142 +936,161 @@ impl InlineQueryResult {
                      address: String)
                      -> InlineQueryResult {
         InlineQueryResult::Venue(InlineQueryResultVenue {
-            type_name: "venue".into(),
-            id: id,
-            latitude: latitude,
-            longitude: longitude,
-            title: title,
-            address: address,
-            foursquare_id: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        })
+                                     type_name: "venue".into(),
+                                     id: id,
+                                     latitude: latitude,
+                                     longitude: longitude,
+                                     title: title,
+                                     address: address,
+                                     foursquare_id: None,
+                                     // InlineKeyboardMarkup
+                                     reply_markup: None,
+                                     input_message_content: None,
+                                     thumb_url: None,
+                                     thumb_width: None,
+                                     thumb_height: None,
+                                 })
     }
 
     pub fn new_contact(id: String, phone_number: String, first_name: String) -> InlineQueryResult {
         InlineQueryResult::Contact(InlineQueryResultContact {
-            type_name: "contact".into(),
-            id: id,
-            phone_number: phone_number,
-            first_name: first_name,
-            last_name: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        })
+                                       type_name: "contact".into(),
+                                       id: id,
+                                       phone_number: phone_number,
+                                       first_name: first_name,
+                                       last_name: None,
+                                       // InlineKeyboardMarkup
+                                       reply_markup: None,
+                                       input_message_content: None,
+                                       thumb_url: None,
+                                       thumb_width: None,
+                                       thumb_height: None,
+                                   })
     }
 
     pub fn new_game(id: String, game_short_name: String) -> InlineQueryResult {
         InlineQueryResult::Game(InlineQueryResultGame {
-            type_name: "game".into(),
-            id: id,
-            game_short_name: game_short_name,
-            reply_markup: None, // InlineKeyboardMarkup
-        })
+                                    type_name: "game".into(),
+                                    id: id,
+                                    game_short_name: game_short_name,
+                                    // InlineKeyboardMarkup
+                                    reply_markup: None,
+                                })
     }
 
     pub fn new_cached_photo(id: String, photo_file_id: String) -> InlineQueryResult {
         InlineQueryResult::Photo(InlineQueryResultMetaPhoto::Cached(InlineQueryResultCachedPhoto {
-            type_name: "photo".into(),
-            id: id,
-            photo_file_id: photo_file_id,
-            title: None,
-            description: None,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                        type_name: "photo".into(),
+                                                                        id: id,
+                                                                        photo_file_id:
+                                                                            photo_file_id,
+                                                                        title: None,
+                                                                        description: None,
+                                                                        caption: None,
+                                                                        // InlineKeyboardMarkup
+                                                                        reply_markup: None,
+                                                                        input_message_content: None,
+                                                                    }))
     }
 
     pub fn new_cached_gif(id: String, gif_file_id: String) -> InlineQueryResult {
         InlineQueryResult::Gif(InlineQueryResultMetaGif::Cached(InlineQueryResultCachedGif {
-            type_name: "gif".into(),
-            id: id,
-            gif_file_id: gif_file_id,
-            title: None,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                    type_name: "gif".into(),
+                                                                    id: id,
+                                                                    gif_file_id: gif_file_id,
+                                                                    title: None,
+                                                                    caption: None,
+                                                                    // InlineKeyboardMarkup
+                                                                    reply_markup: None,
+                                                                    input_message_content: None,
+                                                                }))
     }
 
     pub fn new_cached_mpeg4_gif(id: String, mpeg4_file_id: String) -> InlineQueryResult {
-        InlineQueryResult::Mpeg4Gif(InlineQueryResultMetaMpeg4Gif::Cached(InlineQueryResultCachedMpeg4Gif {
-            type_name: "mpeg4_gif".into(),
-            id: id,
-            mpeg4_file_id: mpeg4_file_id,
-            title: None,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+        InlineQueryResult::Mpeg4Gif(InlineQueryResultMetaMpeg4Gif::Cached(
+            InlineQueryResultCachedMpeg4Gif {
+                type_name: "mpeg4_gif".into(),
+                id: id,
+                mpeg4_file_id: mpeg4_file_id,
+                title: None,
+                caption: None,
+                // InlineKeyboardMarkup
+                reply_markup: None,
+                input_message_content: None,
+            }
+        ))
     }
 
     pub fn new_cached_sticker(id: String, sticker_file_id: String) -> InlineQueryResult {
         InlineQueryResult::CachedSticker(InlineQueryResultCachedSticker {
-            type_name: "sticker".into(),
-            id: id,
-            sticker_file_id: sticker_file_id,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        })
+                                             type_name: "sticker".into(),
+                                             id: id,
+                                             sticker_file_id: sticker_file_id,
+                                             // InlineKeyboardMarkup
+                                             reply_markup: None,
+                                             input_message_content: None,
+                                         })
     }
 
     pub fn new_cached_document(id: String,
                                title: String,
                                document_file_id: String)
                                -> InlineQueryResult {
-        InlineQueryResult::Document(InlineQueryResultMetaDocument::Cached(InlineQueryResultCachedDocument {
-            type_name: "document".into(),
-            id: id,
-            title: title,
-            document_file_id: document_file_id,
-            description: None,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+        InlineQueryResult::Document(InlineQueryResultMetaDocument::Cached(
+            InlineQueryResultCachedDocument {
+                type_name: "document".into(),
+                id: id,
+                title: title,
+                document_file_id: document_file_id,
+                description: None,
+                caption: None,
+                // InlineKeyboardMarkup
+                reply_markup: None,
+                input_message_content: None,
+            }
+        ))
     }
 
     pub fn new_cached_video(id: String, video_file_id: String, title: String) -> InlineQueryResult {
         InlineQueryResult::Video(InlineQueryResultMetaVideo::Cached(InlineQueryResultCachedVideo {
-            type_name: "video".into(),
-            id: id,
-            video_file_id: video_file_id,
-            title: title,
-            description: None,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                        type_name: "video".into(),
+                                                                        id: id,
+                                                                        video_file_id:
+                                                                            video_file_id,
+                                                                        title: title,
+                                                                        description: None,
+                                                                        caption: None,
+                                                                        // InlineKeyboardMarkup
+                                                                        reply_markup: None,
+                                                                        input_message_content: None,
+                                                                    }))
     }
 
     pub fn new_cached_voice(id: String, voice_file_id: String, title: String) -> InlineQueryResult {
         InlineQueryResult::Voice(InlineQueryResultMetaVoice::Cached(InlineQueryResultCachedVoice {
-            type_name: "voice".into(),
-            id: id,
-            voice_file_id: voice_file_id,
-            title: title,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                        type_name: "voice".into(),
+                                                                        id: id,
+                                                                        voice_file_id:
+                                                                            voice_file_id,
+                                                                        title: title,
+                                                                        caption: None,
+                                                                        // InlineKeyboardMarkup
+                                                                        reply_markup: None,
+                                                                        input_message_content: None,
+                                                                    }))
     }
 
     pub fn new_cached_audio(id: String, audio_file_id: String) -> InlineQueryResult {
         InlineQueryResult::Audio(InlineQueryResultMetaAudio::Cached(InlineQueryResultCachedAudio {
-            type_name: "audio".into(),
-            id: id,
-            audio_file_id: audio_file_id,
-            caption: None,
-            reply_markup: None, // InlineKeyboardMarkup
-            input_message_content: None,
-        }))
+                                                                        type_name: "audio".into(),
+                                                                        id: id,
+                                                                        audio_file_id:
+                                                                            audio_file_id,
+                                                                        caption: None,
+                                                                        // InlineKeyboardMarkup
+                                                                        reply_markup: None,
+                                                                        input_message_content: None,
+                                                                    }))
     }
 
     pub fn reply_markup(mut self, reply_markup: ReplyMarkup) -> InlineQueryResult {
@@ -1251,7 +1279,7 @@ impl InlineQueryResult {
 
             InlineQueryResult::Contact(ref mut result) => result.thumb_url = Some(thumb_url),
 
-            _ => {},
+            _ => {}
         }
         self
     }
