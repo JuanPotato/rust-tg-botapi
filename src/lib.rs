@@ -1,6 +1,11 @@
 #[macro_use]
 extern crate serde_derive;
 
+#[macro_use]
+extern crate derive_more;
+#[macro_use]
+extern crate derive_new;
+
 extern crate hyper;
 extern crate multipart;
 extern crate serde_json;
@@ -71,10 +76,10 @@ fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>,
                 Ok(val)
             } else {
                 Err(BotError::Api {
-                    error_code: result.error_code.unwrap(),
-                    description: result.description.unwrap(),
-                    parameters: result.parameters,
-                })
+                        error_code: result.error_code.unwrap(),
+                        description: result.description.unwrap(),
+                        parameters: result.parameters,
+                    })
             }
         }
         Err(e) => Err(BotError::Http(e)),
@@ -181,11 +186,7 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        multi.write_text("chat_id", params.chat_id.to_string()).unwrap();
 
         if let Some(photo) = params.photo {
             multi.write_file("photo", photo).unwrap();
@@ -208,7 +209,7 @@ impl BotApi {
         if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi,
                            "reply_markup",
-                           serde_json::to_value(reply_markup));
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -222,11 +223,7 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        multi.write_text("chat_id", params.chat_id.to_string()).unwrap();
 
         if let Some(audio) = params.audio {
             multi.write_file("audio", audio).unwrap();
@@ -261,7 +258,7 @@ impl BotApi {
         if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi,
                            "reply_markup",
-                           serde_json::to_value(reply_markup));
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -275,11 +272,7 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        multi.write_text("chat_id", params.chat_id.to_string()).unwrap();
 
         if let Some(document) = params.document {
             multi.write_file("document", document).unwrap();
@@ -302,7 +295,7 @@ impl BotApi {
         if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi,
                            "reply_markup",
-                           serde_json::to_value(reply_markup));
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -316,11 +309,7 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        multi.write_text("chat_id", params.chat_id.to_string()).unwrap();
 
         if let Some(sticker) = params.sticker {
             multi.write_file("sticker", sticker).unwrap();
@@ -339,7 +328,7 @@ impl BotApi {
         if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi,
                            "reply_markup",
-                           serde_json::to_value(reply_markup));
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -353,11 +342,7 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        multi.write_text("chat_id", params.chat_id.to_string()).unwrap();
 
         if let Some(video) = params.video {
             multi.write_file("video", video).unwrap();
@@ -392,7 +377,7 @@ impl BotApi {
         if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi,
                            "reply_markup",
-                           serde_json::to_value(reply_markup));
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -406,11 +391,7 @@ impl BotApi {
         let req = Request::new(Method::Post, url).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
-        if let Some(chat_id) = params.chat_id {
-            multi.write_text("chat_id", chat_id.to_string()).unwrap();
-        } else if let Some(chat_username) = params.chat_username {
-            multi.write_text("chat_id", chat_username).unwrap();
-        }
+        multi.write_text("chat_id", params.chat_id.to_string()).unwrap();
 
         if let Some(voice) = params.voice {
             multi.write_file("voice", voice).unwrap();
@@ -437,7 +418,7 @@ impl BotApi {
         if let Some(ref reply_markup) = params.reply_markup {
             value_to_multi(&mut multi,
                            "reply_markup",
-                           serde_json::to_value(reply_markup));
+                           serde_json::to_value(reply_markup).unwrap());
         }
 
         match parse_request(multi.send(), self.debug) {
@@ -758,14 +739,8 @@ fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, val: Val
         Value::Bool(b) => {
             multi.write_text(key, b.to_string()).unwrap();
         }
-        Value::I64(i) => {
-            multi.write_text(key, i.to_string()).unwrap();
-        }
-        Value::U64(u) => {
-            multi.write_text(key, u.to_string()).unwrap();
-        }
-        Value::F64(f) => {
-            multi.write_text(key, f.to_string()).unwrap();
+        Value::Number(n) => {
+            multi.write_text(key, n.to_string()).unwrap();
         }
         Value::String(s) => {
             multi.write_text(key, s.to_string()).unwrap();
