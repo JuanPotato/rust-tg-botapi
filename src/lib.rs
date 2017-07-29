@@ -6,17 +6,20 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
+extern crate hyper_native_tls;
 
 use std::{error, fmt};
 use std::result::Result;
 use std::io::Read;
 use std::time::Duration;
 
-use hyper::net::Streaming;
+use hyper::net::{Streaming, HttpsConnector};
 use hyper::method::Method;
 use hyper::client::Request;
 
 use hyper::{Client, Url};
+
+use hyper_native_tls::NativeTlsClient;
 
 use multipart::client::Multipart;
 
@@ -96,7 +99,10 @@ impl BotApi {
         let url = format!("https://api.telegram.org/bot{}/", bot_token);
         // TODO validate this token
 
-        let mut c = Client::new();
+        let ssl = NativeTlsClient::new().unwrap();
+        let connector = HttpsConnector::new(ssl);
+        let mut c = Client::with_connector(connector);
+
         c.set_read_timeout(Some(Duration::new(60, 0)));
 
         BotApi {

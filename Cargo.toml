@@ -6,13 +6,17 @@ license = "MIT"
 name = "tg_botapi"
 readme = "README.md"
 repository = "https://github.com/JuanPotato/rust-tg-botapi"
-version = "0.1.2"
+version = "0.3.0"
 
 [dependencies]
-derive_builder = "0.3.0"
-enum_derive = "0.1.7"
-hyper = "0.9.14"
-multipart = "0.9.0"
-serde = "0.9.6"
-serde_derive = "0.9.6"
-serde_json = "0.9.5"
+derive_builder = "0.5.0"
+hyper = "0.10.12"
+hyper-native-tls = "0.2.4"
+serde = "1.0.11"
+serde_derive = "1.0.11"
+serde_json = "1.0.2"
+
+[dependencies.multipart]
+default-features = false
+features = ["client", "hyper"]
+version = "0.13.1"

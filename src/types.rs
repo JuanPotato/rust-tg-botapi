@@ -1,6 +1,6 @@
 use serde_json;
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiResult {
     pub ok: bool,
     pub description: Option<String>,
@@ -9,7 +9,7 @@ pub struct ApiResult {
     pub parameters: Option<ResponseParameters>,
 }
 
-#[derive(Debug, Clone, From, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum MessageOrBool {
     M(Box<Message>),
     B(bool),
@@ -29,16 +29,19 @@ impl From<InlineKeyboardMarkup> for ReplyMarkup {
         ReplyMarkup::InlineKeyboard(markup)
     }
 }
+
 impl From<ReplyKeyboardMarkup> for ReplyMarkup {
     fn from(markup: ReplyKeyboardMarkup) -> ReplyMarkup {
         ReplyMarkup::ReplyKeyboard(markup)
     }
 }
+
 impl From<ReplyKeyboardRemoveMarkup> for ReplyMarkup {
     fn from(markup: ReplyKeyboardRemoveMarkup) -> ReplyMarkup {
         ReplyMarkup::ReplyKeyboardRemove(markup)
     }
 }
+
 impl From<ForceReplyMarkup> for ReplyMarkup {
     fn from(markup: ForceReplyMarkup) -> ReplyMarkup {
         ReplyMarkup::ForceReply(markup)
@@ -46,6 +49,7 @@ impl From<ForceReplyMarkup> for ReplyMarkup {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct InlineKeyboardMarkup {
     pub inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
 }
@@ -57,13 +61,20 @@ impl InlineKeyboardMarkup {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct ReplyKeyboardMarkup {
     pub keyboard: Vec<Vec<KeyboardButton>>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub resize_keyboard: Option<bool>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub one_time_keyboard: Option<bool>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub selective: Option<bool>,
 }
 
@@ -79,9 +90,12 @@ impl ReplyKeyboardMarkup {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct ReplyKeyboardRemoveMarkup {
     pub remove_keyboard: bool,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub selective: Option<bool>,
 }
 
@@ -95,9 +109,12 @@ impl ReplyKeyboardRemoveMarkup {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct ForceReplyMarkup {
     pub force_reply: bool,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub selective: Option<bool>,
 }
 
@@ -160,96 +177,115 @@ impl From<InlineQueryResultArticle> for InlineQueryResult {
         InlineQueryResult::Article(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultPhoto> for InlineQueryResult {
     fn from(result: InlineQueryResultPhoto) -> InlineQueryResult {
         InlineQueryResult::Photo(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultGif> for InlineQueryResult {
     fn from(result: InlineQueryResultGif) -> InlineQueryResult {
         InlineQueryResult::Gif(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultMpeg4Gif> for InlineQueryResult {
     fn from(result: InlineQueryResultMpeg4Gif) -> InlineQueryResult {
         InlineQueryResult::Mpeg4Gif(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultVideo> for InlineQueryResult {
     fn from(result: InlineQueryResultVideo) -> InlineQueryResult {
         InlineQueryResult::Video(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultAudio> for InlineQueryResult {
     fn from(result: InlineQueryResultAudio) -> InlineQueryResult {
         InlineQueryResult::Audio(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultVoice> for InlineQueryResult {
     fn from(result: InlineQueryResultVoice) -> InlineQueryResult {
         InlineQueryResult::Voice(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultDocument> for InlineQueryResult {
     fn from(result: InlineQueryResultDocument) -> InlineQueryResult {
         InlineQueryResult::Document(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultLocation> for InlineQueryResult {
     fn from(result: InlineQueryResultLocation) -> InlineQueryResult {
         InlineQueryResult::Location(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultVenue> for InlineQueryResult {
     fn from(result: InlineQueryResultVenue) -> InlineQueryResult {
         InlineQueryResult::Venue(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultContact> for InlineQueryResult {
     fn from(result: InlineQueryResultContact) -> InlineQueryResult {
         InlineQueryResult::Contact(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultGame> for InlineQueryResult {
     fn from(result: InlineQueryResultGame) -> InlineQueryResult {
         InlineQueryResult::Game(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultCachedPhoto> for InlineQueryResult {
     fn from(result: InlineQueryResultCachedPhoto) -> InlineQueryResult {
         InlineQueryResult::CachedPhoto(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultCachedGif> for InlineQueryResult {
     fn from(result: InlineQueryResultCachedGif) -> InlineQueryResult {
         InlineQueryResult::CachedGif(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultCachedMpeg4Gif> for InlineQueryResult {
     fn from(result: InlineQueryResultCachedMpeg4Gif) -> InlineQueryResult {
         InlineQueryResult::CachedMpeg4Gif(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultCachedSticker> for InlineQueryResult {
     fn from(result: InlineQueryResultCachedSticker) -> InlineQueryResult {
         InlineQueryResult::CachedSticker(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultCachedDocument> for InlineQueryResult {
     fn from(result: InlineQueryResultCachedDocument) -> InlineQueryResult {
         InlineQueryResult::CachedDocument(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultCachedVideo> for InlineQueryResult {
     fn from(result: InlineQueryResultCachedVideo) -> InlineQueryResult {
         InlineQueryResult::CachedVideo(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultCachedVoice> for InlineQueryResult {
     fn from(result: InlineQueryResultCachedVoice) -> InlineQueryResult {
         InlineQueryResult::CachedVoice(Box::new(result))
     }
 }
+
 impl From<InlineQueryResultCachedAudio> for InlineQueryResult {
     fn from(result: InlineQueryResultCachedAudio) -> InlineQueryResult {
         InlineQueryResult::CachedAudio(Box::new(result))
@@ -257,89 +293,146 @@ impl From<InlineQueryResultCachedAudio> for InlineQueryResult {
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultArticle {
     pub id: String,
     pub title: String,
     pub input_message_content: InputMessageContent,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub url: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub hide_url: Option<bool>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub description: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_url: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_height: Option<i64>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultPhoto {
     pub type_name: String,
     pub id: String,
     pub photo_url: String,
     pub thumb_url: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub photo_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub photo_height: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub title: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub description: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultGif {
     pub type_name: String,
     pub id: String,
     pub gif_url: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub gif_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub gif_height: Option<i64>,
     pub thumb_url: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub title: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultMpeg4Gif {
     pub type_name: String,
     pub id: String,
     pub mpeg4_url: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub mpeg4_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub mpeg4_height: Option<i64>,
     pub thumb_url: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub title: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultVideo {
     pub type_name: String,
     pub id: String,
@@ -347,99 +440,160 @@ pub struct InlineQueryResultVideo {
     pub mime_type: String,
     pub thumb_url: String,
     pub title: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub video_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub video_height: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub video_duration: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub description: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultAudio {
     pub type_name: String,
     pub id: String,
     pub audio_url: String,
     pub title: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub performer: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub audio_duration: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultVoice {
     pub type_name: String,
     pub id: String,
     pub voice_url: String,
     pub title: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub voice_duration: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultDocument {
     pub type_name: String,
     pub id: String,
     pub title: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
     pub document_url: String,
     pub mime_type: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub description: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_url: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_height: Option<i64>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultLocation {
     pub type_name: String,
     pub id: String,
     pub latitude: f64,
     pub longitude: f64,
     pub title: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_url: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_height: Option<i64>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultVenue {
     pub type_name: String,
     pub id: String,
@@ -447,163 +601,257 @@ pub struct InlineQueryResultVenue {
     pub longitude: f64,
     pub title: String,
     pub address: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub foursquare_id: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_url: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_height: Option<i64>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultContact {
     pub type_name: String,
     pub id: String,
     pub phone_number: String,
     pub first_name: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub last_name: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_url: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_width: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub thumb_height: Option<i64>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultGame {
     pub type_name: String,
     pub id: String,
     pub game_short_name: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultCachedPhoto {
     pub type_name: String,
     pub id: String,
     pub photo_file_id: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub title: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub description: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultCachedGif {
     pub type_name: String,
     pub id: String,
     pub gif_file_id: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub title: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultCachedMpeg4Gif {
     pub type_name: String,
     pub id: String,
     pub mpeg4_file_id: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub title: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultCachedSticker {
     pub type_name: String,
     pub id: String,
     pub sticker_file_id: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultCachedDocument {
     pub type_name: String,
     pub id: String,
     pub title: String,
     pub document_file_id: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub description: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultCachedVideo {
     pub type_name: String,
     pub id: String,
     pub video_file_id: String,
     pub title: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub description: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultCachedVoice {
     pub type_name: String,
     pub id: String,
     pub voice_file_id: String,
     pub title: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InlineQueryResultCachedAudio {
     pub type_name: String,
     pub id: String,
     pub audio_file_id: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub caption: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub reply_markup: Option<ReplyMarkup>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub input_message_content: Option<InputMessageContent>,
 }
 
@@ -638,11 +886,16 @@ impl From<InputContactMessageContent> for InputMessageContent {
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InputTextMessageContent {
     pub message_text: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub parse_mode: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub disable_web_page_preview: Option<bool>,
 }
 
@@ -657,6 +910,7 @@ impl InputTextMessageContent {
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InputLocationMessageContent {
     pub latitude: f64,
     pub longitude: f64,
@@ -672,24 +926,31 @@ impl InputLocationMessageContent {
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InputVenueMessageContent {
     pub latitude: f64,
     pub longitude: f64,
     pub title: String,
     pub address: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub foursquare_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
+#[builder(setter(into))]
 pub struct InputContactMessageContent {
     pub phone_number: String,
     pub first_name: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub last_name: Option<String>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Update {
     pub update_id: i64,
     pub message: Option<Message>,
@@ -702,6 +963,7 @@ pub struct Update {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct WebhookInfo {
     pub url: String,
     pub has_custom_certificate: bool,
@@ -713,6 +975,7 @@ pub struct WebhookInfo {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct User {
     pub id: i64,
     pub first_name: String,
@@ -721,6 +984,7 @@ pub struct User {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Chat {
     pub id: i64,
     #[serde(rename="type")]
@@ -733,6 +997,7 @@ pub struct Chat {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Message {
     pub message_id: i64,
     pub from: Option<User>,
@@ -771,6 +1036,7 @@ pub struct Message {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct MessageEntity {
     #[serde(rename="type")]
     pub type_name: String,
@@ -781,6 +1047,7 @@ pub struct MessageEntity {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct PhotoSize {
     pub file_id: String,
     pub width: i64,
@@ -789,6 +1056,7 @@ pub struct PhotoSize {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Audio {
     pub file_id: String,
     pub duration: i64,
@@ -799,6 +1067,7 @@ pub struct Audio {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Document {
     pub file_id: String,
     pub thumb: Option<PhotoSize>,
@@ -808,6 +1077,7 @@ pub struct Document {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Sticker {
     pub file_id: String,
     pub width: i64,
@@ -818,6 +1088,7 @@ pub struct Sticker {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Video {
     pub file_id: String,
     pub width: i64,
@@ -829,6 +1100,7 @@ pub struct Video {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Voice {
     pub file_id: String,
     pub duration: i64,
@@ -837,6 +1109,7 @@ pub struct Voice {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Contact {
     pub phone_number: String,
     pub first_name: String,
@@ -845,12 +1118,14 @@ pub struct Contact {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Location {
     pub longitude: f64,
     pub latitude: f64,
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Venue {
     pub location: Location,
     pub title: String,
@@ -859,12 +1134,14 @@ pub struct Venue {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct UserProfilePhotos {
     pub total_count: i64,
     pub photos: Vec<Vec<PhotoSize>>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct File {
     pub file_id: String,
     pub file_size: Option<i64>,
@@ -872,15 +1149,14 @@ pub struct File {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct KeyboardButton {
     pub text: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[new(default)]
     pub request_contact: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[new(default)]
     pub request_location: Option<bool>,
 }
 
@@ -895,6 +1171,7 @@ impl KeyboardButton {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct InlineKeyboardButton {
     pub text: String,
 
@@ -915,6 +1192,7 @@ pub struct InlineKeyboardButton {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct CallbackQuery {
     pub id: String,
     pub from: User,
@@ -926,18 +1204,21 @@ pub struct CallbackQuery {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct ChatMember {
     pub user: User,
     pub status: String,
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct ResponseParameters {
     pub migrate_to_chat_id: Option<i64>,
     pub retry_after: Option<i64>,
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct InlineQuery {
     pub id: String,
     pub from: User,
@@ -947,6 +1228,7 @@ pub struct InlineQuery {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct ChosenInlineResult {
     pub result_id: String,
     pub from: User,
@@ -956,6 +1238,7 @@ pub struct ChosenInlineResult {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Game {
     pub title: String,
     pub description: String,
@@ -966,6 +1249,7 @@ pub struct Game {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct Animation {
     pub file_id: String,
     pub thumb: Option<PhotoSize>,
@@ -975,9 +1259,11 @@ pub struct Animation {
 }
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct CallbackGame {}
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
+#[builder(setter(into))]
 pub struct GameHighScore {
     pub position: i64,
     pub user: User,

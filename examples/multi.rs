@@ -18,8 +18,6 @@ fn main() {
     let mut update_args = args::GetUpdatesBuilder::default()
         .timeout(600)
         .offset(0)
-        .limit(None)
-        .allowed_updates(None)
         .build()
         .unwrap();
 
@@ -36,7 +34,7 @@ fn main() {
                 let mut split_text = message_text.split_whitespace();
 
                 if let Some(cmd) = split_text.next() {
-                    let chat_id = ChatId::Id(message.chat.id);
+                    let chat_id = message.chat.id;
                     let msg_id = message.message_id;
 
                     match cmd {
@@ -44,15 +42,19 @@ fn main() {
                             let _ = cmd::exit(&bot, &message);
                             break 'update_loop;
                         }
+
                         "/start" | "/help" => {
                             let _ = cmd::help(&bot, &message);
                         }
+
                         "/photo" => {
                             let _ = cmd::photo(&bot, &message);
                         }
+
                         "/edit" => {
                             let _ = cmd::edit(&bot, &message, split_text.next().map(String::from));
                         }
+
                         "/thread" | "/threads" => {
                             let bot1 = bot.clone();
                             let bot2 = bot.clone();
@@ -63,47 +65,40 @@ fn main() {
                                     .text("Thread 1")
                                     .chat_id(chat_id)
                                     .reply_to_message_id(msg_id)
-                                    .parse_mode(None)
-                                    .disable_web_page_preview(None)
-                                    .disable_notification(None)
-                                    .reply_markup(None)
                                     .build()
                                     .unwrap();
                                 let _ = bot1.send_message(&args);
                             });
+
                             thread::spawn(move || {
                                 let args = args::SendMessageBuilder::default()
                                     .text("Thread 2")
                                     .chat_id(chat_id)
                                     .reply_to_message_id(msg_id)
-                                    .parse_mode(None)
-                                    .disable_web_page_preview(None)
-                                    .disable_notification(None)
-                                    .reply_markup(None)
                                     .build()
                                     .unwrap();
                                 let _ = bot2.send_message(&args);
                             });
+
                             thread::spawn(move || {
                                 let args = args::SendMessageBuilder::default()
                                     .text("Thread 3")
                                     .chat_id(chat_id)
                                     .reply_to_message_id(msg_id)
-                                    .parse_mode(None)
-                                    .disable_web_page_preview(None)
-                                    .disable_notification(None)
-                                    .reply_markup(None)
                                     .build()
                                     .unwrap();
                                 let _ = bot3.send_message(&args);
                             });
                         }
+
                         "/button" => {
                             let _ = cmd::button(&bot, &message);
                         }
+
                         "/inline" => {
                             let _ = cmd::inline(&bot, &message);
                         }
+
                         "/clear" | "No" => {
                             let _ = cmd::clear(&bot, &message);
                         }
@@ -113,17 +108,12 @@ fn main() {
 
                 if let Some(new_chat_member) = message.new_chat_member {
                     if new_chat_member.id == me_irl.id {
-                        let chat_id = ChatId::Id(message.chat.id);
                         let text = "Hi, thanks for adding me to this group, but I don't want to \
                                     be here.\nSee ya!";
+                        
                         let msg_args = args::SendMessageBuilder::default()
                             .text(text)
                             .chat_id(message.chat.id)
-                            .parse_mode(None)
-                            .disable_web_page_preview(None)
-                            .disable_notification(None)
-                            .reply_to_message_id(None)
-                            .reply_markup(None)
                             .build()
                             .unwrap();
                         let _ = bot.send_message(&msg_args);
@@ -142,13 +132,6 @@ fn main() {
                                        .id("lenny")
                                        .title(lenny_txt)
                                        .input_message_content(lenny)
-                                       .reply_markup(None)
-                                       .url(None)
-                                       .hide_url(None)
-                                       .description(None)
-                                       .thumb_url(None)
-                                       .thumb_width(None)
-                                       .thumb_height(None)
                                        .build()
                                        .unwrap()
                                        .into(),
@@ -156,20 +139,16 @@ fn main() {
                                        .id("shrug")
                                        .title(shrug_txt)
                                        .input_message_content(shrug)
-                                       .reply_markup(None)
-                                       .url(None)
-                                       .hide_url(None)
-                                       .description(None)
-                                       .thumb_url(None)
-                                       .thumb_width(None)
-                                       .thumb_height(None)
                                        .build()
                                        .unwrap()
                                        .into()];
 
                 let _ =
-                    bot.answer_inline_query(&args::AnswerInlineQuery::new(inline_query.id,
-                                                                          results));
+                    bot.answer_inline_query(&args::AnswerInlineQueryBuilder::default()
+                    .inline_query_id(inline_query.id)
+                    .results(results)
+                    .build()
+                    .unwrap());
             }
         }
     }
@@ -195,10 +174,6 @@ mod cmd {
             .text("Goodbye!")
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
-            .parse_mode(None)
-            .disable_web_page_preview(None)
-            .disable_notification(None)
-            .reply_markup(None)
             .build()
             .unwrap();
         bot.send_message(&args)
@@ -209,10 +184,6 @@ mod cmd {
             .text("Hi, I'm a bot!")
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
-            .parse_mode(None)
-            .disable_web_page_preview(None)
-            .disable_notification(None)
-            .reply_markup(None)
             .build()
             .unwrap();
         bot.send_message(&args)
@@ -223,10 +194,6 @@ mod cmd {
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
             .photo(PathBuf::from("../multi_photo.png"))
-            .file_id(None)
-            .caption(None)
-            .disable_notification(None)
-            .reply_markup(None)
             .build()
             .unwrap();
         bot.send_photo(&args)
@@ -240,10 +207,6 @@ mod cmd {
             .text("Editing")
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
-            .parse_mode(None)
-            .disable_web_page_preview(None)
-            .disable_notification(None)
-            .reply_markup(None)
             .build()
             .unwrap();
         bot.send_message(&args).and_then(move |sent_message| {
@@ -252,9 +215,6 @@ mod cmd {
                 .chat_id(message.chat.id)
                 .message_id(sent_message.message_id)
                 .parse_mode(String::from("Markdown"))
-                .inline_message_id(None)
-                .disable_web_page_preview(None)
-                .reply_markup(None)
                 .build()
                 .unwrap();
             if let Some(arg) = edit_text {
@@ -275,10 +235,6 @@ mod cmd {
             .text("Yes or No?")
             .chat_id(message.chat.id)
             .reply_markup(types::ReplyMarkup::from(keyboard))
-            .parse_mode(None)
-            .disable_web_page_preview(None)
-            .disable_notification(None)
-            .reply_to_message_id(None)
             .build()
             .unwrap();
 
@@ -290,19 +246,11 @@ mod cmd {
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Some")
                     .url(String::from("https://www.youtube.com/watch?v=L_jWHffIx5E"))
-                    .callback_data(None)
-                    .switch_inline_query(None)
-                    .switch_inline_query_current_chat(None)
-                    .callback_game(None)
                     .build()
                     .unwrap(),
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Body")
                     .url(String::from("https://www.youtube.com/watch?v=rlYys58hsCU"))
-                    .callback_data(None)
-                    .switch_inline_query(None)
-                    .switch_inline_query_current_chat(None)
-                    .callback_game(None)
                     .build()
                     .unwrap()
             ],
@@ -310,19 +258,11 @@ mod cmd {
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Once")
                     .url(String::from("https://www.youtube.com/watch?v=Q-MizNywQ94"))
-                    .callback_data(None)
-                    .switch_inline_query(None)
-                    .switch_inline_query_current_chat(None)
-                    .callback_game(None)
                     .build()
                     .unwrap(),
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Told")
                     .url(String::from("https://www.youtube.com/watch?v=J48dqyz_C6s"))
-                    .callback_data(None)
-                    .switch_inline_query(None)
-                    .switch_inline_query_current_chat(None)
-                    .callback_game(None)
                     .build()
                     .unwrap()
             ]]);
@@ -330,10 +270,6 @@ mod cmd {
             .text("Me")
             .chat_id(message.chat.id)
             .reply_markup(Some(keyboard.into()))
-            .parse_mode(None)
-            .disable_web_page_preview(None)
-            .disable_notification(None)
-            .reply_to_message_id(None)
             .build()
             .unwrap();
 
@@ -345,10 +281,6 @@ mod cmd {
             .text("Me too")
             .chat_id(message.chat.id)
             .reply_markup(Some(types::ReplyKeyboardRemoveMarkup::new(true).into()))
-            .parse_mode(None)
-            .disable_web_page_preview(None)
-            .disable_notification(None)
-            .reply_to_message_id(None)
             .build()
             .unwrap();
         bot.send_message(&args)
