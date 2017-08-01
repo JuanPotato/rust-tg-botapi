@@ -11,6 +11,7 @@ use std::thread;
 fn main() {
     let token = &env::var("TOKEN")
         .expect("No bot token provided, please set the environment variable TOKEN");
+
     let bot = Arc::new(BotApi::new_debug(token));
 
     let me_irl = bot.get_me().expect("Could not establish a connection :\\");
@@ -176,16 +177,33 @@ mod cmd {
             .reply_to_message_id(message.message_id)
             .build()
             .unwrap();
+            
         bot.send_message(&args)
     }
 
     pub fn help(bot: &BotApi, message: &Message) -> BotResult {
         let args = args::SendMessageBuilder::default()
-            .text("Hi, I'm a bot!")
+            .text(
+r#"Hi, I'm a bot!
+I was built using Rust and a library by @JuanPotato
+
+[Check out the libary!](https://github.com/JuanPotato/rust-tg-botapi)
+
+Commands:
+ - /help `Send this help message`
+ - /photo `An example of a photo being sent`
+ - /edit `An example of editing a message`
+ - /threads `An example of messages being sent from multiple threads`
+ - /button `Displays buttons`
+ - /inline `Displays inline buttons`
+ - /clear `Clears any buttons`
+"#)
             .chat_id(message.chat.id)
+            .parse_mode(String::from("Markdown"))
             .reply_to_message_id(message.message_id)
             .build()
             .unwrap();
+
         bot.send_message(&args)
     }
 
@@ -193,9 +211,10 @@ mod cmd {
         let args = args::SendPhotoBuilder::default()
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
-            .photo(PathBuf::from("../multi_photo.png"))
+            .photo(PathBuf::from("./image.jpg"))
             .build()
             .unwrap();
+
         bot.send_photo(&args)
     }
 
@@ -203,12 +222,14 @@ mod cmd {
                 message: &Message,
                 edit_text: Option<String>)
                 -> Result<types::MessageOrBool, BotError> {
+
         let args = args::SendMessageBuilder::default()
             .text("Editing")
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
             .build()
             .unwrap();
+
         bot.send_message(&args).and_then(move |sent_message| {
             let mut edit_args = args::EditMessageTextBuilder::default()
                 .text("Edited")
@@ -224,12 +245,20 @@ mod cmd {
         })
     }
 
+    macro_rules! button {
+        ($text:expr) => (
+            types::KeyboardButtonBuilder::default().text(String::from($text)).build().unwrap()
+        )
+    }
+
     pub fn button(bot: &BotApi, message: &Message) -> BotResult {
         let keyboard =
-            types::ReplyKeyboardMarkup::new(vec![vec![types::KeyboardButton::new("Yes".into()),
-                                                      types::KeyboardButton::new("No".into())],
-                                                 vec![types::KeyboardButton::new("Eh".into()),
-                                                      types::KeyboardButton::new("He".into())]]);
+            types::ReplyKeyboardMarkupBuilder::default()
+                .keyboard(
+                    vec![vec![button!("Yes"), button!("No")],
+                         vec![button!("Eh"), button!("He")]])
+                .build()
+                .unwrap();
 
         let args = args::SendMessageBuilder::default()
             .text("Yes or No?")
@@ -241,8 +270,11 @@ mod cmd {
         bot.send_message(&args)
     }
 
+
     pub fn inline(bot: &BotApi, message: &Message) -> BotResult {
-        let keyboard = types::InlineKeyboardMarkup::new(vec![vec![
+        let keyboard = types::InlineKeyboardMarkupBuilder::default()
+            .inline_keyboard(vec![
+            vec![
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Some")
                     .url(String::from("https://www.youtube.com/watch?v=L_jWHffIx5E"))
@@ -254,7 +286,7 @@ mod cmd {
                     .build()
                     .unwrap()
             ],
-                                                             vec![
+            vec![
                 types::InlineKeyboardButtonBuilder::default()
                     .text("Once")
                     .url(String::from("https://www.youtube.com/watch?v=Q-MizNywQ94"))
@@ -265,7 +297,10 @@ mod cmd {
                     .url(String::from("https://www.youtube.com/watch?v=J48dqyz_C6s"))
                     .build()
                     .unwrap()
-            ]]);
+            ]])
+            .build()
+            .unwrap();
+        
         let args = args::SendMessageBuilder::default()
             .text("Me")
             .chat_id(message.chat.id)
@@ -280,7 +315,11 @@ mod cmd {
         let args = args::SendMessageBuilder::default()
             .text("Me too")
             .chat_id(message.chat.id)
-            .reply_markup(Some(types::ReplyKeyboardRemoveMarkup::new(true).into()))
+            .reply_markup(Some(types::ReplyKeyboardRemoveMarkupBuilder::default()
+                .remove_keyboard(true)
+                .build()
+                .unwrap()
+                .into()))
             .build()
             .unwrap();
         bot.send_message(&args)

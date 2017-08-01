@@ -7,6 +7,9 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 extern crate hyper_native_tls;
+#[macro_use]
+extern crate debug_stub_derive;
+
 
 use std::{error, fmt};
 use std::result::Result;
@@ -87,10 +90,12 @@ fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>,
 }
 
 
-#[derive(Debug)]
+#[derive(DebugStub)]
 pub struct BotApi {
     base_url: Url,
     client: Client,
+    #[debug_stub="HttpsConnector"]
+    connector: hyper::net::HttpsConnector<hyper_native_tls::NativeTlsClient>,
     debug: bool,
 }
 
@@ -101,13 +106,18 @@ impl BotApi {
 
         let ssl = NativeTlsClient::new().unwrap();
         let connector = HttpsConnector::new(ssl);
-        let mut c = Client::with_connector(connector);
+        let mut client = Client::with_connector(connector);
 
-        c.set_read_timeout(Some(Duration::new(60, 0)));
+        client.set_read_timeout(Some(Duration::new(60, 0)));
+
+
+        let main_ssl = NativeTlsClient::new().unwrap();
+        let main_connector = HttpsConnector::new(main_ssl);
 
         BotApi {
             base_url: url.parse().unwrap(),
-            client: c,
+            client: client,
+            connector: main_connector,
             debug: debug,
         }
     }
@@ -186,7 +196,7 @@ impl BotApi {
 
     pub fn send_photo(&self, params: &args::SendPhoto) -> BotResult {
         let url = self.base_url.join("sendPhoto").unwrap();
-        let req = Request::new(Method::Post, url).unwrap();
+        let req = Request::with_connector(Method::Post, url, &self.connector).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
         match params.chat_id {
@@ -226,7 +236,7 @@ impl BotApi {
 
     pub fn send_audio(&self, params: &args::SendAudio) -> BotResult {
         let url = self.base_url.join("sendAudio").unwrap();
-        let req = Request::new(Method::Post, url).unwrap();
+        let req = Request::with_connector(Method::Post, url, &self.connector).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
         match params.chat_id {
@@ -278,7 +288,7 @@ impl BotApi {
 
     pub fn send_document(&self, params: &args::SendDocument) -> BotResult {
         let url = self.base_url.join("sendDocument").unwrap();
-        let req = Request::new(Method::Post, url).unwrap();
+        let req = Request::with_connector(Method::Post, url, &self.connector).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
         match params.chat_id {
@@ -318,7 +328,7 @@ impl BotApi {
 
     pub fn send_sticker(&self, params: &args::SendSticker) -> Result<Message, BotError> {
         let url = self.base_url.join("sendSticker").unwrap();
-        let req = Request::new(Method::Post, url).unwrap();
+        let req = Request::with_connector(Method::Post, url, &self.connector).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
         match params.chat_id {
@@ -354,7 +364,7 @@ impl BotApi {
 
     pub fn send_video(&self, params: &args::SendVideo) -> Result<Message, BotError> {
         let url = self.base_url.join("sendVideo").unwrap();
-        let req = Request::new(Method::Post, url).unwrap();
+        let req = Request::with_connector(Method::Post, url, &self.connector).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
         match params.chat_id {
@@ -406,7 +416,7 @@ impl BotApi {
 
     pub fn send_voice(&self, params: &args::SendVoice) -> Result<Message, BotError> {
         let url = self.base_url.join("sendVoice").unwrap();
-        let req = Request::new(Method::Post, url).unwrap();
+        let req = Request::with_connector(Method::Post, url, &self.connector).unwrap();
         let mut multi = Multipart::from_request(req).unwrap();
 
         match params.chat_id {

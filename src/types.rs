@@ -54,12 +54,6 @@ pub struct InlineKeyboardMarkup {
     pub inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
 }
 
-impl InlineKeyboardMarkup {
-    pub fn new(inline_keyboard: Vec<Vec<InlineKeyboardButton>>) -> InlineKeyboardMarkup {
-        InlineKeyboardMarkup { inline_keyboard: inline_keyboard }
-    }
-}
-
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
 #[builder(setter(into))]
 pub struct ReplyKeyboardMarkup {
@@ -78,17 +72,6 @@ pub struct ReplyKeyboardMarkup {
     pub selective: Option<bool>,
 }
 
-impl ReplyKeyboardMarkup {
-    pub fn new(keyboard: Vec<Vec<KeyboardButton>>) -> ReplyKeyboardMarkup {
-        ReplyKeyboardMarkup {
-            keyboard: keyboard,
-            resize_keyboard: None,
-            one_time_keyboard: None,
-            selective: None,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
 #[builder(setter(into))]
 pub struct ReplyKeyboardRemoveMarkup {
@@ -99,15 +82,6 @@ pub struct ReplyKeyboardRemoveMarkup {
     pub selective: Option<bool>,
 }
 
-impl ReplyKeyboardRemoveMarkup {
-    pub fn new(remove_keyboard: bool) -> ReplyKeyboardRemoveMarkup {
-        ReplyKeyboardRemoveMarkup {
-            remove_keyboard: remove_keyboard,
-            selective: None,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
 #[builder(setter(into))]
 pub struct ForceReplyMarkup {
@@ -116,15 +90,6 @@ pub struct ForceReplyMarkup {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default="None")]
     pub selective: Option<bool>,
-}
-
-impl ForceReplyMarkup {
-    pub fn new(force_reply: bool) -> ForceReplyMarkup {
-        ForceReplyMarkup {
-            force_reply: force_reply,
-            selective: None,
-        }
-    }
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -869,16 +834,19 @@ impl From<InputTextMessageContent> for InputMessageContent {
         InputMessageContent::Text(text)
     }
 }
+
 impl From<InputLocationMessageContent> for InputMessageContent {
     fn from(location: InputLocationMessageContent) -> InputMessageContent {
         InputMessageContent::Location(location)
     }
 }
+
 impl From<InputVenueMessageContent> for InputMessageContent {
     fn from(venue: InputVenueMessageContent) -> InputMessageContent {
         InputMessageContent::Venue(venue)
     }
 }
+
 impl From<InputContactMessageContent> for InputMessageContent {
     fn from(contact: InputContactMessageContent) -> InputMessageContent {
         InputMessageContent::Contact(contact)
@@ -949,8 +917,7 @@ pub struct InputContactMessageContent {
     pub last_name: Option<String>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Update {
     pub update_id: i64,
     pub message: Option<Message>,
@@ -962,8 +929,7 @@ pub struct Update {
     pub callback_query: Option<CallbackQuery>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WebhookInfo {
     pub url: String,
     pub has_custom_certificate: bool,
@@ -974,8 +940,7 @@ pub struct WebhookInfo {
     pub allowed_updates: Option<Vec<String>>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
     pub id: i64,
     pub first_name: String,
@@ -983,8 +948,7 @@ pub struct User {
     pub username: Option<String>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Chat {
     pub id: i64,
     #[serde(rename="type")]
@@ -996,8 +960,7 @@ pub struct Chat {
     pub all_members_are_administrators: Option<bool>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Message {
     pub message_id: i64,
     pub from: Option<User>,
@@ -1035,8 +998,7 @@ pub struct Message {
     pub pinned_message: Option<Box<Message>>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageEntity {
     #[serde(rename="type")]
     pub type_name: String,
@@ -1046,8 +1008,7 @@ pub struct MessageEntity {
     pub user: Option<User>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PhotoSize {
     pub file_id: String,
     pub width: i64,
@@ -1055,8 +1016,7 @@ pub struct PhotoSize {
     pub file_size: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Audio {
     pub file_id: String,
     pub duration: i64,
@@ -1066,8 +1026,7 @@ pub struct Audio {
     pub file_size: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Document {
     pub file_id: String,
     pub thumb: Option<PhotoSize>,
@@ -1076,8 +1035,7 @@ pub struct Document {
     pub file_size: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Sticker {
     pub file_id: String,
     pub width: i64,
@@ -1087,8 +1045,7 @@ pub struct Sticker {
     pub file_size: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Video {
     pub file_id: String,
     pub width: i64,
@@ -1099,8 +1056,7 @@ pub struct Video {
     pub file_size: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Voice {
     pub file_id: String,
     pub duration: i64,
@@ -1108,8 +1064,7 @@ pub struct Voice {
     pub file_size: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Contact {
     pub phone_number: String,
     pub first_name: String,
@@ -1117,15 +1072,13 @@ pub struct Contact {
     pub user_id: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Location {
     pub longitude: f64,
     pub latitude: f64,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Venue {
     pub location: Location,
     pub title: String,
@@ -1133,15 +1086,13 @@ pub struct Venue {
     pub foursquare_id: Option<String>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserProfilePhotos {
     pub total_count: i64,
     pub photos: Vec<Vec<PhotoSize>>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct File {
     pub file_id: String,
     pub file_size: Option<i64>,
@@ -1154,21 +1105,14 @@ pub struct KeyboardButton {
     pub text: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub request_contact: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub request_location: Option<bool>,
 }
 
-impl KeyboardButton {
-    pub fn new(text: String) -> KeyboardButton {
-        KeyboardButton {
-            text: text,
-            request_contact: None,
-            request_location: None,
-        }
-    }
-}
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
 #[builder(setter(into))]
@@ -1176,23 +1120,27 @@ pub struct InlineKeyboardButton {
     pub text: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub url: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub callback_data: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub switch_inline_query: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub switch_inline_query_current_chat: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
     pub callback_game: Option<CallbackGame>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CallbackQuery {
     pub id: String,
     pub from: User,
@@ -1203,22 +1151,19 @@ pub struct CallbackQuery {
     pub game_short_name: Option<String>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatMember {
     pub user: User,
     pub status: String,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ResponseParameters {
     pub migrate_to_chat_id: Option<i64>,
     pub retry_after: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQuery {
     pub id: String,
     pub from: User,
@@ -1227,8 +1172,7 @@ pub struct InlineQuery {
     pub offset: String,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChosenInlineResult {
     pub result_id: String,
     pub from: User,
@@ -1237,8 +1181,7 @@ pub struct ChosenInlineResult {
     pub query: String,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Game {
     pub title: String,
     pub description: String,
@@ -1248,8 +1191,7 @@ pub struct Game {
     pub animation: Option<Animation>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Animation {
     pub file_id: String,
     pub thumb: Option<PhotoSize>,
@@ -1258,12 +1200,10 @@ pub struct Animation {
     pub file_size: Option<i64>,
 }
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CallbackGame {}
 
-#[derive(Debug, Clone, Builder, Serialize, Deserialize)]
-#[builder(setter(into))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GameHighScore {
     pub position: i64,
     pub user: User,
