@@ -344,6 +344,11 @@ pub struct InlineQueryResultGif {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default="None")]
     pub gif_height: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
+    pub gif_duration: Option<i64>,
+
     pub thumb_url: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -377,6 +382,11 @@ pub struct InlineQueryResultMpeg4Gif {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default="None")]
     pub mpeg4_height: Option<i64>,
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
+    pub mpeg4_duration: Option<i64>,
+
     pub thumb_url: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -927,6 +937,8 @@ pub struct Update {
     pub inline_query: Option<InlineQuery>,
     pub chosen_inline_result: Option<ChosenInlineResult>,
     pub callback_query: Option<CallbackQuery>,
+    pub shipping_query: Option<ShippingQuery>,
+    pub pre_checkout_query: Option<PreCheckoutQuery>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -943,9 +955,11 @@ pub struct WebhookInfo {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
     pub id: i64,
+    pub is_bot: bool,
     pub first_name: String,
     pub last_name: Option<String>,
     pub username: Option<String>,
+    pub language_code: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -958,6 +972,36 @@ pub struct Chat {
     pub first_name: Option<String>,
     pub last_name: Option<String>,
     pub all_members_are_administrators: Option<bool>,
+    pub photo: Option<ChatPhoto>,
+    pub description: Option<String>,
+    pub invite_link: Option<String>,
+    pub pinned_message: Option<Box<Message>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatMember {
+    pub user: User,
+    pub status: String,
+    pub until_date: i64,
+    pub can_be_edited: Option<bool>,
+    pub can_change_info: Option<bool>,
+    pub can_post_messages: Option<bool>,
+    pub can_edit_messages: Option<bool>,
+    pub can_delete_messages: Option<bool>,
+    pub can_invite_users: Option<bool>,
+    pub can_restrict_members: Option<bool>,
+    pub can_pin_messages: Option<bool>,
+    pub can_promote_members: Option<bool>,
+    pub can_send_messages: Option<bool>,
+    pub can_send_media_messages: Option<bool>, 
+    pub can_send_other_messages: Option<bool>,
+    pub can_add_web_page_previews: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatPhoto {
+    pub small_file_id: String,
+    pub big_file_id: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -969,9 +1013,11 @@ pub struct Message {
     pub forward_from: Option<User>,
     pub forward_from_chat: Option<Chat>,
     pub forward_from_message_id: Option<i64>,
+    pub forward_signature: Option<String>,
     pub forward_date: Option<i64>,
     pub reply_to_message: Option<Box<Message>>,
     pub edit_date: Option<i64>,
+    pub author_signature: Option<String>,
     pub text: Option<String>,
     pub entities: Option<Vec<MessageEntity>>,
     pub audio: Option<Audio>,
@@ -981,11 +1027,12 @@ pub struct Message {
     pub sticker: Option<Sticker>,
     pub video: Option<Video>,
     pub voice: Option<Voice>,
+    pub video_note: Option<VideoNote>,
     pub caption: Option<String>,
     pub contact: Option<Contact>,
     pub location: Option<Location>,
     pub venue: Option<Venue>,
-    pub new_chat_member: Option<User>,
+    pub new_chat_members: Option<User>,
     pub left_chat_member: Option<User>,
     pub new_chat_title: Option<String>,
     pub new_chat_photo: Option<Vec<PhotoSize>>,
@@ -996,6 +1043,8 @@ pub struct Message {
     pub migrate_to_chat_id: Option<i64>,
     pub migrate_from_chat_id: Option<i64>,
     pub pinned_message: Option<Box<Message>>,
+    pub invoice: Option<Invoice>,
+    pub successful_payment: Option<SuccessfulPayment>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1036,16 +1085,6 @@ pub struct Document {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Sticker {
-    pub file_id: String,
-    pub width: i64,
-    pub height: i64,
-    pub thumb: Option<PhotoSize>,
-    pub emoji: Option<String>,
-    pub file_size: Option<i64>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Video {
     pub file_id: String,
     pub width: i64,
@@ -1061,6 +1100,15 @@ pub struct Voice {
     pub file_id: String,
     pub duration: i64,
     pub mime_type: Option<String>,
+    pub file_size: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VideoNote {
+    pub file_id: String,
+    pub length: i64,
+    pub duration: i64,
+    pub thumb: Option<PhotoSize>,
     pub file_size: Option<i64>,
 }
 
@@ -1084,6 +1132,35 @@ pub struct Venue {
     pub title: String,
     pub address: String,
     pub foursquare_id: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Sticker {
+    pub file_id: String,
+    pub width: i64,
+    pub height: i64,
+    pub thumb: Option<PhotoSize>,
+    pub emoji: Option<String>,
+    pub set_name: Option<String>,
+    pub mask_postition: Option<MaskPosition>,
+    pub file_size: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StickerSet {
+    pub name: String,
+    pub title: String,
+    pub contains_masks: bool,
+    pub stickers: Vec<Sticker>,
+}
+
+#[derive(Debug, Builder, Clone, Serialize, Deserialize)]
+#[builder(setter(into))]
+pub struct MaskPosition {
+    pub point: String,
+    pub x_shift: f64,
+    pub y_shift: f64,
+    pub scale: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1138,6 +1215,10 @@ pub struct InlineKeyboardButton {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default="None")]
     pub callback_game: Option<CallbackGame>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default="None")]
+    pub apy: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1149,12 +1230,6 @@ pub struct CallbackQuery {
     pub chat_instance: String,
     pub data: Option<String>,
     pub game_short_name: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ChatMember {
-    pub user: User,
-    pub status: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1182,13 +1257,84 @@ pub struct ChosenInlineResult {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Game {
+pub struct LabeledPrice {
+    pub label: String,
+    pub amount: i64,
+}
+
+#[derive(Debug, Builder, Clone, Serialize, Deserialize)]
+#[builder(setter(into))]
+pub struct Invoice {
     pub title: String,
     pub description: String,
-    pub photo: Vec<PhotoSize>,
-    pub text: Option<String>,
-    pub text_entities: Option<Vec<MessageEntity>>,
-    pub animation: Option<Animation>,
+    pub start_parameter: String,
+    pub currency: String,
+    pub total_amount: i64,
+}
+
+#[derive(Debug, Builder, Clone, Serialize, Deserialize)]
+#[builder(setter(into))]
+pub struct ShippingAddress {
+    pub country_code: String,
+    pub state: String,
+    pub city: String,
+    pub street_line1: String,
+    pub street_line2: String,
+    pub post_code: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OrderInfo {
+    pub name: Option<String>,
+    pub phone_number: Option<String>,
+    pub email: Option<String>,
+    pub shipping_address: Option<ShippingAddress>,
+}
+
+#[derive(Debug, Builder, Clone, Serialize, Deserialize)]
+#[builder(setter(into))]
+pub struct ShippingOption {
+    pub name: String,
+    pub phone_number: String,
+    pub email: String,
+    pub shipping_address: ShippingAddress,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SuccessfulPayment {
+    pub currency: String,
+    pub total_amount: i64,
+    pub invoice_payload: String,
+    pub shipping_option_id: Option<String>,
+    pub order_info: Option<OrderInfo>,
+    pub telegram_payment_charge_id: String,
+    pub provider_payment_charge_id: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ShippingQuery {
+    pub id: String,
+    pub from: User,
+    pub invoice_payload: String,
+    pub shipping_address: ShippingAddress,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PreCheckoutQuery {
+    pub id: String,
+    pub from: User,
+    pub currency: String,
+    pub total_amount: i64,
+    pub invoice_payload: String,
+    pub shipping_option_id: Option<String>,
+    pub order_info: Option<OrderInfo>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Game {
+    pub id: String,
+    pub title: String,
+    pub animation: Vec<LabeledPrice>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
