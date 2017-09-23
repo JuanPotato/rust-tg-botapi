@@ -1032,7 +1032,7 @@ pub struct Message {
     pub contact: Option<Contact>,
     pub location: Option<Location>,
     pub venue: Option<Venue>,
-    pub new_chat_members: Option<User>,
+    pub new_chat_members: Option<Vec<User>>,
     pub left_chat_member: Option<User>,
     pub new_chat_title: Option<String>,
     pub new_chat_photo: Option<Vec<PhotoSize>>,

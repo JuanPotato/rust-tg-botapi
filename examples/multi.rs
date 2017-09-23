@@ -107,19 +107,25 @@ fn main() {
                     }
                 }
 
-                if let Some(new_chat_member) = message.new_chat_member {
-                    if new_chat_member.id == me_irl.id {
-                        let text = "Hi, thanks for adding me to this group, but I don't want to \
-                                    be here.\nSee ya!";
-                        
-                        let msg_args = args::SendMessageBuilder::default()
-                            .text(text)
-                            .chat_id(message.chat.id)
-                            .build()
-                            .unwrap();
-                        let _ = bot.send_message(&msg_args);
-                        let leave_args = args::LeaveChat::new(message.chat.id.into());
-                        let _ = bot.leave_chat(&leave_args);
+                if let Some(new_chat_members) = message.new_chat_members {
+                    for new_chat_member in new_chat_members {
+                        if new_chat_member.id == me_irl.id {
+                            let text = "Hi, thanks for adding me to this group, but I don't want to \
+                                        be here.\nSee ya!";
+                            
+                            let msg_args = args::SendMessageBuilder::default()
+                                .text(text)
+                                .chat_id(message.chat.id)
+                                .build()
+                                .unwrap();
+                            let _ = bot.send_message(&msg_args);
+                            let leave_args = args::LeaveChatBuilder
+                                ::default()
+                                .chat_id(message.chat.id)
+                                .build().unwrap();
+
+                            let _ = bot.leave_chat(&leave_args);
+                        }
                     }
                 }
             }
