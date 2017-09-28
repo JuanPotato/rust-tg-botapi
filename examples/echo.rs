@@ -31,8 +31,10 @@ fn main() {
                 thread::spawn(move || {
                     let chat_id = message.chat.id;
 
-                    let message_text = format!("\"{}\"\n    - <i>You, CURRENT_YEAR</i>",
-                                               message.text.unwrap_or(String::new()));
+                    let message_text = format!(
+                        "\"{}\"\n    - <i>You, CURRENT_YEAR</i>",
+                        message.text.unwrap_or(String::new())
+                    );
 
                     let args = args::SendMessageBuilder::default()
                         .text(message_text)

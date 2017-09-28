@@ -6,19 +6,19 @@ use super::types;
 #[builder(setter(into))]
 pub struct GetUpdates {
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub offset: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub limit: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub timeout: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub allowed_updates: Option<Vec<String>>,
 }
 
@@ -28,15 +28,15 @@ pub struct SetWebhook {
     pub url: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub certificate: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub max_connections: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub allowed_updates: Option<Vec<String>>,
 }
 
@@ -70,23 +70,23 @@ pub struct SendMessage {
     pub text: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub parse_mode: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_web_page_preview: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -97,7 +97,7 @@ pub struct ForwardMessage {
     pub from_chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
     pub message_id: i64,
 }
@@ -108,27 +108,27 @@ pub struct SendPhoto {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing)]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub photo: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub caption: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -138,39 +138,39 @@ pub struct SendAudio {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub audio: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub caption: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub duration: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub performer: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub title: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -180,27 +180,27 @@ pub struct SendDocument {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub document: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub caption: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -210,23 +210,23 @@ pub struct SendSticker {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub sticker: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -251,21 +251,21 @@ pub struct CreateNewStickerSet {
     pub title: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub png_sticker: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     pub emojis: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub contains_masks: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub mask_position: Option<types::MaskPosition>,
 }
 
@@ -276,17 +276,17 @@ pub struct AddStickerToSet {
     pub name: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub png_sticker: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     pub emojis: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub mask_position: Option<types::MaskPosition>,
 }
 
@@ -309,39 +309,39 @@ pub struct SendVideo {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub video: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub duration: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub width: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub height: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub caption: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -351,31 +351,31 @@ pub struct SendVoice {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub voice: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub caption: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub duration: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -386,31 +386,31 @@ pub struct SendVideoNote {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub video_note: Option<PathBuf>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub file_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub duration: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub length: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -422,15 +422,15 @@ pub struct SendLocation {
     pub longitude: f64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -444,19 +444,19 @@ pub struct SendVenue {
     pub address: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub foursquare_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -468,19 +468,19 @@ pub struct SendContact {
     pub first_name: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub last_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
@@ -490,11 +490,11 @@ pub struct GetUserProfilePhotos {
     pub user_id: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub offset: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub limit: Option<i64>,
 }
 
@@ -511,7 +511,7 @@ pub struct KickChatMember {
     pub user_id: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub until_date: Option<i64>,
 }
 
@@ -529,23 +529,23 @@ pub struct RestrictChatMember {
     pub user_id: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub until_date: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_send_messages: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_send_media_messages: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_send_other_messages: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_add_web_page_previews: Option<bool>,
 }
 
@@ -554,37 +554,37 @@ pub struct RestrictChatMember {
 pub struct PromoteChatMember {
     pub chat_id: ChatId,
     pub user_id: i64,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_change_info: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_post_messages: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_edit_messages: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_delete_messages: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_invite_users: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_restrict_members: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_pin_messages: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub can_promote_members: Option<bool>,
 }
 
@@ -626,9 +626,9 @@ pub struct SetChatDescription {
 pub struct PinChatMessage {
     pub chat_id: ChatId,
     pub message_id: i64,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_notification: Option<bool>,
 }
 
@@ -675,19 +675,19 @@ pub struct AnswerCallbackQuery {
     pub callback_query_id: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub text: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub show_alert: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub url: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub cache_time: Option<i64>,
 }
 
@@ -697,25 +697,25 @@ pub struct EditMessageText {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub inline_message_id: Option<String>,
     pub text: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub parse_mode: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_web_page_preview: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    #[builder(default = "None")]
+    pub reply_markup: Option<types::ReplyMarkup>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -724,20 +724,20 @@ pub struct EditMessageCaption {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub inline_message_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub caption: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    #[builder(default = "None")]
+    pub reply_markup: Option<types::ReplyMarkup>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -746,16 +746,16 @@ pub struct EditMessageReplyMarkup {
     pub chat_id: ChatId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub inline_message_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    #[builder(default = "None")]
+    pub reply_markup: Option<types::ReplyMarkup>,
 }
 
 
@@ -773,23 +773,23 @@ pub struct AnswerInlineQuery {
     pub results: Vec<types::InlineQueryResult>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub cache_time: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub is_personal: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub next_offset: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub switch_pm_text: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub switch_pm_parameter: Option<String>,
 }
 
@@ -805,38 +805,27 @@ pub struct SendInvoice {
     pub currency: String,
     pub prices: Vec<types::LabeledPrice>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub photo_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub photo_url: Option<String>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub photo_width: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub photo_width: Option<i64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub photo_height: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub photo_height: Option<i64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub need_name: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub need_name: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub need_phone_number: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub need_phone_number: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub need_email: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub need_email: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub need_shipping_address: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub need_shipping_address: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_flexible: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub is_flexible: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub disable_notification: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_to_message_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub reply_to_message_id: Option<i64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    #[serde(skip_serializing_if = "Option::is_none")] pub reply_markup: Option<types::ReplyMarkup>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -846,10 +835,10 @@ pub struct AnswerShippingQuery {
     pub ok: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_options: Option<Vec<types::ShippingOption>>,
+    pub shipping_options:
+        Option<Vec<types::ShippingOption>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub error_message: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub error_message: Option<String>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -858,8 +847,7 @@ pub struct AnswerPreCheckoutQuery {
     pub pre_checkout_query_id: String,
     pub ok: bool,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub error_message: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub error_message: Option<String>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -868,14 +856,11 @@ pub struct SendGame {
     pub chat_id: i64,
     pub game_short_name: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub disable_notification: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_to_message_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub reply_to_message_id: Option<i64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>, // InlineKeyboardMarkup
+    #[serde(skip_serializing_if = "Option::is_none")] pub reply_markup: Option<types::ReplyMarkup>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -885,23 +870,23 @@ pub struct SetGameScore {
     pub score: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub force: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub disable_edit_message: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub chat_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub inline_message_id: Option<String>,
 }
 
@@ -911,14 +896,14 @@ pub struct GetGameHighScores {
     pub user_id: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub chat_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
+    #[builder(default = "None")]
     pub inline_message_id: Option<String>,
 }

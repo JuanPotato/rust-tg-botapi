@@ -1,6 +1,6 @@
 extern crate tg_botapi;
 
-use tg_botapi::{args, BotApi, BotError, types};
+use tg_botapi::{args, types, BotApi, BotError};
 use types::Message;
 
 use std::env;
@@ -110,19 +110,19 @@ fn main() {
                 if let Some(new_chat_members) = message.new_chat_members {
                     for new_chat_member in new_chat_members {
                         if new_chat_member.id == me_irl.id {
-                            let text = "Hi, thanks for adding me to this group, but I don't want to \
-                                        be here.\nSee ya!";
-                            
+                            let text = "Hi, thanks for adding me to this group, \
+                                        but I don't want to be here.\nSee ya!";
+
                             let msg_args = args::SendMessageBuilder::default()
                                 .text(text)
                                 .chat_id(message.chat.id)
                                 .build()
                                 .unwrap();
                             let _ = bot.send_message(&msg_args);
-                            let leave_args = args::LeaveChatBuilder
-                                ::default()
+                            let leave_args = args::LeaveChatBuilder::default()
                                 .chat_id(message.chat.id)
-                                .build().unwrap();
+                                .build()
+                                .unwrap();
 
                             let _ = bot.leave_chat(&leave_args);
                         }
@@ -135,23 +135,24 @@ fn main() {
                 let shrug_txt = format!("{} {}", inline_query.query, "¯\\_(ツ)_/¯");
                 let lenny = types::InputTextMessageContent::new(lenny_txt.clone());
                 let shrug = types::InputTextMessageContent::new(shrug_txt.clone());
-                let results = vec![types::InlineQueryResultArticleBuilder::default()
-                                       .id("lenny")
-                                       .title(lenny_txt)
-                                       .input_message_content(lenny)
-                                       .build()
-                                       .unwrap()
-                                       .into(),
-                                   types::InlineQueryResultArticleBuilder::default()
-                                       .id("shrug")
-                                       .title(shrug_txt)
-                                       .input_message_content(shrug)
-                                       .build()
-                                       .unwrap()
-                                       .into()];
+                let results = vec![
+                    types::InlineQueryResultArticleBuilder::default()
+                        .id("lenny")
+                        .title(lenny_txt)
+                        .input_message_content(lenny)
+                        .build()
+                        .unwrap()
+                        .into(),
+                    types::InlineQueryResultArticleBuilder::default()
+                        .id("shrug")
+                        .title(shrug_txt)
+                        .input_message_content(shrug)
+                        .build()
+                        .unwrap()
+                        .into(),
+                ];
 
-                let _ =
-                    bot.answer_inline_query(&args::AnswerInlineQueryBuilder::default()
+                let _ = bot.answer_inline_query(&args::AnswerInlineQueryBuilder::default()
                     .inline_query_id(inline_query.id)
                     .results(results)
                     .build()
@@ -159,16 +160,14 @@ fn main() {
             }
 
             if let Some(channel_post) = update.channel_post {
-                bot.leave_chat(&args::LeaveChatBuilder
-                    ::default()
+                bot.leave_chat(&args::LeaveChatBuilder::default()
                     .chat_id(channel_post.chat.id)
                     .build()
                     .unwrap());
             }
 
             if let Some(edited_channel_post) = update.edited_channel_post {
-                bot.leave_chat(&args::LeaveChatBuilder
-                    ::default()
+                bot.leave_chat(&args::LeaveChatBuilder::default()
                     .chat_id(edited_channel_post.chat.id)
                     .build()
                     .unwrap());
@@ -199,14 +198,14 @@ mod cmd {
             .reply_to_message_id(message.message_id)
             .build()
             .unwrap();
-            
+
         bot.send_message(&args)
     }
 
     pub fn help(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
         let args = args::SendMessageBuilder::default()
             .text(
-r#"Hi, I'm a bot!
+                r#"Hi, I'm a bot!
 I was built using Rust and a library by @JuanPotato
 
 [Check out the libary!](https://github.com/JuanPotato/rust-tg-botapi)
@@ -219,7 +218,8 @@ Commands:
  - /button `Displays buttons`
  - /inline `Displays inline buttons`
  - /clear `Clears any buttons`
-"#)
+"#,
+            )
             .chat_id(message.chat.id)
             .parse_mode(String::from("Markdown"))
             .reply_to_message_id(message.message_id)
@@ -240,11 +240,11 @@ Commands:
         bot.send_photo(&args)
     }
 
-    pub fn edit(bot: &BotApi,
-                message: &Message,
-                edit_text: Option<String>)
-                -> Result<types::MessageOrBool, BotError> {
-
+    pub fn edit(
+        bot: &BotApi,
+        message: &Message,
+        edit_text: Option<String>,
+    ) -> Result<types::MessageOrBool, BotError> {
         let args = args::SendMessageBuilder::default()
             .text("Editing")
             .chat_id(message.chat.id)
@@ -274,13 +274,13 @@ Commands:
     }
 
     pub fn button(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
-        let keyboard =
-            types::ReplyKeyboardMarkupBuilder::default()
-                .keyboard(
-                    vec![vec![button!("Yes"), button!("No")],
-                         vec![button!("Eh"), button!("He")]])
-                .build()
-                .unwrap();
+        let keyboard = types::ReplyKeyboardMarkupBuilder::default()
+            .keyboard(vec![
+                vec![button!("Yes"), button!("No")],
+                vec![button!("Eh"), button!("He")],
+            ])
+            .build()
+            .unwrap();
 
         let args = args::SendMessageBuilder::default()
             .text("Yes or No?")
@@ -296,33 +296,34 @@ Commands:
     pub fn inline(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
         let keyboard = types::InlineKeyboardMarkupBuilder::default()
             .inline_keyboard(vec![
-            vec![
-                types::InlineKeyboardButtonBuilder::default()
-                    .text("Some")
-                    .url(String::from("https://www.youtube.com/watch?v=L_jWHffIx5E"))
-                    .build()
-                    .unwrap(),
-                types::InlineKeyboardButtonBuilder::default()
-                    .text("Body")
-                    .url(String::from("https://www.youtube.com/watch?v=rlYys58hsCU"))
-                    .build()
-                    .unwrap()
-            ],
-            vec![
-                types::InlineKeyboardButtonBuilder::default()
-                    .text("Once")
-                    .url(String::from("https://www.youtube.com/watch?v=Q-MizNywQ94"))
-                    .build()
-                    .unwrap(),
-                types::InlineKeyboardButtonBuilder::default()
-                    .text("Told")
-                    .url(String::from("https://www.youtube.com/watch?v=J48dqyz_C6s"))
-                    .build()
-                    .unwrap()
-            ]])
+                vec![
+                    types::InlineKeyboardButtonBuilder::default()
+                        .text("Some")
+                        .url(String::from("https://www.youtube.com/watch?v=L_jWHffIx5E"))
+                        .build()
+                        .unwrap(),
+                    types::InlineKeyboardButtonBuilder::default()
+                        .text("Body")
+                        .url(String::from("https://www.youtube.com/watch?v=rlYys58hsCU"))
+                        .build()
+                        .unwrap(),
+                ],
+                vec![
+                    types::InlineKeyboardButtonBuilder::default()
+                        .text("Once")
+                        .url(String::from("https://www.youtube.com/watch?v=Q-MizNywQ94"))
+                        .build()
+                        .unwrap(),
+                    types::InlineKeyboardButtonBuilder::default()
+                        .text("Told")
+                        .url(String::from("https://www.youtube.com/watch?v=J48dqyz_C6s"))
+                        .build()
+                        .unwrap(),
+                ],
+            ])
             .build()
             .unwrap();
-        
+
         let args = args::SendMessageBuilder::default()
             .text("Me")
             .chat_id(message.chat.id)
@@ -337,11 +338,13 @@ Commands:
         let args = args::SendMessageBuilder::default()
             .text("Me too")
             .chat_id(message.chat.id)
-            .reply_markup(Some(types::ReplyKeyboardRemoveMarkupBuilder::default()
-                .remove_keyboard(true)
-                .build()
-                .unwrap()
-                .into()))
+            .reply_markup(Some(
+                types::ReplyKeyboardRemoveMarkupBuilder::default()
+                    .remove_keyboard(true)
+                    .build()
+                    .unwrap()
+                    .into(),
+            ))
             .build()
             .unwrap();
         bot.send_message(&args)

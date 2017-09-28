@@ -1,14 +1,14 @@
 #[macro_use]
+extern crate debug_stub_derive;
+#[macro_use]
 extern crate derive_builder;
 extern crate hyper;
+extern crate hyper_native_tls;
 extern crate multipart;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
-extern crate hyper_native_tls;
-#[macro_use]
-extern crate debug_stub_derive;
 
 use std::{error, fmt};
 use std::result::Result;
@@ -16,7 +16,7 @@ use std::io::Read;
 use std::time::Duration;
 use std::path::PathBuf;
 
-use hyper::net::{Streaming, HttpsConnector};
+use hyper::net::{HttpsConnector, Streaming};
 use hyper::method::Method;
 use hyper::client::Request;
 
@@ -40,7 +40,7 @@ macro_rules! api_method {
         pub fn $func_name(&self) -> Result<$return_type, BotError> {
             let url = self.base_url.join($method_name).unwrap();
             let res = self.client.get(url).send();
-            
+
             match parse_request(res, self.debug) {
                 Ok(val) => Ok(serde_json::value::from_value(val).unwrap()),
                 Err(e) => Err(e),
@@ -147,9 +147,11 @@ impl fmt::Display for BotError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             BotError::Http(ref e) => write!(f, "{}", e),
-            BotError::Api { error_code, ref description, .. } => {
-                write!(f, "Error {0}: {1}", error_code, description)
-            }
+            BotError::Api {
+                error_code,
+                ref description,
+                ..
+            } => write!(f, "Error {0}: {1}", error_code, description),
         }
     }
 }
@@ -160,9 +162,10 @@ impl error::Error for BotError {
     }
 }
 
-fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>,
-                 debug: bool)
-                 -> Result<Value, BotError> {
+fn parse_request(
+    respon_result: Result<hyper::client::Response, hyper::Error>,
+    debug: bool,
+) -> Result<Value, BotError> {
     match respon_result {
         Ok(mut response) => {
             let mut body = String::new();
@@ -194,8 +197,9 @@ fn parse_request(respon_result: Result<hyper::client::Response, hyper::Error>,
 pub struct BotApi {
     base_url: Url,
     client: Client,
-    #[debug_stub="HttpsConnector"]
-    connector: hyper::net::HttpsConnector<hyper_native_tls::NativeTlsClient>,
+    #[debug_stub = "HttpsConnector"]
+    connector:
+        hyper::net::HttpsConnector<hyper_native_tls::NativeTlsClient>,
     debug: bool,
 }
 
@@ -236,79 +240,206 @@ impl BotApi {
 
     api_method!(send_message, "sendMessage", args::SendMessage, Message);
 
-    api_method!(forward_message, "forwardMessage", args::ForwardMessage, Message);
+    api_method!(
+        forward_message,
+        "forwardMessage",
+        args::ForwardMessage,
+        Message
+    );
 
     api_method_multi!(send_photo, "sendPhoto", args::SendPhoto, Message, photo);
 
     api_method_multi!(send_audio, "sendAudio", args::SendAudio, Message, audio);
 
-    api_method_multi!(send_document, "sendDocument", args::SendDocument, Message, document);
+    api_method_multi!(
+        send_document,
+        "sendDocument",
+        args::SendDocument,
+        Message,
+        document
+    );
 
-    api_method_multi!(send_sticker, "sendSticker", args::SendSticker, Message, sticker);
+    api_method_multi!(
+        send_sticker,
+        "sendSticker",
+        args::SendSticker,
+        Message,
+        sticker
+    );
 
     api_method_multi!(send_video, "sendVideo", args::SendVideo, Message, video);
 
     api_method_multi!(send_voice, "sendVoice", args::SendVoice, Message, voice);
 
-    api_method!(get_user_profile_photos, "getUserProfilePhotos", args::GetUserProfilePhotos, UserProfilePhotos);
+    api_method!(
+        get_user_profile_photos,
+        "getUserProfilePhotos",
+        args::GetUserProfilePhotos,
+        UserProfilePhotos
+    );
 
     api_method!(get_file, "getFile", args::GetFile, File);
 
-    api_method!(kick_chat_member, "kickChatMember", args::KickChatMember, bool);
+    api_method!(
+        kick_chat_member,
+        "kickChatMember",
+        args::KickChatMember,
+        bool
+    );
 
     api_method!(leave_chat, "leaveChat", args::LeaveChat, bool);
 
-    api_method!(unban_chat_member, "unbanChatMember", args::UnbanChatMember, bool);
+    api_method!(
+        unban_chat_member,
+        "unbanChatMember",
+        args::UnbanChatMember,
+        bool
+    );
 
     api_method!(get_chat, "getChat", args::GetChat, Chat);
 
-    api_method!(get_chat_administrators, "getChatAdministrators", args::GetChatAdministrators, Vec<ChatMember>);
+    api_method!(
+        get_chat_administrators,
+        "getChatAdministrators",
+        args::GetChatAdministrators,
+        Vec<ChatMember>
+    );
 
-    api_method!(get_chat_members_count, "getChatMembersCount", args::GetChatMembersCount, i64);
+    api_method!(
+        get_chat_members_count,
+        "getChatMembersCount",
+        args::GetChatMembersCount,
+        i64
+    );
 
-    api_method!(get_chat_member, "getChatMember", args::GetChatMember, ChatMember);
+    api_method!(
+        get_chat_member,
+        "getChatMember",
+        args::GetChatMember,
+        ChatMember
+    );
 
-    api_method!(answer_callback_query, "answerCallbackQuery", args::AnswerCallbackQuery, bool);
+    api_method!(
+        answer_callback_query,
+        "answerCallbackQuery",
+        args::AnswerCallbackQuery,
+        bool
+    );
 
     api_method_msgorbool!(edit_message_text, "editMessageText", args::EditMessageText);
 
-    api_method_msgorbool!(edit_message_caption, "editMessageCaption", args::EditMessageCaption);
-    
-    api_method_msgorbool!(edit_message_reply_markup, "editMessageReplyMarkup", args::EditMessageReplyMarkup);
+    api_method_msgorbool!(
+        edit_message_caption,
+        "editMessageCaption",
+        args::EditMessageCaption
+    );
 
-    api_method!(answer_inline_query, "answerInlineQuery", args::AnswerInlineQuery, bool);
+    api_method_msgorbool!(
+        edit_message_reply_markup,
+        "editMessageReplyMarkup",
+        args::EditMessageReplyMarkup
+    );
+
+    api_method!(
+        answer_inline_query,
+        "answerInlineQuery",
+        args::AnswerInlineQuery,
+        bool
+    );
 
     api_method!(send_game, "sendGame", args::SendGame, Message);
 
     api_method_msgorbool!(set_game_score, "setGameScore", args::SetGameScore);
 
-    api_method!(get_game_high_scores, "getGameHighScores", args::GetGameHighScores, Vec<GameHighScore>);
-    
-    api_method_multi!(add_sticker_to_set, "addStickerToSet", args::AddStickerToSet, bool, png_sticker);
+    api_method!(
+        get_game_high_scores,
+        "getGameHighScores",
+        args::GetGameHighScores,
+        Vec<GameHighScore>
+    );
 
-    api_method!(answer_pre_checkout_query, "answerPreCheckoutQuery", args::AnswerPreCheckoutQuery, bool);
+    api_method_multi!(
+        add_sticker_to_set,
+        "addStickerToSet",
+        args::AddStickerToSet,
+        bool,
+        png_sticker
+    );
 
-    api_method!(answer_shipping_query, "answerShippingQuery", args::AnswerShippingQuery, bool);
+    api_method!(
+        answer_pre_checkout_query,
+        "answerPreCheckoutQuery",
+        args::AnswerPreCheckoutQuery,
+        bool
+    );
 
-    api_method_multi!(create_new_sticker_set, "createNewStickerSet", args::CreateNewStickerSet, bool, png_sticker);
+    api_method!(
+        answer_shipping_query,
+        "answerShippingQuery",
+        args::AnswerShippingQuery,
+        bool
+    );
 
-    api_method!(delete_chat_photo, "deleteChatPhoto", args::DeleteChatPhoto, bool);
+    api_method_multi!(
+        create_new_sticker_set,
+        "createNewStickerSet",
+        args::CreateNewStickerSet,
+        bool,
+        png_sticker
+    );
+
+    api_method!(
+        delete_chat_photo,
+        "deleteChatPhoto",
+        args::DeleteChatPhoto,
+        bool
+    );
 
     api_method!(delete_message, "deleteMessage", args::DeleteMessage, bool);
 
-    api_method!(delete_sticker_from_set, "deleteStickerFromSet", args::DeleteStickerFromSet, bool);
+    api_method!(
+        delete_sticker_from_set,
+        "deleteStickerFromSet",
+        args::DeleteStickerFromSet,
+        bool
+    );
 
     api_method!(delete_webhook, "deleteWebhook", bool);
 
-    api_method!(export_chat_invite_link, "exportChatInviteLink", args::ExportChatInviteLink, String);
-    
-    api_method!(get_sticker_set, "getStickerSet", args::GetStickerSet, StickerSet);
+    api_method!(
+        export_chat_invite_link,
+        "exportChatInviteLink",
+        args::ExportChatInviteLink,
+        String
+    );
 
-    api_method!(pin_chat_message, "pinChatMessage", args::PinChatMessage, bool);
+    api_method!(
+        get_sticker_set,
+        "getStickerSet",
+        args::GetStickerSet,
+        StickerSet
+    );
 
-    api_method!(promote_chat_member, "promoteChatMember", args::PromoteChatMember, bool);
+    api_method!(
+        pin_chat_message,
+        "pinChatMessage",
+        args::PinChatMessage,
+        bool
+    );
 
-    api_method!(restrict_chat_member, "restrictChatMember", args::RestrictChatMember, bool);
+    api_method!(
+        promote_chat_member,
+        "promoteChatMember",
+        args::PromoteChatMember,
+        bool
+    );
+
+    api_method!(
+        restrict_chat_member,
+        "restrictChatMember",
+        args::RestrictChatMember,
+        bool
+    );
 
     api_method!(send_contact, "sendContact", args::SendContact, Message);
 
@@ -318,15 +449,31 @@ impl BotApi {
 
     api_method!(send_venue, "sendVenue", args::SendVenue, Message);
 
-    api_method_multi!(send_video_note, "sendVideoNote", args::SendVideoNote, Message, video_note);
+    api_method_multi!(
+        send_video_note,
+        "sendVideoNote",
+        args::SendVideoNote,
+        Message,
+        video_note
+    );
 
-    api_method!(set_chat_description, "setChatDescription", args::SetChatDescription, bool);
+    api_method!(
+        set_chat_description,
+        "setChatDescription",
+        args::SetChatDescription,
+        bool
+    );
 
     api_method_multi!(set_chat_photo, "setChatPhoto", args::SetChatPhoto, bool, photo;);
 
     api_method!(set_chat_title, "setChatTitle", args::SetChatTitle, bool);
 
-    api_method!(set_sticker_position_in_set, "setStickerPositionInSet", args::SetStickerPositionInSet, bool);
+    api_method!(
+        set_sticker_position_in_set,
+        "setStickerPositionInSet",
+        args::SetStickerPositionInSet,
+        bool
+    );
 
     pub fn set_webhook(&self, params: &args::SetWebhook) -> Result<bool, BotError> {
         let url = self.base_url.join("setWebhook").unwrap();
@@ -345,9 +492,20 @@ impl BotApi {
         }
     }
 
-    api_method!(unpin_chat_message, "unpinChatMessage", args::UnpinChatMessage, bool);
+    api_method!(
+        unpin_chat_message,
+        "unpinChatMessage",
+        args::UnpinChatMessage,
+        bool
+    );
 
-    api_method_multi!(upload_sticker_file, "uploadStickerFile", args::UploadStickerFile, File, png_sticker;);
+    api_method_multi!(
+        upload_sticker_file,
+        "uploadStickerFile",
+        args::UploadStickerFile,
+        File,
+        png_sticker;
+    );
 }
 
 fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, value: Value) {
@@ -395,12 +553,10 @@ fn value_to_multi(multi: &mut Multipart<Request<Streaming>>, key: &str, value: V
 
 fn value_to_root_multi(multi: &mut Multipart<Request<Streaming>>, value: Value) {
     match value {
-        Value::Object(map) => {
-            for (map_key, map_value) in map {
-                value_to_multi(multi, &map_key, map_value);
-            }
-        }
+        Value::Object(map) => for (map_key, map_value) in map {
+            value_to_multi(multi, &map_key, map_value);
+        },
 
-        _ => { panic!("This will never occur") } // TODO: prove myself wrong
+        _ => panic!("This will never occur"), // TODO: prove myself wrong
     }
 }
