@@ -1,6 +1,6 @@
 extern crate tg_botapi;
 
-use tg_botapi::{args, BotApi, BotError, BotResult, types};
+use tg_botapi::{args, BotApi, BotError, types};
 use types::Message;
 
 use std::env;
@@ -157,6 +157,22 @@ fn main() {
                     .build()
                     .unwrap());
             }
+
+            if let Some(channel_post) = update.channel_post {
+                bot.leave_chat(&args::LeaveChatBuilder
+                    ::default()
+                    .chat_id(channel_post.chat.id)
+                    .build()
+                    .unwrap());
+            }
+
+            if let Some(edited_channel_post) = update.edited_channel_post {
+                bot.leave_chat(&args::LeaveChatBuilder
+                    ::default()
+                    .chat_id(edited_channel_post.chat.id)
+                    .build()
+                    .unwrap());
+            }
         }
     }
     update_args.limit = Some(0);
@@ -176,7 +192,7 @@ fn main() {
 mod cmd {
     use super::*;
 
-    pub fn exit(bot: &BotApi, message: &Message) -> BotResult {
+    pub fn exit(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
         let args = args::SendMessageBuilder::default()
             .text("Goodbye!")
             .chat_id(message.chat.id)
@@ -187,7 +203,7 @@ mod cmd {
         bot.send_message(&args)
     }
 
-    pub fn help(bot: &BotApi, message: &Message) -> BotResult {
+    pub fn help(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
         let args = args::SendMessageBuilder::default()
             .text(
 r#"Hi, I'm a bot!
@@ -213,7 +229,7 @@ Commands:
         bot.send_message(&args)
     }
 
-    pub fn photo(bot: &BotApi, message: &Message) -> BotResult {
+    pub fn photo(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
         let args = args::SendPhotoBuilder::default()
             .chat_id(message.chat.id)
             .reply_to_message_id(message.message_id)
@@ -257,7 +273,7 @@ Commands:
         )
     }
 
-    pub fn button(bot: &BotApi, message: &Message) -> BotResult {
+    pub fn button(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
         let keyboard =
             types::ReplyKeyboardMarkupBuilder::default()
                 .keyboard(
@@ -277,7 +293,7 @@ Commands:
     }
 
 
-    pub fn inline(bot: &BotApi, message: &Message) -> BotResult {
+    pub fn inline(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
         let keyboard = types::InlineKeyboardMarkupBuilder::default()
             .inline_keyboard(vec![
             vec![
@@ -317,7 +333,7 @@ Commands:
         bot.send_message(&args)
     }
 
-    pub fn clear(bot: &BotApi, message: &Message) -> BotResult {
+    pub fn clear(bot: &BotApi, message: &Message) -> Result<Message, BotError> {
         let args = args::SendMessageBuilder::default()
             .text("Me too")
             .chat_id(message.chat.id)

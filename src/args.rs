@@ -19,7 +19,7 @@ pub struct GetUpdates {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default="None")]
-    pub allowed_updates: Option<String>,
+    pub allowed_updates: Option<Vec<String>>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -37,7 +37,7 @@ pub struct SetWebhook {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default="None")]
-    pub allowed_updates: Option<String>,
+    pub allowed_updates: Option<Vec<String>>,
 }
 
 // #[derive(Debug, Builder, Serialize)]
@@ -107,7 +107,7 @@ pub struct ForwardMessage {
 pub struct SendPhoto {
     pub chat_id: ChatId,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing)]
     #[builder(default="None")]
     pub photo: Option<PathBuf>,
 
@@ -240,7 +240,7 @@ pub struct GetStickerSet {
 #[builder(setter(into))]
 pub struct UploadStickerFile {
     pub user_id: i64,
-    pub png_sticker: Option<PathBuf>,
+    pub png_sticker: PathBuf,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -598,10 +598,7 @@ pub struct ExportChatInviteLink {
 #[builder(setter(into))]
 pub struct SetChatPhoto {
     pub chat_id: ChatId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default="None")]
-    pub photo: Option<PathBuf>,
+    pub photo: PathBuf,
 }
 
 #[derive(Debug, Builder, Serialize)]
