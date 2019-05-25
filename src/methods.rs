@@ -1,6 +1,15 @@
 use std::path::PathBuf;
 
-use super::types;
+use crate::{types, TgMethod};
+use types::ParseMode;
+
+#[derive(Debug, Serialize)]
+pub struct GetMe;
+
+impl TgMethod for GetMe {
+    type ResponseType = types::User;
+    const PATH: &'static str = "getMe";
+}
 
 #[derive(Debug, Builder, Serialize)]
 #[builder(setter(into))]
@@ -20,6 +29,11 @@ pub struct GetUpdates {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
     pub allowed_updates: Option<Vec<String>>,
+}
+
+impl TgMethod for GetUpdates {
+    type ResponseType = Vec<types::Update>;
+    const PATH: &'static str = "getUpdates";
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -69,9 +83,9 @@ pub struct SendMessage {
     pub chat_id: ChatId,
     pub text: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default = "None")]
-    pub parse_mode: Option<String>,
+    #[serde(skip_serializing_if = "ParseMode::is_none")]
+    #[builder(default = "ParseMode::None")]
+    pub parse_mode: ParseMode,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
@@ -88,6 +102,25 @@ pub struct SendMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
+}
+
+impl TgMethod for SendMessage {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendMessage";
+}
+
+impl SendMessage {
+    pub fn new(chat_id: impl Into<ChatId>, text: impl Into<String>) -> SendMessage {
+        SendMessage {
+            chat_id: chat_id.into(),
+            text: text.into(),
+            parse_mode: ParseMode::None,
+            disable_web_page_preview: None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -378,7 +411,6 @@ pub struct SendVoice {
     #[builder(default = "None")]
     pub reply_markup: Option<types::ReplyMarkup>,
 }
-
 
 #[derive(Debug, Builder, Serialize)]
 #[builder(setter(into))]
@@ -705,9 +737,9 @@ pub struct EditMessageText {
     pub inline_message_id: Option<String>,
     pub text: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default = "None")]
-    pub parse_mode: Option<String>,
+    #[serde(skip_serializing_if = "ParseMode::is_none")]
+    #[builder(default = "ParseMode::None")]
+    pub parse_mode: ParseMode,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
@@ -758,7 +790,6 @@ pub struct EditMessageReplyMarkup {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
-
 #[derive(Debug, Builder, Serialize)]
 #[builder(setter(into))]
 pub struct DeleteMessage {
@@ -793,6 +824,29 @@ pub struct AnswerInlineQuery {
     pub switch_pm_parameter: Option<String>,
 }
 
+impl AnswerInlineQuery {
+    pub fn new(id: String, results: Vec<types::InlineQueryResult>) -> AnswerInlineQuery {
+        AnswerInlineQuery {
+            inline_query_id: id,
+            results,
+            cache_time: None,
+            is_personal: None,
+            next_offset: None,
+            switch_pm_text: None,
+            switch_pm_parameter: None,
+        }
+    }
+
+    pub fn add(&mut self, result: impl Into<types::InlineQueryResult>) {
+        self.results.push(result.into());
+    }
+}
+
+impl TgMethod for AnswerInlineQuery {
+    type ResponseType = bool;
+    const PATH: &'static str = "answerInlineQuery";
+}
+
 #[derive(Debug, Builder, Serialize)]
 #[builder(setter(into))]
 pub struct SendInvoice {
@@ -805,27 +859,38 @@ pub struct SendInvoice {
     pub currency: String,
     pub prices: Vec<types::LabeledPrice>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub photo_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_url: Option<String>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub photo_width: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_width: Option<i64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub photo_height: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_height: Option<i64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub need_name: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_name: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub need_phone_number: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_phone_number: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub need_email: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_email: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub need_shipping_address: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_shipping_address: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub is_flexible: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_flexible: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub reply_to_message_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_to_message_id: Option<i64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub reply_markup: Option<types::ReplyMarkup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<types::ReplyMarkup>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -835,10 +900,10 @@ pub struct AnswerShippingQuery {
     pub ok: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_options:
-        Option<Vec<types::ShippingOption>>,
+    pub shipping_options: Option<Vec<types::ShippingOption>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub error_message: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error_message: Option<String>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -847,7 +912,8 @@ pub struct AnswerPreCheckoutQuery {
     pub pre_checkout_query_id: String,
     pub ok: bool,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub error_message: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error_message: Option<String>,
 }
 
 #[derive(Debug, Builder, Serialize)]
@@ -856,11 +922,14 @@ pub struct SendGame {
     pub chat_id: i64,
     pub game_short_name: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub reply_to_message_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_to_message_id: Option<i64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub reply_markup: Option<types::ReplyMarkup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<types::ReplyMarkup>,
 }
 
 #[derive(Debug, Builder, Serialize)]

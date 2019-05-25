@@ -1,24 +1,21 @@
 [package]
-authors = ["Juan Potato <hasantiny@gmail.com>"]
+authors = ["Hasan <hasantiny@gmail.com>"]
 description = "Telegram Bot Api library"
-keywords = ["telegram", "bot", "api"]
+keywords = ["async", "telegram", "bot", "api"]
 license = "MIT"
 name = "tg_botapi"
 readme = "README.md"
 repository = "https://github.com/JuanPotato/rust-tg-botapi"
-version = "0.5.0"
+version = "0.6.0-alpha.0"
+edition = "2018"
+
 
 [dependencies]
-derive_builder = "0.5.0"
-hyper = "0.10.12"
-hyper-native-tls = "0.2.4"
-serde = "1.0.11"
-serde_derive = "1.0.11"
-serde_json = "1.0.2"
-debug_stub_derive = "0.3.0"
-
-
-[dependencies.multipart]
-default-features = false
-features = ["client", "hyper"]
-version = "0.13.1"
+reqwest = { version = "0.9", features = ["trust-dns"] }
+tokio = "0.1"
+futures-preview = { version = "0.3.0-alpha.16", features = ["compat"] }
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+derive_builder = "0.7"
+charname = "0.1.2"

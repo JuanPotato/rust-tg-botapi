@@ -1,18 +1,56 @@
-use serde_json;
+use crate::methods;
+use crate::BotError;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ApiResult {
-    pub ok: bool,
-    pub description: Option<String>,
-    pub error_code: Option<i64>,
-    pub result: Option<serde_json::value::Value>,
-    pub parameters: Option<ResponseParameters>,
+#[serde(untagged)]
+pub enum ApiResult<T> {
+    Ok {
+        result: T,
+    },
+
+    Err {
+        error_code: i64,
+        description: String,
+        parameters: Option<ResponseParameters>,
+    },
+}
+
+impl<T> Into<Result<T, BotError>> for ApiResult<T> {
+    fn into(self) -> Result<T, BotError> {
+        match self {
+            ApiResult::Ok { result } => Ok(result),
+
+            ApiResult::Err {
+                error_code,
+                description,
+                parameters,
+            } => Err(BotError::Api {
+                error_code,
+                description,
+                parameters,
+            }),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum MessageOrBool {
-    M(Box<Message>),
-    B(bool),
+    Message(Box<Message>),
+    Bool(bool),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum ParseMode {
+    Markdown,
+    HTML,
+    None,
+}
+
+impl ParseMode {
+    pub fn is_none(&self) -> bool {
+        *self == ParseMode::None
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -95,26 +133,46 @@ pub struct ForceReplyMarkup {
 #[derive(Debug, Clone, Serialize)]
 #[serde(tag = "type")]
 pub enum InlineQueryResult {
-    #[serde(rename = "article")] Article(Box<InlineQueryResultArticle>),
-    #[serde(rename = "photo")] Photo(Box<InlineQueryResultPhoto>),
-    #[serde(rename = "gif")] Gif(Box<InlineQueryResultGif>),
-    #[serde(rename = "mpeg4_gif")] Mpeg4Gif(Box<InlineQueryResultMpeg4Gif>),
-    #[serde(rename = "video")] Video(Box<InlineQueryResultVideo>),
-    #[serde(rename = "audio")] Audio(Box<InlineQueryResultAudio>),
-    #[serde(rename = "voice")] Voice(Box<InlineQueryResultVoice>),
-    #[serde(rename = "document")] Document(Box<InlineQueryResultDocument>),
-    #[serde(rename = "location")] Location(Box<InlineQueryResultLocation>),
-    #[serde(rename = "venue")] Venue(Box<InlineQueryResultVenue>),
-    #[serde(rename = "contact")] Contact(Box<InlineQueryResultContact>),
-    #[serde(rename = "game")] Game(Box<InlineQueryResultGame>),
-    #[serde(rename = "photo")] CachedPhoto(Box<InlineQueryResultCachedPhoto>),
-    #[serde(rename = "gif")] CachedGif(Box<InlineQueryResultCachedGif>),
-    #[serde(rename = "mpeg4_gif")] CachedMpeg4Gif(Box<InlineQueryResultCachedMpeg4Gif>),
-    #[serde(rename = "sticker")] CachedSticker(Box<InlineQueryResultCachedSticker>),
-    #[serde(rename = "document")] CachedDocument(Box<InlineQueryResultCachedDocument>),
-    #[serde(rename = "video")] CachedVideo(Box<InlineQueryResultCachedVideo>),
-    #[serde(rename = "voice")] CachedVoice(Box<InlineQueryResultCachedVoice>),
-    #[serde(rename = "audio")] CachedAudio(Box<InlineQueryResultCachedAudio>),
+    #[serde(rename = "article")]
+    Article(Box<InlineQueryResultArticle>),
+    #[serde(rename = "photo")]
+    Photo(Box<InlineQueryResultPhoto>),
+    #[serde(rename = "gif")]
+    Gif(Box<InlineQueryResultGif>),
+    #[serde(rename = "mpeg4_gif")]
+    Mpeg4Gif(Box<InlineQueryResultMpeg4Gif>),
+    #[serde(rename = "video")]
+    Video(Box<InlineQueryResultVideo>),
+    #[serde(rename = "audio")]
+    Audio(Box<InlineQueryResultAudio>),
+    #[serde(rename = "voice")]
+    Voice(Box<InlineQueryResultVoice>),
+    #[serde(rename = "document")]
+    Document(Box<InlineQueryResultDocument>),
+    #[serde(rename = "location")]
+    Location(Box<InlineQueryResultLocation>),
+    #[serde(rename = "venue")]
+    Venue(Box<InlineQueryResultVenue>),
+    #[serde(rename = "contact")]
+    Contact(Box<InlineQueryResultContact>),
+    #[serde(rename = "game")]
+    Game(Box<InlineQueryResultGame>),
+    #[serde(rename = "photo")]
+    CachedPhoto(Box<InlineQueryResultCachedPhoto>),
+    #[serde(rename = "gif")]
+    CachedGif(Box<InlineQueryResultCachedGif>),
+    #[serde(rename = "mpeg4_gif")]
+    CachedMpeg4Gif(Box<InlineQueryResultCachedMpeg4Gif>),
+    #[serde(rename = "sticker")]
+    CachedSticker(Box<InlineQueryResultCachedSticker>),
+    #[serde(rename = "document")]
+    CachedDocument(Box<InlineQueryResultCachedDocument>),
+    #[serde(rename = "video")]
+    CachedVideo(Box<InlineQueryResultCachedVideo>),
+    #[serde(rename = "voice")]
+    CachedVoice(Box<InlineQueryResultCachedVoice>),
+    #[serde(rename = "audio")]
+    CachedAudio(Box<InlineQueryResultCachedAudio>),
 }
 
 impl From<InlineQueryResultArticle> for InlineQueryResult {
@@ -271,6 +329,27 @@ pub struct InlineQueryResultArticle {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
     pub thumb_height: Option<i64>,
+}
+
+impl InlineQueryResultArticle {
+    pub fn new(
+        id: impl Into<String>,
+        title: impl Into<String>,
+        content: impl Into<InputMessageContent>,
+    ) -> Self {
+        InlineQueryResultArticle {
+            id: id.into(),
+            title: title.into(),
+            input_message_content: content.into(),
+            reply_markup: None,
+            url: None,
+            hide_url: None,
+            description: None,
+            thumb_url: None,
+            thumb_width: None,
+            thumb_height: None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Builder, Serialize)]
@@ -848,9 +927,9 @@ impl From<InputContactMessageContent> for InputMessageContent {
 pub struct InputTextMessageContent {
     pub message_text: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default = "None")]
-    pub parse_mode: Option<String>,
+    #[serde(skip_serializing_if = "ParseMode::is_none")]
+    #[builder(default = "ParseMode::None")]
+    pub parse_mode: ParseMode,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
@@ -861,7 +940,17 @@ impl InputTextMessageContent {
     pub fn new(message_text: String) -> InputTextMessageContent {
         InputTextMessageContent {
             message_text: message_text,
-            parse_mode: None,
+            parse_mode: ParseMode::None,
+            disable_web_page_preview: None,
+        }
+    }
+}
+
+impl From<String> for InputTextMessageContent {
+    fn from(s: String) -> InputTextMessageContent {
+        InputTextMessageContent {
+            message_text: s,
+            parse_mode: ParseMode::None,
             disable_web_page_preview: None,
         }
     }
@@ -910,15 +999,22 @@ pub struct InputContactMessageContent {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Update {
     pub update_id: i64,
-    pub message: Option<Message>,
-    pub edited_message: Option<Message>,
-    pub channel_post: Option<Message>,
-    pub edited_channel_post: Option<Message>,
-    pub inline_query: Option<InlineQuery>,
-    pub chosen_inline_result: Option<ChosenInlineResult>,
-    pub callback_query: Option<CallbackQuery>,
-    pub shipping_query: Option<ShippingQuery>,
-    pub pre_checkout_query: Option<PreCheckoutQuery>,
+    #[serde(flatten)]
+    pub update_type: UpdateType,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateType {
+    Message(Message),
+    EditedMessage(Message),
+    ChannelPost(Message),
+    EditedChannelPost(Message),
+    InlineQuery(InlineQuery),
+    ChosenInlineResult(ChosenInlineResult),
+    CallbackQuery(CallbackQuery),
+    ShippingQuery(ShippingQuery),
+    PreCheckoutQuery(PreCheckoutQuery),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -945,7 +1041,8 @@ pub struct User {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Chat {
     pub id: i64,
-    #[serde(rename = "type")] pub type_name: String,
+    #[serde(rename = "type")]
+    pub chat_type: ChatType,
     pub title: Option<String>,
     pub username: Option<String>,
     pub first_name: Option<String>,
@@ -955,6 +1052,17 @@ pub struct Chat {
     pub description: Option<String>,
     pub invite_link: Option<String>,
     pub pinned_message: Option<Box<Message>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum ChatType {
+    Private,
+    Group,
+    Supergroup,
+    Channel,
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1026,9 +1134,46 @@ pub struct Message {
     pub successful_payment: Option<SuccessfulPayment>,
 }
 
+impl Message {
+    pub fn reply(&self, text: impl Into<String>) -> methods::SendMessage {
+        methods::SendMessage {
+            chat_id: self.chat.id.into(),
+            text: text.into(),
+            reply_to_message_id: Some(self.message_id),
+            parse_mode: ParseMode::None,
+            disable_web_page_preview: None,
+            disable_notification: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn respond(&self, text: impl Into<String>) -> methods::SendMessage {
+        methods::SendMessage {
+            chat_id: self.chat.id.into(),
+            text: text.into(),
+            reply_to_message_id: None,
+            parse_mode: ParseMode::None,
+            disable_web_page_preview: None,
+            disable_notification: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn get_text(&self) -> Option<&String> {
+        if let Some(ref text) = self.text {
+            Some(text)
+        } else if let Some(ref text) = self.caption {
+            Some(text)
+        } else {
+            None
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageEntity {
-    #[serde(rename = "type")] pub type_name: String,
+    #[serde(rename = "type")]
+    pub type_name: String,
     pub offset: i64,
     pub length: i64,
     pub url: Option<String>,
@@ -1167,7 +1312,6 @@ pub struct KeyboardButton {
     #[builder(default = "None")]
     pub request_location: Option<bool>,
 }
-
 
 #[derive(Debug, Clone, Builder, Serialize, Deserialize)]
 #[builder(setter(into))]
