@@ -1,8 +1,7 @@
 #![feature(async_await)]
 use futures::{FutureExt, StreamExt, TryFutureExt};
 
-use tg_botapi::methods::ParseMode;
-use tg_botapi::types::{Message, UpdateType};
+use tg_botapi::types::{ParseMode, Message, UpdateType};
 use tg_botapi::Bot;
 
 use std::env;
