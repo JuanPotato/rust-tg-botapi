@@ -1,7 +1,5 @@
 #![feature(async_await)]
 #[macro_use]
-extern crate derive_builder;
-#[macro_use]
 extern crate serde_derive;
 
 use std::{error, fmt};
@@ -66,7 +64,6 @@ pub trait TgMethod {
     type ResponseType;
     const PATH: &'static str;
 }
-
 
 pub trait Captures<'a> {}
 
