@@ -60,18 +60,18 @@ impl ParseMode {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
+#[serde(untagged)]
 pub enum InputFile {
-    File(PathBuf),
+    File { _path: PathBuf },
+
     FileId(String),
 }
 
 impl InputFile {
-    pub fn is_file(&self) -> bool {
-        if let InputFile::File(_) = self {
-            true
-        } else {
-            false
+    pub fn file(path: PathBuf) -> InputFile {
+        InputFile::File {
+            _path: path
         }
     }
 }
@@ -263,27 +263,25 @@ pub struct Message {
 
 impl Message {
     pub fn reply(&self, text: impl Into<String>) -> methods::SendMessage {
-        methods::SendMessage {
-            chat_id: self.chat.id.into(),
-            text: text.into(),
-            reply_to_message_id: Some(self.message_id),
-            parse_mode: ParseMode::None,
-            disable_web_page_preview: None,
-            disable_notification: None,
-            reply_markup: None,
-        }
+        let mut send_msg = methods::SendMessage::new(self.chat.id, text);
+        send_msg.reply_to_message_id = Some(self.message_id);
+
+        send_msg
     }
 
     pub fn respond(&self, text: impl Into<String>) -> methods::SendMessage {
-        methods::SendMessage {
-            chat_id: self.chat.id.into(),
-            text: text.into(),
-            reply_to_message_id: None,
-            parse_mode: ParseMode::None,
-            disable_web_page_preview: None,
-            disable_notification: None,
-            reply_markup: None,
-        }
+        methods::SendMessage::new(self.chat.id, text)
+    }
+
+    pub fn reply_photo(&self, photo: InputFile) -> methods::SendPhoto {
+        let mut send_photo = methods::SendPhoto::new(self.chat.id, photo);
+        send_photo.reply_to_message_id = Some(self.message_id);
+
+        send_photo
+    }
+
+    pub fn respond_photo(&self, photo: InputFile) -> methods::SendPhoto {
+        methods::SendPhoto::new(self.chat.id, photo)
     }
 
     pub fn get_text(&self) -> Option<&String> {
@@ -572,7 +570,7 @@ pub struct ResponseParameters {
     pub retry_after: Option<i64>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "lowercase")]
 pub enum InputMedia {
@@ -583,7 +581,7 @@ pub enum InputMedia {
     Video(InputMediaVideo),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct InputMediaAnimation {
     pub media: String,
 
@@ -607,7 +605,7 @@ pub struct InputMediaAnimation {
     pub duration: Option<i64>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct InputMediaDocument {
     pub media: String,
 
@@ -622,7 +620,7 @@ pub struct InputMediaDocument {
     pub parse_mode: ParseMode,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct InputMediaAudio {
     pub media: String,
 
@@ -658,7 +656,7 @@ pub struct InputMediaPhoto {
     pub parse_mode: ParseMode,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct InputMediaVideo {
     pub media: String,
 

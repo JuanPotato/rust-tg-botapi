@@ -1,8 +1,9 @@
 use std::path::PathBuf;
 
-use crate::types::InputMediaPhoto;
-use crate::{types, TgMethod};
 use types::{ChatId, InputFile, ParseMode};
+
+use crate::{TgMethod, types};
+use crate::types::InputMediaPhoto;
 
 #[derive(Debug, Serialize)]
 pub struct GetUpdates {
@@ -22,6 +23,7 @@ pub struct GetUpdates {
 impl TgMethod for GetUpdates {
     type ResponseType = Vec<types::Update>;
     const PATH: &'static str = "getUpdates";
+    const USE_MULTIPART: bool = false;
 }
 
 #[derive(Debug, Serialize)]
@@ -48,6 +50,7 @@ pub struct GetMe;
 impl TgMethod for GetMe {
     type ResponseType = types::User;
     const PATH: &'static str = "getMe";
+    const USE_MULTIPART: bool = false;
 }
 
 #[derive(Debug, Serialize)]
@@ -75,6 +78,7 @@ pub struct SendMessage {
 impl TgMethod for SendMessage {
     type ResponseType = types::Message;
     const PATH: &'static str = "sendMessage";
+    const USE_MULTIPART: bool = false;
 }
 
 impl SendMessage {
@@ -121,6 +125,52 @@ pub struct SendPhoto {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<types::ReplyMarkup>,
+}
+
+impl TgMethod for SendPhoto {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendPhoto";
+    const USE_MULTIPART: bool = true;
+}
+
+impl SendPhoto {
+    pub fn new(chat_id: impl Into<ChatId>, photo: InputFile) -> SendPhoto {
+        SendPhoto {
+            chat_id: chat_id.into(),
+            photo: photo,
+            caption: None,
+            parse_mode: ParseMode::None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+}
+
+impl SendPhoto {
+    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendPhoto {
+        SendPhoto {
+            chat_id: chat.into(),
+            photo: InputFile::FileId(fileid.into()),
+            caption: None,
+            parse_mode: ParseMode::None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendPhoto {
+        SendPhoto {
+            chat_id: chat.into(),
+            photo: InputFile::File { _path: filepath.into() },
+            caption: None,
+            parse_mode: ParseMode::None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -521,6 +571,7 @@ pub struct ExportChatInviteLink {
 #[derive(Debug, Serialize)]
 pub struct SetChatPhoto {
     pub chat_id: ChatId,
+    #[serde(rename = "photo_path")]
     pub photo: PathBuf,
 }
 
@@ -718,6 +769,7 @@ pub struct GetStickerSet {
 #[derive(Debug, Serialize)]
 pub struct UploadStickerFile {
     pub user_id: i64,
+    #[serde(rename = "png_sticker_path")]
     pub png_sticker: PathBuf,
 }
 
@@ -810,6 +862,7 @@ impl AnswerInlineQuery {
 impl TgMethod for AnswerInlineQuery {
     type ResponseType = bool;
     const PATH: &'static str = "answerInlineQuery";
+    const USE_MULTIPART: bool = false;
 }
 
 #[derive(Debug, Serialize)]

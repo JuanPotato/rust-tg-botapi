@@ -9,7 +9,9 @@ use futures::{Future, FutureExt, SinkExt, TryFutureExt};
 use futures::channel::mpsc::Receiver;
 use futures::compat::Future01CompatExt;
 use reqwest::r#async::{Client, Response};
+use reqwest::r#async::multipart::{self, Form};
 use serde::Deserialize;
+use serde_json::Value;
 
 use types::*;
 
@@ -63,6 +65,7 @@ impl error::Error for BotError {
 pub trait TgMethod {
     type ResponseType;
     const PATH: &'static str;
+    const USE_MULTIPART: bool;
 }
 
 pub trait Captures<'a> {}
@@ -90,9 +93,28 @@ impl Bot {
         async move {
             let url = format!("https://api.telegram.org/bot{}/{}", self.token, M::PATH);
 
-            let mut resp: Response = self.client.post(&url).json(m).send().compat().await.unwrap();
-            let res: ApiResult<R> = resp.json().compat().await?;
+            let mut resp: Response = if !M::USE_MULTIPART {
+                self.client
+                    .post(&url)
+                    .json(m)
+                    .send()
+                    .compat()
+                    .await
+                    .unwrap()
+            } else {
+                let json_value: Value = serde_json::to_value(m).unwrap();
+                let form = value_to_form(&json_value);
 
+                self.client
+                    .post(&url)
+                    .multipart(form)
+                    .send()
+                    .compat()
+                    .await
+                    .unwrap()
+            };
+
+            let res: ApiResult<R> = resp.json().compat().await?;
             res.into()
         }
     }
@@ -124,3 +146,84 @@ impl Bot {
     }
 }
 
+pub fn value_to_form(json: &Value) -> Form {
+    let mut form = Form::new();
+
+    for (key, value) in json.as_object().unwrap() {
+        form = add_value_to_form(form, key.to_string(), value);
+    }
+
+    form
+}
+
+fn add_value_to_form(mut form: Form, key: String, json_val: &Value) -> Form {
+    match json_val {
+        Value::Null => {
+            form.text(key, "null")
+        },
+
+        Value::Bool(b) => {
+            form.text(key, b.to_string())
+        },
+
+        Value::Number(n) => {
+            form.text(key, n.to_string())
+        },
+
+        Value::String(s) => {
+            form.text(key, s.to_string())
+        },
+
+        Value::Array(a) => {
+            for (i, elem) in a.iter().enumerate() {
+                let arr_key = if elem.is_object() || elem.is_array() {
+                    format!("{}[{}]", key, i)
+                } else {
+                    format!("{}[]", key)
+                };
+
+                form = add_value_to_form(form, arr_key, elem);
+            }
+
+            form
+        },
+
+        Value::Object(o) => {
+            if let Some(file_path) = o.get("_path") {
+                form = add_file_to_form(form, key, file_path.as_str().unwrap()).unwrap();
+            } else {
+                for (k, v) in o {
+                    let val_key = format!("{}[{}]", key, k);
+
+                    if key.ends_with("_path") {
+                        let file_path = v.as_str().unwrap().trim_end_matches("_path");
+                        form = add_file_to_form(form, val_key, file_path).unwrap();
+                    } else {
+                        form = add_value_to_form(form, val_key, v);
+                    }
+                }
+            }
+
+            form
+        }
+    }
+}
+
+use std::io::Read;
+use std::fs::File;
+use std::io;
+use std::path::PathBuf;
+
+fn add_file_to_form(form: Form, key: String, file_path: &str) -> io::Result<Form> {
+    let path = PathBuf::from(file_path);
+
+    let mut file = File::open(file_path)?;
+    let mut bytes = Vec::new();
+    file.read_to_end(&mut bytes).unwrap();
+
+    let mut part = multipart::Part::bytes(bytes);
+    let filename: String = path.file_name().unwrap().to_str().unwrap().to_string();
+    part = part.file_name(filename);
+
+    Ok(form.part(key, part))
+}

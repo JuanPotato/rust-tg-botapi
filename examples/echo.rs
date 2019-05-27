@@ -1,10 +1,11 @@
 #![feature(async_await)]
 use futures::{FutureExt, StreamExt, TryFutureExt};
 
-use tg_botapi::types::{ParseMode, Message, UpdateType};
+use tg_botapi::types::{ParseMode, Message, UpdateType, InputFile};
 use tg_botapi::Bot;
 
 use std::env;
+use tg_botapi::methods::SendPhoto;
 
 fn main() {
     let token = env::var("TOKEN")
@@ -35,10 +36,22 @@ async fn run_bot(token: impl Into<String>) {
 }
 
 async fn handle_message(bot: Bot, msg: Message) {
-    if let Some(text) = msg.get_text() {
-        let mut req = msg.reply(text);
-        req.parse_mode = ParseMode::Markdown;
+    if let Some(ref img) = msg.photo {
+        let smallest_photo = &img.iter().min_by_key(|ps| ps.height).unwrap().file_id;
+        let req = msg.reply_photo(InputFile::FileId(smallest_photo.into()));
 
         bot.send(&req).await.unwrap();
+    } else if let Some(text) = msg.get_text() {
+        if text == "/img" {
+            let file_path = "./image.jpg";
+            let req = msg.reply_photo(InputFile::file(file_path.into()));
+
+            bot.send(&req).await.unwrap();
+        } else {
+            let mut req = msg.reply(text);
+            req.parse_mode = ParseMode::Markdown;
+
+            bot.send(&req).await.unwrap();
+        }
     }
 }
