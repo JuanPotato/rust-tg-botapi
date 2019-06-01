@@ -69,9 +69,9 @@ pub enum InputFile {
 }
 
 impl InputFile {
-    pub fn file(path: PathBuf) -> InputFile {
+    pub fn file(path: impl Into<PathBuf>) -> InputFile {
         InputFile::File {
-            _path: path
+            _path: path.into()
         }
     }
 }

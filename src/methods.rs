@@ -2,8 +2,8 @@ use std::path::PathBuf;
 
 use types::{ChatId, InputFile, ParseMode};
 
-use crate::{TgMethod, types};
 use crate::types::InputMediaPhoto;
+use crate::{types, TgMethod};
 
 #[derive(Debug, Serialize)]
 pub struct GetUpdates {
@@ -137,7 +137,7 @@ impl SendPhoto {
     pub fn new(chat_id: impl Into<ChatId>, photo: InputFile) -> SendPhoto {
         SendPhoto {
             chat_id: chat_id.into(),
-            photo: photo,
+            photo,
             caption: None,
             parse_mode: ParseMode::None,
             disable_notification: None,
@@ -145,31 +145,13 @@ impl SendPhoto {
             reply_markup: None,
         }
     }
-}
 
-impl SendPhoto {
     pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendPhoto {
-        SendPhoto {
-            chat_id: chat.into(),
-            photo: InputFile::FileId(fileid.into()),
-            caption: None,
-            parse_mode: ParseMode::None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
+        SendPhoto::new(chat.into(), InputFile::FileId(fileid.into()))
     }
 
     pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendPhoto {
-        SendPhoto {
-            chat_id: chat.into(),
-            photo: InputFile::File { _path: filepath.into() },
-            caption: None,
-            parse_mode: ParseMode::None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
+        SendPhoto::new(chat.into(), InputFile::file(filepath))
     }
 }
 
@@ -207,6 +189,38 @@ pub struct SendAudio {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+impl TgMethod for SendAudio {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendAudio";
+    const USE_MULTIPART: bool = true;
+}
+
+impl SendAudio {
+    pub fn new(chat_id: impl Into<ChatId>, audio: InputFile) -> SendAudio {
+        SendAudio {
+            chat_id: chat_id.into(),
+            audio,
+            caption: None,
+            parse_mode: ParseMode::None,
+            duration: None,
+            performer: None,
+            title: None,
+            thumb: None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendAudio {
+        SendAudio::new(chat, InputFile::FileId(fileid.into()))
+    }
+
+    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendAudio {
+        SendAudio::new(chat, InputFile::file(filepath.into()))
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct SendDocument {
     pub chat_id: ChatId,
@@ -230,6 +244,35 @@ pub struct SendDocument {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<types::ReplyMarkup>,
+}
+
+impl TgMethod for SendDocument {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendDocument";
+    const USE_MULTIPART: bool = true;
+}
+
+impl SendDocument {
+    pub fn new(chat_id: impl Into<ChatId>, document: InputFile) -> SendDocument {
+        SendDocument {
+            chat_id: chat_id.into(),
+            document,
+            thumb: None,
+            caption: None,
+            parse_mode: ParseMode::None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendDocument {
+        SendDocument::new(chat, InputFile::FileId(fileid.into()))
+    }
+
+    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendDocument {
+        SendDocument::new(chat, InputFile::file(filepath.into()))
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -269,6 +312,39 @@ pub struct SendVideo {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+impl TgMethod for SendVideo {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendVideo";
+    const USE_MULTIPART: bool = true;
+}
+
+impl SendVideo {
+    pub fn new(chat_id: impl Into<ChatId>, video: InputFile) -> SendVideo {
+        SendVideo {
+            chat_id: chat_id.into(),
+            video,
+            duration: None,
+            width: None,
+            height: None,
+            thumb: None,
+            caption: None,
+            parse_mode: ParseMode::None,
+            supports_streaming: None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendVideo {
+        SendVideo::new(chat, InputFile::FileId(fileid.into()))
+    }
+
+    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendVideo {
+        SendVideo::new(chat, InputFile::file(filepath.into()))
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct SendAnimation {
     pub chat_id: ChatId,
@@ -303,6 +379,38 @@ pub struct SendAnimation {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+impl TgMethod for SendAnimation {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendAnimation";
+    const USE_MULTIPART: bool = true;
+}
+
+impl SendAnimation {
+    pub fn new(chat_id: impl Into<ChatId>, animation: InputFile) -> SendAnimation {
+        SendAnimation {
+            chat_id: chat_id.into(),
+            animation,
+            duration: None,
+            width: None,
+            height: None,
+            thumb: None,
+            caption: None,
+            parse_mode: ParseMode::None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendAnimation {
+        SendAnimation::new(chat, InputFile::FileId(fileid.into()))
+    }
+
+    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendAnimation {
+        SendAnimation::new(chat, InputFile::file(filepath.into()))
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct SendVoice {
     pub chat_id: ChatId,
@@ -328,6 +436,35 @@ pub struct SendVoice {
     pub reply_markup: Option<types::ReplyMarkup>,
 }
 
+impl TgMethod for SendVoice {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendVoice";
+    const USE_MULTIPART: bool = true;
+}
+
+impl SendVoice {
+    pub fn new(chat_id: impl Into<ChatId>, voice: InputFile) -> SendVoice {
+        SendVoice {
+            chat_id: chat_id.into(),
+            voice,
+            caption: None,
+            parse_mode: ParseMode::None,
+            duration: None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendVoice {
+        SendVoice::new(chat, InputFile::FileId(fileid.into()))
+    }
+
+    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendVoice {
+        SendVoice::new(chat, InputFile::file(filepath.into()))
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct SendVideoNote {
     pub chat_id: ChatId,
@@ -350,6 +487,35 @@ pub struct SendVideoNote {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<types::ReplyMarkup>,
+}
+
+impl TgMethod for SendVideoNote {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendVideoNote";
+    const USE_MULTIPART: bool = true;
+}
+
+impl SendVideoNote {
+    pub fn new(chat_id: impl Into<ChatId>, video_note: InputFile) -> SendVideoNote {
+        SendVideoNote {
+            chat_id: chat_id.into(),
+            video_note,
+            duration: None,
+            length: None,
+            thumb: None,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendVideoNote {
+        SendVideoNote::new(chat, InputFile::FileId(fileid.into()))
+    }
+
+    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendVideoNote {
+        SendVideoNote::new(chat, InputFile::file(filepath.into()))
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -378,6 +544,25 @@ pub struct SendLocation {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<types::ReplyMarkup>,
+}
+
+impl TgMethod for SendLocation {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "sendLocation";
+    const USE_MULTIPART: bool = false;
+}
+
+impl SendLocation {
+    pub fn new(chat_id: impl Into<ChatId>, lat: f64, long: f64) -> SendLocation {
+        SendLocation {
+            chat_id: chat_id.into(),
+            latitude: lat,
+            longitude: long,
+            disable_notification: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -940,7 +1125,6 @@ pub struct SetPassportDataErrors {
     pub errors: Vec<types::PassportElementError>,
 }
 
-
 #[derive(Debug, Serialize)]
 pub struct SendGame {
     pub chat_id: i64,
@@ -990,4 +1174,3 @@ pub struct GetGameHighScores {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
 }
-
