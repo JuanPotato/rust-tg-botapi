@@ -5,7 +5,6 @@ use tg_botapi::types::{ParseMode, Message, UpdateType, InputFile};
 use tg_botapi::Bot;
 
 use std::env;
-use tg_botapi::methods::SendPhoto;
 
 fn main() {
     let token = env::var("TOKEN")
@@ -44,7 +43,7 @@ async fn handle_message(bot: Bot, msg: Message) {
     } else if let Some(text) = msg.get_text() {
         if text == "/img" {
             let file_path = "./image.jpg";
-            let req = msg.reply_photo(InputFile::file(file_path.into()));
+            let req = msg.reply_photo(InputFile::file(file_path));
 
             bot.send(&req).await.unwrap();
         } else {
