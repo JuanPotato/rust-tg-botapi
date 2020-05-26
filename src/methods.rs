@@ -105,6 +105,23 @@ pub struct ForwardMessage {
     pub message_id: i64,
 }
 
+impl TgMethod for ForwardMessage {
+    type ResponseType = types::Message;
+    const PATH: &'static str = "forwardMessage";
+    const USE_MULTIPART: bool = false;
+}
+
+impl ForwardMessage {
+    pub fn new(chat_id: impl Into<ChatId>, from_chat_id: impl Into<ChatId>, message_id: i64) -> ForwardMessage {
+        ForwardMessage {
+            chat_id: chat_id.into(),
+            from_chat_id: from_chat_id.into(),
+            disable_notification: None,
+            message_id
+        }
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct SendPhoto {
     pub chat_id: ChatId,

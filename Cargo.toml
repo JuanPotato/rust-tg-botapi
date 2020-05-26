@@ -6,14 +6,15 @@ license = "MIT"
 name = "tg_botapi"
 readme = "README.md"
 repository = "https://github.com/JuanPotato/rust-tg-botapi"
-version = "0.6.0-alpha.2"
+version = "0.6.0-alpha.4"
 edition = "2018"
 
 
 [dependencies]
-reqwest = { version = "0.9", features = ["trust-dns"] }
-tokio = "0.1"
-futures-preview = { version = "0.3.0-alpha.16", features = ["compat"] }
+reqwest = { version = "=0.10.0-alpha.1", features = ["json"] }
+tokio = { version = "=0.2.0-alpha.6" }
+tokio-executor = "=0.2.0-alpha.6"
+futures-preview = { version = "=0.3.0-alpha.19", features = ["async-await"] }
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"

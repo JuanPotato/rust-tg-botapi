@@ -1,19 +1,15 @@
-#![feature(async_await)]
-use futures::{FutureExt, StreamExt, TryFutureExt};
-
-use tg_botapi::types::{ParseMode, Message, UpdateType, InputFile};
-use tg_botapi::Bot;
-
 use std::env;
 
-fn main() {
+use futures::StreamExt;
+
+use tg_botapi::Bot;
+use tg_botapi::types::{InputFile, Message, ParseMode, UpdateType};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let token = env::var("TOKEN")
         .expect("No bot token provided, please set the environment variable TOKEN");
 
-    tokio::run(run_bot(token).boxed().unit_error().compat());
-}
-
-async fn run_bot(token: impl Into<String>) {
     let bot = Bot::new(token);
 
     let mut updates = bot.start_polling();
@@ -21,17 +17,14 @@ async fn run_bot(token: impl Into<String>) {
     while let Some(update) = updates.next().await {
         match update.update_type {
             UpdateType::Message(message) => {
-                tokio::spawn(
-                    handle_message(bot.clone(), message)
-                        .boxed()
-                        .unit_error()
-                        .compat(),
-                );
+                tokio::spawn(handle_message(bot.clone(), message));
             }
 
             _ => {}
         }
     }
+
+    Ok(())
 }
 
 async fn handle_message(bot: Bot, msg: Message) {

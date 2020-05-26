@@ -1,15 +1,13 @@
-#![feature(async_await)]
 #[macro_use]
 extern crate serde_derive;
 
 use std::{error, fmt};
 use std::sync::Arc;
 
-use futures::{Future, FutureExt, SinkExt, TryFutureExt};
+use futures::{Future, SinkExt};
 use futures::channel::mpsc::Receiver;
-use futures::compat::Future01CompatExt;
-use reqwest::r#async::{Client, Response};
-use reqwest::r#async::multipart::{self, Form};
+use reqwest::{Client, Response};
+use reqwest::multipart::{self, Form};
 use serde::Deserialize;
 use serde_json::Value;
 
@@ -58,7 +56,7 @@ impl fmt::Display for BotError {
 
 impl error::Error for BotError {
     fn description(&self) -> &str {
-        "Something unexpected occured while talking to the telegram bot api." // meh
+        "Something unexpected occurred while talking to the telegram bot api." // meh
     }
 }
 
@@ -93,12 +91,11 @@ impl Bot {
         async move {
             let url = format!("https://api.telegram.org/bot{}/{}", self.token, M::PATH);
 
-            let mut resp: Response = if !M::USE_MULTIPART {
+            let resp: Response = if !M::USE_MULTIPART {
                 self.client
                     .post(&url)
                     .json(m)
                     .send()
-                    .compat()
                     .await
                     .unwrap()
             } else {
@@ -109,12 +106,11 @@ impl Bot {
                     .post(&url)
                     .multipart(form)
                     .send()
-                    .compat()
                     .await
                     .unwrap()
             };
 
-            let res: ApiResult<R> = resp.json().compat().await?;
+            let res: ApiResult<R> = resp.json().await?;
             res.into()
         }
     }
@@ -140,7 +136,7 @@ impl Bot {
                     tx.send(update).await.unwrap();
                 }
             }
-        }.boxed().unit_error().compat());
+        });
 
         rx
     }
