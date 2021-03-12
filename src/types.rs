@@ -126,6 +126,12 @@ pub enum UpdateType {
     PreCheckoutQuery(PreCheckoutQuery),
 
     Poll(Poll),
+
+    PollAnswer(PollAnswer),
+
+    MyChatMember(ChatMemberUpdated),
+
+    ChatMember(ChatMemberUpdated),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -161,6 +167,15 @@ pub struct User {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub language_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_join_groups: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_read_all_group_messages: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supports_inline_queries: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -182,10 +197,10 @@ pub struct Chat {
     pub last_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub all_members_are_administrators: Option<bool>,
+    pub photo: Option<ChatPhoto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub photo: Option<ChatPhoto>,
+    pub bio: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -197,10 +212,25 @@ pub struct Chat {
     pub pinned_message: Option<Box<Message>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<ChatPermissions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub slow_mode_delay: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_auto_delete_time: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sticker_set_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_set_sticker_set: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub linked_chat_id: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<ChatLocation>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -218,6 +248,7 @@ pub enum ChatType {
 pub struct Message {
     pub message_id: i64,
     pub from: Option<User>,
+    pub sender_chat: Option<Chat>,
     pub date: i64,
     pub chat: Chat,
     pub forward_from: Option<User>,
@@ -226,24 +257,27 @@ pub struct Message {
     pub forward_signature: Option<String>,
     pub forward_date: Option<i64>,
     pub reply_to_message: Option<Box<Message>>,
+    pub via_bot: Option<User>,
     pub edit_date: Option<i64>,
     pub author_signature: Option<String>,
     pub text: Option<String>,
     pub entities: Option<Vec<MessageEntity>>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
+    pub animation: Option<Animation>,
     pub audio: Option<Audio>,
     pub document: Option<Document>,
-    pub animation: Option<Animation>,
-    pub game: Option<Game>,
     pub photo: Option<Vec<PhotoSize>>,
     pub sticker: Option<Sticker>,
     pub video: Option<Video>,
-    pub voice: Option<Voice>,
     pub video_note: Option<VideoNote>,
+    pub voice: Option<Voice>,
     pub caption: Option<String>,
+    pub caption_entities: Option<Vec<MessageEntity>>,
     pub contact: Option<Contact>,
-    pub location: Option<Location>,
+    pub dice: Option<Dice>,
+    pub game: Option<Game>,
+    pub poll: Option<Poll>,
     pub venue: Option<Venue>,
+    pub location: Option<Location>,
     pub new_chat_members: Option<Vec<User>>,
     pub left_chat_member: Option<User>,
     pub new_chat_title: Option<String>,
@@ -252,6 +286,7 @@ pub struct Message {
     pub group_chat_created: Option<bool>,
     pub supergroup_chat_created: Option<bool>,
     pub channel_chat_created: Option<bool>,
+    pub message_auto_delete_timer_changed: Option<MessageAutoDeleteTimerChanged>,
     pub migrate_to_chat_id: Option<i64>,
     pub migrate_from_chat_id: Option<i64>,
     pub pinned_message: Option<Box<Message>>,
@@ -259,6 +294,11 @@ pub struct Message {
     pub successful_payment: Option<SuccessfulPayment>,
     pub connected_website: Option<String>,
     pub passport_data: Option<PassportData>,
+    pub proximity_alert_triggered: Option<ProximityAlertTriggered>,
+    pub voice_chat_started: Option<VoiceChatStarted>,
+    pub voice_chat_ended: Option<VoiceChatEnded>,
+    pub voice_chat_participants_invited: Option<VoiceChatParticipantsInvited>,
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl Message {
@@ -298,7 +338,8 @@ impl Message {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MessageEntity {
     #[serde(rename = "type")]
-    pub type_name: String, // TODO: Make this an enum
+    pub type_name: String,
+    // TODO: Make this an enum
     pub offset: i64,
     pub length: i64,
     pub url: Option<String>,
@@ -398,17 +439,64 @@ pub struct Venue {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProximityAlertTriggered {
+    pub traveler: User,
+    pub watcher: User,
+    pub distance: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MessageAutoDeleteTimerChanged {
+    pub message_auto_delete_time: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VoiceChatStarted {}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VoiceChatEnded {
+    duration: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VoiceChatParticipantsInvited {
+    pub users: Option<Vec<User>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Dice {
+    pub emoji: String,
+    pub value: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PollOption {
-    text: String,
-    voter_count: i64,
+    pub text: String,
+    pub voter_count: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PollAnswer {
+    pub poll_id: String,
+    pub user: User,
+    pub option_ids: Vec<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Poll {
-    id: String,
-    question: String,
-    options: Vec<PollOption>,
-    is_closed: bool,
+    pub id: String,
+    pub question: String,
+    pub options: Vec<PollOption>,
+    pub total_voter_count: i64,
+    pub is_closed: bool,
+    pub is_anonymous: bool,
+    #[serde(rename = "type")] pub poll_type: String,
+    pub allow_multiple_answers: bool,
+    pub correct_option_id: Option<i64>,
+    pub explanation: Option<String>,
+    pub explanation_entities: Option<Vec<MessageEntity>>,
+    pub open_period: Option<i64>,
+    pub close_date: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -544,24 +632,67 @@ pub struct ChatPhoto {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatInviteLink {
+    pub invite_link: String,
+    pub creator: User,
+    pub is_primary: bool,
+    pub is_revoked: bool,
+    pub expire_date: Option<i64>,
+    pub member_limit: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatMember {
     pub user: User,
     pub status: String,
-    pub until_date: i64,
+    pub custom_title: Option<String>,
+    pub is_anonymous: Option<bool>,
     pub can_be_edited: Option<bool>,
-    pub can_change_info: Option<bool>,
+    pub can_manage_chat: Option<bool>,
     pub can_post_messages: Option<bool>,
     pub can_edit_messages: Option<bool>,
     pub can_delete_messages: Option<bool>,
-    pub can_invite_users: Option<bool>,
+    pub can_manage_voice_chat: Option<bool>,
     pub can_restrict_members: Option<bool>,
-    pub can_pin_messages: Option<bool>,
     pub can_promote_members: Option<bool>,
+    pub can_change_info: Option<bool>,
+    pub can_invite_users: Option<bool>,
+    pub can_pin_messages: Option<bool>,
     pub is_member: Option<bool>,
     pub can_send_messages: Option<bool>,
     pub can_send_media_messages: Option<bool>,
+    pub can_send_polls: Option<bool>,
     pub can_send_other_messages: Option<bool>,
     pub can_add_web_page_previews: Option<bool>,
+    pub until_date: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatMemberUpdated {
+    pub chat: Chat,
+    pub from: User,
+    pub date: i64,
+    pub old_chat_member: ChatMember,
+    pub new_chat_member: ChatMember,
+    pub invite_link: Option<ChatInviteLink>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatPermissions {
+    pub can_send_messages: Option<bool>,
+    pub can_send_media_messages: Option<bool>,
+    pub can_send_polls: Option<bool>,
+    pub can_send_other_messages: Option<bool>,
+    pub can_add_web_page_previews: Option<bool>,
+    pub can_change_info: Option<bool>,
+    pub can_invite_users: Option<bool>,
+    pub can_pin_messages: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChatLocation {
+    pub location: Location,
+    pub address: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1612,7 +1743,8 @@ pub struct PassportFile {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EncryptedPassportElement {
     #[serde(rename = "type")]
-    pub element_type: String, // TODO: enum
+    pub element_type: String,
+    // TODO: enum
     pub data: Option<String>,
     pub phone_number: Option<String>,
     pub email: Option<String>,
@@ -1638,7 +1770,8 @@ pub enum PassportElementError {
     #[serde(rename = "data")]
     DataField {
         #[serde(rename = "type")]
-        section_type: String, // TODO: Enum
+        section_type: String,
+        // TODO: Enum
         field_name: String,
         data_hash: String,
         message: String,

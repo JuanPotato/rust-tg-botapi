@@ -1,15 +1,20 @@
 #[macro_use]
 extern crate serde_derive;
 
-use std::{error, fmt};
-use std::sync::Arc;
+use std::{io, error, fmt};
+use std::io::Read;
+use std::fs::File;
 
 use futures::{Future, SinkExt};
 use futures::channel::mpsc::Receiver;
 use reqwest::{Client, Response};
 use reqwest::multipart::{self, Form};
+
 use serde::Deserialize;
 use serde_json::Value;
+
+use std::path::PathBuf;
+use tokio::time::Duration;
 
 use types::*;
 
@@ -74,14 +79,20 @@ impl<'a, T> Captures<'a> for T {}
 #[derive(Debug, Clone)]
 pub struct Bot {
     token: String,
-    client: Arc<Client>,
+    client: Client,
 }
 
 impl Bot {
     pub fn new(bot_token: impl Into<String>) -> Bot {
+        let client = Client::builder()
+            .timeout(Duration::from_secs(5 * 60 + 30))
+            .connect_timeout(Duration::from_secs(60))
+            .build()
+            .unwrap();
+
         Bot {
             token: bot_token.into(),
-            client: Arc::new(Client::new()),
+            client: client,
         }
     }
 
@@ -156,19 +167,19 @@ fn add_value_to_form(mut form: Form, key: String, json_val: &Value) -> Form {
     match json_val {
         Value::Null => {
             form.text(key, "null")
-        },
+        }
 
         Value::Bool(b) => {
             form.text(key, b.to_string())
-        },
+        }
 
         Value::Number(n) => {
             form.text(key, n.to_string())
-        },
+        }
 
         Value::String(s) => {
             form.text(key, s.to_string())
-        },
+        }
 
         Value::Array(a) => {
             for (i, elem) in a.iter().enumerate() {
@@ -182,7 +193,7 @@ fn add_value_to_form(mut form: Form, key: String, json_val: &Value) -> Form {
             }
 
             form
-        },
+        }
 
         Value::Object(o) => {
             if let Some(file_path) = o.get("_path") {
@@ -204,11 +215,6 @@ fn add_value_to_form(mut form: Form, key: String, json_val: &Value) -> Form {
         }
     }
 }
-
-use std::io::Read;
-use std::fs::File;
-use std::io;
-use std::path::PathBuf;
 
 fn add_file_to_form(form: Form, key: String, file_path: &str) -> io::Result<Form> {
     let path = PathBuf::from(file_path);
