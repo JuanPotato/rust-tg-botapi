@@ -3,7 +3,8 @@ use std::env;
 use futures::StreamExt;
 
 use tg_botapi::Bot;
-use tg_botapi::types::{InputFile, Message, ParseMode, UpdateType};
+use tg_botapi::objects::{Message};
+use tg_botapi::better::{InputFile, ParseMode, UpdateType};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -41,7 +42,7 @@ async fn handle_message(bot: Bot, msg: Message) {
             bot.send(&req).await.unwrap();
         } else {
             let mut req = msg.reply(text);
-            req.parse_mode = ParseMode::Markdown;
+            req.parse_mode = Some("Markdown".into());
 
             bot.send(&req).await.unwrap();
         }

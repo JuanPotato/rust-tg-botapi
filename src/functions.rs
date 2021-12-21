@@ -1,12 +1,9 @@
-use std::path::PathBuf;
+use crate::objects::*;
+use crate::better::*;
 
-use types::{ChatId, InputFile, ParseMode};
-
-use crate::types::InputMediaPhoto;
-use crate::{types, TgMethod};
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetUpdates {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
 
@@ -17,50 +14,62 @@ pub struct GetUpdates {
     pub timeout: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_updates: Option<Vec<String>>, // TODO: enum
+    pub allowed_updates: Option<Vec<String>>,
 }
 
-impl TgMethod for GetUpdates {
-    type ResponseType = Vec<types::Update>;
-    const PATH: &'static str = "getUpdates";
-    const USE_MULTIPART: bool = false;
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetWebhook {
     pub url: String,
-    pub certificate: InputFile,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<InputFile>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_connections: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_updates: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub drop_pending_updates: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
-pub struct DeleteWebhook;
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeleteWebhook {
 
-#[derive(Debug, Serialize)]
-pub struct GetWebhookInfo;
-
-#[derive(Debug, Serialize)]
-pub struct GetMe;
-
-impl TgMethod for GetMe {
-    type ResponseType = types::User;
-    const PATH: &'static str = "getMe";
-    const USE_MULTIPART: bool = false;
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub drop_pending_updates: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GetWebhookInfo {
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GetMe {
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LogOut {
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Close {
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendMessage {
     pub chat_id: ChatId,
     pub text: String,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entities: Option<Vec<MessageEntity>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_web_page_preview: Option<bool>,
@@ -72,30 +81,13 @@ pub struct SendMessage {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendMessage {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendMessage";
-    const USE_MULTIPART: bool = false;
-}
-
-impl SendMessage {
-    pub fn new(chat_id: impl Into<ChatId>, text: impl Into<String>) -> SendMessage {
-        SendMessage {
-            chat_id: chat_id.into(),
-            text: text.into(),
-            parse_mode: ParseMode::None,
-            disable_web_page_preview: None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ForwardMessage {
     pub chat_id: ChatId,
     pub from_chat_id: ChatId,
@@ -105,34 +97,20 @@ pub struct ForwardMessage {
     pub message_id: i64,
 }
 
-impl TgMethod for ForwardMessage {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "forwardMessage";
-    const USE_MULTIPART: bool = false;
-}
-
-impl ForwardMessage {
-    pub fn new(chat_id: impl Into<ChatId>, from_chat_id: impl Into<ChatId>, message_id: i64) -> ForwardMessage {
-        ForwardMessage {
-            chat_id: chat_id.into(),
-            from_chat_id: from_chat_id.into(),
-            disable_notification: None,
-            message_id
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
-pub struct SendPhoto {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CopyMessage {
     pub chat_id: ChatId,
-    pub photo: InputFile,
+    pub from_chat_id: ChatId,
+    pub message_id: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
@@ -141,38 +119,40 @@ pub struct SendPhoto {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendPhoto {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendPhoto";
-    const USE_MULTIPART: bool = true;
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SendPhoto {
+    pub chat_id: ChatId,
+    pub photo: InputFile,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_to_message_id: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl SendPhoto {
-    pub fn new(chat_id: impl Into<ChatId>, photo: InputFile) -> SendPhoto {
-        SendPhoto {
-            chat_id: chat_id.into(),
-            photo,
-            caption: None,
-            parse_mode: ParseMode::None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-
-    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendPhoto {
-        SendPhoto::new(chat.into(), InputFile::FileId(fileid.into()))
-    }
-
-    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendPhoto {
-        SendPhoto::new(chat.into(), InputFile::file(filepath))
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendAudio {
     pub chat_id: ChatId,
     pub audio: InputFile,
@@ -180,9 +160,11 @@ pub struct SendAudio {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -203,42 +185,13 @@ pub struct SendAudio {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendAudio {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendAudio";
-    const USE_MULTIPART: bool = true;
-}
-
-impl SendAudio {
-    pub fn new(chat_id: impl Into<ChatId>, audio: InputFile) -> SendAudio {
-        SendAudio {
-            chat_id: chat_id.into(),
-            audio,
-            caption: None,
-            parse_mode: ParseMode::None,
-            duration: None,
-            performer: None,
-            title: None,
-            thumb: None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-
-    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendAudio {
-        SendAudio::new(chat, InputFile::FileId(fileid.into()))
-    }
-
-    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendAudio {
-        SendAudio::new(chat, InputFile::file(filepath.into()))
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendDocument {
     pub chat_id: ChatId,
     pub document: InputFile,
@@ -249,9 +202,14 @@ pub struct SendDocument {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_content_type_detection: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
@@ -260,39 +218,13 @@ pub struct SendDocument {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendDocument {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendDocument";
-    const USE_MULTIPART: bool = true;
-}
-
-impl SendDocument {
-    pub fn new(chat_id: impl Into<ChatId>, document: InputFile) -> SendDocument {
-        SendDocument {
-            chat_id: chat_id.into(),
-            document,
-            thumb: None,
-            caption: None,
-            parse_mode: ParseMode::None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-
-    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendDocument {
-        SendDocument::new(chat, InputFile::FileId(fileid.into()))
-    }
-
-    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendDocument {
-        SendDocument::new(chat, InputFile::file(filepath.into()))
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendVideo {
     pub chat_id: ChatId,
     pub video: InputFile,
@@ -312,9 +244,11 @@ pub struct SendVideo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supports_streaming: Option<bool>,
@@ -326,43 +260,13 @@ pub struct SendVideo {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendVideo {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendVideo";
-    const USE_MULTIPART: bool = true;
-}
-
-impl SendVideo {
-    pub fn new(chat_id: impl Into<ChatId>, video: InputFile) -> SendVideo {
-        SendVideo {
-            chat_id: chat_id.into(),
-            video,
-            duration: None,
-            width: None,
-            height: None,
-            thumb: None,
-            caption: None,
-            parse_mode: ParseMode::None,
-            supports_streaming: None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-
-    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendVideo {
-        SendVideo::new(chat, InputFile::FileId(fileid.into()))
-    }
-
-    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendVideo {
-        SendVideo::new(chat, InputFile::file(filepath.into()))
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendAnimation {
     pub chat_id: ChatId,
     pub animation: InputFile,
@@ -382,9 +286,11 @@ pub struct SendAnimation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
@@ -393,42 +299,13 @@ pub struct SendAnimation {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendAnimation {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendAnimation";
-    const USE_MULTIPART: bool = true;
-}
-
-impl SendAnimation {
-    pub fn new(chat_id: impl Into<ChatId>, animation: InputFile) -> SendAnimation {
-        SendAnimation {
-            chat_id: chat_id.into(),
-            animation,
-            duration: None,
-            width: None,
-            height: None,
-            thumb: None,
-            caption: None,
-            parse_mode: ParseMode::None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-
-    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendAnimation {
-        SendAnimation::new(chat, InputFile::FileId(fileid.into()))
-    }
-
-    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendAnimation {
-        SendAnimation::new(chat, InputFile::file(filepath.into()))
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendVoice {
     pub chat_id: ChatId,
     pub voice: InputFile,
@@ -436,9 +313,11 @@ pub struct SendVoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -450,39 +329,13 @@ pub struct SendVoice {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendVoice {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendVoice";
-    const USE_MULTIPART: bool = true;
-}
-
-impl SendVoice {
-    pub fn new(chat_id: impl Into<ChatId>, voice: InputFile) -> SendVoice {
-        SendVoice {
-            chat_id: chat_id.into(),
-            voice,
-            caption: None,
-            parse_mode: ParseMode::None,
-            duration: None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-
-    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendVoice {
-        SendVoice::new(chat, InputFile::FileId(fileid.into()))
-    }
-
-    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendVoice {
-        SendVoice::new(chat, InputFile::file(filepath.into()))
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendVideoNote {
     pub chat_id: ChatId,
     pub video_note: InputFile,
@@ -503,105 +356,88 @@ pub struct SendVideoNote {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendVideoNote {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendVideoNote";
-    const USE_MULTIPART: bool = true;
-}
-
-impl SendVideoNote {
-    pub fn new(chat_id: impl Into<ChatId>, video_note: InputFile) -> SendVideoNote {
-        SendVideoNote {
-            chat_id: chat_id.into(),
-            video_note,
-            duration: None,
-            length: None,
-            thumb: None,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-
-    pub fn new_fileid(chat: impl Into<ChatId>, fileid: impl Into<String>) -> SendVideoNote {
-        SendVideoNote::new(chat, InputFile::FileId(fileid.into()))
-    }
-
-    pub fn new_file(chat: impl Into<ChatId>, filepath: impl Into<PathBuf>) -> SendVideoNote {
-        SendVideoNote::new(chat, InputFile::file(filepath.into()))
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendMediaGroup {
     pub chat_id: ChatId,
-    pub media: Vec<InputMediaPhoto>,
+    pub media: Vec<InputMedia>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendLocation {
     pub chat_id: ChatId,
     pub latitude: f64,
     pub longitude: f64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub horizontal_accuracy: Option<f64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub live_period: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub heading: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_radius: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl TgMethod for SendLocation {
-    type ResponseType = types::Message;
-    const PATH: &'static str = "sendLocation";
-    const USE_MULTIPART: bool = false;
-}
-
-impl SendLocation {
-    pub fn new(chat_id: impl Into<ChatId>, lat: f64, long: f64) -> SendLocation {
-        SendLocation {
-            chat_id: chat_id.into(),
-            latitude: lat,
-            longitude: long,
-            disable_notification: None,
-            reply_to_message_id: None,
-            reply_markup: None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EditMessageLiveLocation {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chat_id: Option<ChatId>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inline_message_id: Option<String>,
     pub latitude: f64,
     pub longitude: f64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub chat_id: Option<ChatId>,
+    pub horizontal_accuracy: Option<f64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub message_id: Option<i64>,
+    pub heading: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inline_message_id: Option<String>,
+    pub proximity_alert_radius: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StopMessageLiveLocation {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<ChatId>,
 
@@ -612,10 +448,10 @@ pub struct StopMessageLiveLocation {
     pub inline_message_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendVenue {
     pub chat_id: ChatId,
     pub latitude: f64,
@@ -630,16 +466,25 @@ pub struct SendVenue {
     pub foursquare_type: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_type: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendContact {
     pub chat_id: ChatId,
     pub phone_number: String,
@@ -658,14 +503,49 @@ pub struct SendContact {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendPoll {
     pub chat_id: ChatId,
     pub question: String,
     pub options: Vec<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_anonymous: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+
+    #[serde(rename = "type")]
+    pub type_: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allows_multiple_answers: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub correct_option_id: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation_parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation_entities: Option<Vec<MessageEntity>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub open_period: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub close_date: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_closed: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
@@ -674,16 +554,39 @@ pub struct SendPoll {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SendDice {
+    pub chat_id: ChatId,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub emoji: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_to_message_id: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendChatAction {
     pub chat_id: ChatId,
-    pub action: String, // TODO: enum
+    pub action: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetUserProfilePhotos {
     pub user_id: i64,
 
@@ -694,54 +597,52 @@ pub struct GetUserProfilePhotos {
     pub limit: Option<i64>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetFile {
     pub file_id: String,
 }
 
-#[derive(Debug, Serialize)]
-pub struct KickChatMember {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BanChatMember {
     pub chat_id: ChatId,
     pub user_id: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub until_date: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revoke_messages: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnbanChatMember {
     pub chat_id: ChatId,
     pub user_id: i64,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub only_if_banned: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RestrictChatMember {
     pub chat_id: ChatId,
     pub user_id: i64,
+    pub permissions: ChatPermissions,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub until_date: Option<i64>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_messages: Option<bool>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_media_messages: Option<bool>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_other_messages: Option<bool>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_add_web_page_previews: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PromoteChatMember {
     pub chat_id: ChatId,
     pub user_id: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_change_info: Option<bool>,
+    pub is_anonymous: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_chat: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
@@ -753,48 +654,133 @@ pub struct PromoteChatMember {
     pub can_delete_messages: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_invite_users: Option<bool>,
+    pub can_manage_voice_chats: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_restrict_members: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_pin_messages: Option<bool>,
+    pub can_promote_members: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_promote_members: Option<bool>,
+    pub can_change_info: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_invite_users: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_pin_messages: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SetChatAdministratorCustomTitle {
+    pub chat_id: ChatId,
+    pub user_id: i64,
+    pub custom_title: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BanChatSenderChat {
+    pub chat_id: ChatId,
+    pub sender_chat_id: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UnbanChatSenderChat {
+    pub chat_id: ChatId,
+    pub sender_chat_id: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SetChatPermissions {
+    pub chat_id: ChatId,
+    pub permissions: ChatPermissions,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExportChatInviteLink {
     pub chat_id: ChatId,
 }
 
-#[derive(Debug, Serialize)]
-pub struct SetChatPhoto {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreateChatInviteLink {
     pub chat_id: ChatId,
-    #[serde(rename = "photo_path")]
-    pub photo: PathBuf,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expire_date: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub member_limit: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creates_join_request: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EditChatInviteLink {
+    pub chat_id: ChatId,
+    pub invite_link: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expire_date: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub member_limit: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creates_join_request: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RevokeChatInviteLink {
+    pub chat_id: ChatId,
+    pub invite_link: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ApproveChatJoinRequest {
+    pub chat_id: ChatId,
+    pub user_id: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeclineChatJoinRequest {
+    pub chat_id: ChatId,
+    pub user_id: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SetChatPhoto {
+    pub chat_id: ChatId,
+    pub photo: InputFile,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeleteChatPhoto {
     pub chat_id: ChatId,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetChatTitle {
     pub chat_id: ChatId,
     pub title: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetChatDescription {
     pub chat_id: ChatId,
-    pub description: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PinChatMessage {
     pub chat_id: ChatId,
     pub message_id: i64,
@@ -803,49 +789,57 @@ pub struct PinChatMessage {
     pub disable_notification: Option<bool>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnpinChatMessage {
+    pub chat_id: ChatId,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UnpinAllChatMessages {
     pub chat_id: ChatId,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LeaveChat {
     pub chat_id: ChatId,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetChat {
     pub chat_id: ChatId,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetChatAdministrators {
     pub chat_id: ChatId,
 }
 
-#[derive(Debug, Serialize)]
-pub struct GetChatMembersCount {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GetChatMemberCount {
     pub chat_id: ChatId,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetChatMember {
     pub chat_id: ChatId,
     pub user_id: i64,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetChatStickerSet {
     pub chat_id: ChatId,
     pub sticker_set_name: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeleteChatStickerSet {
     pub chat_id: ChatId,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AnswerCallbackQuery {
     pub callback_query_id: String,
 
@@ -862,8 +856,40 @@ pub struct AnswerCallbackQuery {
     pub cache_time: Option<i64>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SetMyCommands {
+    pub commands: Vec<BotCommand>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scope: Option<BotCommandScope>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language_code: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeleteMyCommands {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scope: Option<BotCommandScope>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language_code: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GetMyCommands {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scope: Option<BotCommandScope>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language_code: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EditMessageText {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<ChatId>,
 
@@ -874,19 +900,22 @@ pub struct EditMessageText {
     pub inline_message_id: Option<String>,
     pub text: String,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entities: Option<Vec<MessageEntity>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_web_page_preview: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::InlineKeyboardMarkup>,
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EditMessageCaption {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<ChatId>,
 
@@ -899,16 +928,19 @@ pub struct EditMessageCaption {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
 
-    #[serde(skip_serializing_if = "ParseMode::is_none")]
-    #[serde(default)]
-    pub parse_mode: ParseMode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::InlineKeyboardMarkup>,
+    pub caption_entities: Option<Vec<MessageEntity>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EditMessageMedia {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<ChatId>,
 
@@ -917,15 +949,15 @@ pub struct EditMessageMedia {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
-
-    pub media: types::InputMedia,
+    pub media: InputMedia,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::InlineKeyboardMarkup>,
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EditMessageReplyMarkup {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<ChatId>,
 
@@ -936,19 +968,25 @@ pub struct EditMessageReplyMarkup {
     pub inline_message_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::InlineKeyboardMarkup>,
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StopPoll {
     pub chat_id: ChatId,
     pub message_id: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::InlineKeyboardMarkup>,
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeleteMessage {
+    pub chat_id: ChatId,
+    pub message_id: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendSticker {
     pub chat_id: ChatId,
     pub sticker: InputFile,
@@ -960,72 +998,83 @@ pub struct SendSticker {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::ReplyMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetStickerSet {
     pub name: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UploadStickerFile {
     pub user_id: i64,
-    #[serde(rename = "png_sticker_path")]
-    pub png_sticker: PathBuf,
+    pub png_sticker: InputFile,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateNewStickerSet {
     pub user_id: i64,
     pub name: String,
     pub title: String,
-    pub png_sticker: InputFile,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub file_id: Option<String>,
+    pub png_sticker: Option<InputFile>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tgs_sticker: Option<InputFile>,
     pub emojis: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub contains_masks: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mask_position: Option<types::MaskPosition>,
+    pub mask_position: Option<MaskPosition>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AddStickerToSet {
     pub user_id: i64,
     pub name: String,
-    pub png_sticker: InputFile,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub png_sticker: Option<InputFile>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tgs_sticker: Option<InputFile>,
     pub emojis: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mask_position: Option<types::MaskPosition>,
+    pub mask_position: Option<MaskPosition>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetStickerPositionInSet {
     pub sticker: String,
     pub position: i64,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeleteStickerFromSet {
     pub sticker: String,
 }
 
-#[derive(Debug, Serialize)]
-pub struct DeleteMessage {
-    pub chat_id: ChatId,
-    pub message_id: i64,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SetStickerSetThumb {
+    pub name: String,
+    pub user_id: i64,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub thumb: Option<InputFile>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AnswerInlineQuery {
     pub inline_query_id: String,
-    pub results: Vec<types::InlineQueryResult>,
+    pub results: Vec<InlineQueryResult>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_time: Option<i64>,
@@ -1043,40 +1092,27 @@ pub struct AnswerInlineQuery {
     pub switch_pm_parameter: Option<String>,
 }
 
-impl AnswerInlineQuery {
-    pub fn new(id: String, results: Vec<types::InlineQueryResult>) -> AnswerInlineQuery {
-        AnswerInlineQuery {
-            inline_query_id: id,
-            results,
-            cache_time: None,
-            is_personal: None,
-            next_offset: None,
-            switch_pm_text: None,
-            switch_pm_parameter: None,
-        }
-    }
-
-    pub fn add(&mut self, result: impl Into<types::InlineQueryResult>) {
-        self.results.push(result.into());
-    }
-}
-
-impl TgMethod for AnswerInlineQuery {
-    type ResponseType = bool;
-    const PATH: &'static str = "answerInlineQuery";
-    const USE_MULTIPART: bool = false;
-}
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendInvoice {
-    pub chat_id: i64,
+    pub chat_id: ChatId,
     pub title: String,
     pub description: String,
     pub payload: String,
     pub provider_token: String,
-    pub start_paramater: String,
     pub currency: String,
-    pub prices: Vec<types::LabeledPrice>,
+    pub prices: Vec<LabeledPrice>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_tip_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggested_tip_amounts: Option<Vec<i64>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_parameter: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provider_data: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_url: Option<String>,
@@ -1103,6 +1139,12 @@ pub struct SendInvoice {
     pub need_shipping_address: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_phone_number_to_provider: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_email_to_provider: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_flexible: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1112,22 +1154,25 @@ pub struct SendInvoice {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::InlineKeyboardMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AnswerShippingQuery {
     pub shipping_query_id: String,
     pub ok: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_options: Option<Vec<types::ShippingOption>>,
+    pub shipping_options: Option<Vec<ShippingOption>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error_message: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AnswerPreCheckoutQuery {
     pub pre_checkout_query_id: String,
     pub ok: bool,
@@ -1136,13 +1181,13 @@ pub struct AnswerPreCheckoutQuery {
     pub error_message: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetPassportDataErrors {
     pub user_id: i64,
-    pub errors: Vec<types::PassportElementError>,
+    pub errors: Vec<PassportElementError>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SendGame {
     pub chat_id: i64,
     pub game_short_name: String,
@@ -1154,10 +1199,13 @@ pub struct SendGame {
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_markup: Option<types::InlineKeyboardMarkup>,
+    pub allow_sending_without_reply: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SetGameScore {
     pub user_id: i64,
     pub score: i64,
@@ -1178,7 +1226,7 @@ pub struct SetGameScore {
     pub inline_message_id: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetGameHighScores {
     pub user_id: i64,
 
@@ -1191,3 +1239,4 @@ pub struct GetGameHighScores {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
 }
+

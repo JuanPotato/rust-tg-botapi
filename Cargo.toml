@@ -6,14 +6,14 @@ license = "MIT"
 name = "tg_botapi"
 readme = "README.md"
 repository = "https://github.com/JuanPotato/rust-tg-botapi"
-version = "0.8.0"
-edition = "2018"
+version = "0.9.0-alpha.0"
+edition = "2021"
 
 
 [dependencies]
 reqwest = { version = "0.11", features = ["json", "multipart"] }
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-futures = "0.3.0"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
+futures = "0.3"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
