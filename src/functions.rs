@@ -78,6 +78,9 @@ pub struct SendMessage {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -94,6 +97,9 @@ pub struct ForwardMessage {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     pub message_id: i64,
 }
 
@@ -114,6 +120,9 @@ pub struct CopyMessage {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -141,6 +150,9 @@ pub struct SendPhoto {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -182,6 +194,9 @@ pub struct SendAudio {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -213,6 +228,9 @@ pub struct SendDocument {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -257,6 +275,9 @@ pub struct SendVideo {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -296,6 +317,9 @@ pub struct SendAnimation {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -326,6 +350,9 @@ pub struct SendVoice {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -353,6 +380,9 @@ pub struct SendVideoNote {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -369,6 +399,9 @@ pub struct SendMediaGroup {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -397,6 +430,9 @@ pub struct SendLocation {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -475,6 +511,9 @@ pub struct SendVenue {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -498,6 +537,9 @@ pub struct SendContact {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -551,6 +593,9 @@ pub struct SendPoll {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -569,6 +614,9 @@ pub struct SendDice {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -995,6 +1043,9 @@ pub struct SendSticker {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1151,6 +1202,9 @@ pub struct SendInvoice {
     pub disable_notification: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1194,6 +1248,9 @@ pub struct SendGame {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,

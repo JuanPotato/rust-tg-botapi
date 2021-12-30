@@ -112,6 +112,7 @@ impl FormSer for SendMessage {
         form = self.entities.serialize("entities".into(), form);
         form = self.disable_web_page_preview.serialize("disable_web_page_preview".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -133,6 +134,7 @@ impl SendMessage {
             entities: None,
             disable_web_page_preview: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -145,6 +147,7 @@ impl FormSer for ForwardMessage {
         form = self.chat_id.serialize("chat_id".into(), form);
         form = self.from_chat_id.serialize("from_chat_id".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.message_id.serialize("message_id".into(), form);
         form
     }
@@ -161,6 +164,7 @@ impl ForwardMessage {
             chat_id,
             from_chat_id,
             disable_notification: None,
+            protect_content: None,
             message_id,
         }
     }
@@ -175,6 +179,7 @@ impl FormSer for CopyMessage {
         form = self.parse_mode.serialize("parse_mode".into(), form);
         form = self.caption_entities.serialize("caption_entities".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -197,6 +202,7 @@ impl CopyMessage {
             parse_mode: None,
             caption_entities: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -212,6 +218,7 @@ impl FormSer for SendPhoto {
         form = self.parse_mode.serialize("parse_mode".into(), form);
         form = self.caption_entities.serialize("caption_entities".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -233,6 +240,7 @@ impl SendPhoto {
             parse_mode: None,
             caption_entities: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -252,6 +260,7 @@ impl FormSer for SendAudio {
         form = self.title.serialize("title".into(), form);
         form = self.thumb.serialize("thumb".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -277,6 +286,7 @@ impl SendAudio {
             title: None,
             thumb: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -294,6 +304,7 @@ impl FormSer for SendDocument {
         form = self.caption_entities.serialize("caption_entities".into(), form);
         form = self.disable_content_type_detection.serialize("disable_content_type_detection".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -317,6 +328,7 @@ impl SendDocument {
             caption_entities: None,
             disable_content_type_detection: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -337,6 +349,7 @@ impl FormSer for SendVideo {
         form = self.caption_entities.serialize("caption_entities".into(), form);
         form = self.supports_streaming.serialize("supports_streaming".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -363,6 +376,7 @@ impl SendVideo {
             caption_entities: None,
             supports_streaming: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -382,6 +396,7 @@ impl FormSer for SendAnimation {
         form = self.parse_mode.serialize("parse_mode".into(), form);
         form = self.caption_entities.serialize("caption_entities".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -407,6 +422,7 @@ impl SendAnimation {
             parse_mode: None,
             caption_entities: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -423,6 +439,7 @@ impl FormSer for SendVoice {
         form = self.caption_entities.serialize("caption_entities".into(), form);
         form = self.duration.serialize("duration".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -445,6 +462,7 @@ impl SendVoice {
             caption_entities: None,
             duration: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -460,6 +478,7 @@ impl FormSer for SendVideoNote {
         form = self.length.serialize("length".into(), form);
         form = self.thumb.serialize("thumb".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -481,6 +500,7 @@ impl SendVideoNote {
             length: None,
             thumb: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -493,6 +513,7 @@ impl FormSer for SendMediaGroup {
         form = self.chat_id.serialize("chat_id".into(), form);
         form = self.media.serialize("media".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form
@@ -510,6 +531,7 @@ impl SendMediaGroup {
             chat_id,
             media,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
         }
@@ -526,6 +548,7 @@ impl FormSer for SendLocation {
         form = self.heading.serialize("heading".into(), form);
         form = self.proximity_alert_radius.serialize("proximity_alert_radius".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -549,6 +572,7 @@ impl SendLocation {
             heading: None,
             proximity_alert_radius: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -619,6 +643,7 @@ impl FormSer for SendVenue {
         form = self.google_place_id.serialize("google_place_id".into(), form);
         form = self.google_place_type.serialize("google_place_type".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -644,6 +669,7 @@ impl SendVenue {
             google_place_id: None,
             google_place_type: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -659,6 +685,7 @@ impl FormSer for SendContact {
         form = self.last_name.serialize("last_name".into(), form);
         form = self.vcard.serialize("vcard".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -680,6 +707,7 @@ impl SendContact {
             last_name: None,
             vcard: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -703,6 +731,7 @@ impl FormSer for SendPoll {
         form = self.close_date.serialize("close_date".into(), form);
         form = self.is_closed.serialize("is_closed".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -732,6 +761,7 @@ impl SendPoll {
             close_date: None,
             is_closed: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -744,6 +774,7 @@ impl FormSer for SendDice {
         form = self.chat_id.serialize("chat_id".into(), form);
         form = self.emoji.serialize("emoji".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -762,6 +793,7 @@ impl SendDice {
             chat_id,
             emoji: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -1709,6 +1741,7 @@ impl FormSer for SendSticker {
         form = self.chat_id.serialize("chat_id".into(), form);
         form = self.sticker.serialize("sticker".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -1727,6 +1760,7 @@ impl SendSticker {
             chat_id,
             sticker,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -1963,6 +1997,7 @@ impl FormSer for SendInvoice {
         form = self.send_email_to_provider.serialize("send_email_to_provider".into(), form);
         form = self.is_flexible.serialize("is_flexible".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -2001,6 +2036,7 @@ impl SendInvoice {
             send_email_to_provider: None,
             is_flexible: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -2085,6 +2121,7 @@ impl FormSer for SendGame {
         form = self.chat_id.serialize("chat_id".into(), form);
         form = self.game_short_name.serialize("game_short_name".into(), form);
         form = self.disable_notification.serialize("disable_notification".into(), form);
+        form = self.protect_content.serialize("protect_content".into(), form);
         form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
         form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
         form = self.reply_markup.serialize("reply_markup".into(), form);
@@ -2103,6 +2140,7 @@ impl SendGame {
             chat_id,
             game_short_name,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
