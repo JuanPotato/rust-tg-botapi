@@ -36,8 +36,7 @@ async fn handle_message(bot: Bot, msg: Message) {
         bot.send(&req).await.unwrap();
     } else if let Some(text) = msg.get_text() {
         if text == "/img" {
-            let file_path = "./image.jpg";
-            let req = msg.reply_photo(InputFile::file(file_path));
+            let req = msg.reply_photo(InputFile::File("./image.jpg".into()));
 
             bot.send(&req).await.unwrap();
         } else {

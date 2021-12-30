@@ -59,7 +59,7 @@ impl<T: FormSer> FormSer for Box<T> {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum ApiResult<T> {
     Ok {
@@ -92,7 +92,7 @@ impl<T> Into<Result<T, BotError>> for ApiResult<T> {
 }
 
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum MessageOrBool {
     Message(Box<Message>),
@@ -108,7 +108,7 @@ impl FormSer for MessageOrBool {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub enum ParseMode {
     Markdown,
     HTML,
@@ -128,7 +128,7 @@ impl ParseMode {
 }
 
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum InputFile {
     FileId(String),
@@ -166,7 +166,7 @@ impl FormSer for InputFile {
 }
 
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum ChatId {
     Id(i64),
@@ -195,7 +195,7 @@ impl FormSer for ChatId {
 }
 
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum ReplyMarkup {
     InlineKeyboard(InlineKeyboardMarkup),
@@ -239,14 +239,14 @@ impl From<ForceReply> for ReplyMarkup {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Update {
     pub update_id: i64,
     #[serde(flatten)]
     pub update_type: UpdateType,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateType {
     Message(Message),
