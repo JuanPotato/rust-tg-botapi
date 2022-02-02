@@ -1817,6 +1817,7 @@ impl FormSer for CreateNewStickerSet {
         form = self.title.serialize("title".into(), form);
         form = self.png_sticker.serialize("png_sticker".into(), form);
         form = self.tgs_sticker.serialize("tgs_sticker".into(), form);
+        form = self.webm_sticker.serialize("webm_sticker".into(), form);
         form = self.emojis.serialize("emojis".into(), form);
         form = self.contains_masks.serialize("contains_masks".into(), form);
         form = self.mask_position.serialize("mask_position".into(), form);
@@ -1837,6 +1838,7 @@ impl CreateNewStickerSet {
             title,
             png_sticker: None,
             tgs_sticker: None,
+            webm_sticker: None,
             emojis,
             contains_masks: None,
             mask_position: None,
@@ -1850,6 +1852,7 @@ impl FormSer for AddStickerToSet {
         form = self.name.serialize("name".into(), form);
         form = self.png_sticker.serialize("png_sticker".into(), form);
         form = self.tgs_sticker.serialize("tgs_sticker".into(), form);
+        form = self.webm_sticker.serialize("webm_sticker".into(), form);
         form = self.emojis.serialize("emojis".into(), form);
         form = self.mask_position.serialize("mask_position".into(), form);
         form
@@ -1868,6 +1871,7 @@ impl AddStickerToSet {
             name,
             png_sticker: None,
             tgs_sticker: None,
+            webm_sticker: None,
             emojis,
             mask_position: None,
         }

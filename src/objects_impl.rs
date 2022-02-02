@@ -1914,6 +1914,7 @@ impl FormSer for Sticker {
         form = self.width.serialize(format!("{}[width]", key), form);
         form = self.height.serialize(format!("{}[height]", key), form);
         form = self.is_animated.serialize(format!("{}[is_animated]", key), form);
+        form = self.is_video.serialize(format!("{}[is_video]", key), form);
         form = self.thumb.serialize(format!("{}[thumb]", key), form);
         form = self.emoji.serialize(format!("{}[emoji]", key), form);
         form = self.set_name.serialize(format!("{}[set_name]", key), form);
@@ -1924,13 +1925,14 @@ impl FormSer for Sticker {
 }
 
 impl Sticker {
-    pub fn new(file_id: String, file_unique_id: String, width: i64, height: i64, is_animated: bool, ) -> Self {
+    pub fn new(file_id: String, file_unique_id: String, width: i64, height: i64, is_animated: bool, is_video: bool, ) -> Self {
         Self {
             file_id,
             file_unique_id,
             width,
             height,
             is_animated,
+            is_video,
             thumb: None,
             emoji: None,
             set_name: None,
@@ -1945,6 +1947,7 @@ impl FormSer for StickerSet {
         form = self.name.serialize(format!("{}[name]", key), form);
         form = self.title.serialize(format!("{}[title]", key), form);
         form = self.is_animated.serialize(format!("{}[is_animated]", key), form);
+        form = self.is_video.serialize(format!("{}[is_video]", key), form);
         form = self.contains_masks.serialize(format!("{}[contains_masks]", key), form);
         form = self.stickers.serialize(format!("{}[stickers]", key), form);
         form = self.thumb.serialize(format!("{}[thumb]", key), form);
@@ -1953,11 +1956,12 @@ impl FormSer for StickerSet {
 }
 
 impl StickerSet {
-    pub fn new(name: String, title: String, is_animated: bool, contains_masks: bool, stickers: Vec<Sticker>, ) -> Self {
+    pub fn new(name: String, title: String, is_animated: bool, is_video: bool, contains_masks: bool, stickers: Vec<Sticker>, ) -> Self {
         Self {
             name,
             title,
             is_animated,
+            is_video,
             contains_masks,
             stickers,
             thumb: None,

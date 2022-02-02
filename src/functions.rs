@@ -619,6 +619,7 @@ pub struct CreateNewStickerSet {
     pub title: String,
     pub png_sticker: Option<InputFile>,
     pub tgs_sticker: Option<InputFile>,
+    pub webm_sticker: Option<InputFile>,
     pub emojis: String,
     pub contains_masks: Option<bool>,
     pub mask_position: Option<MaskPosition>,
@@ -630,6 +631,7 @@ pub struct AddStickerToSet {
     pub name: String,
     pub png_sticker: Option<InputFile>,
     pub tgs_sticker: Option<InputFile>,
+    pub webm_sticker: Option<InputFile>,
     pub emojis: String,
     pub mask_position: Option<MaskPosition>,
 }
