@@ -138,4 +138,8 @@ impl Bot {
 
         rx
     }
+
+    pub fn token(&self) -> &str {
+        &self.token
+    }
 }
