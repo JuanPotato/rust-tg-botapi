@@ -1,6 +1,7 @@
-use crate::functions::*;
-use crate::objects::*;
-use crate::better::*;
+use crate::methods::*;
+use crate::types::*;
+use crate::form_ser::*;
+use crate::helpers::*;
 use crate::TgMethod;
 
 impl FormSer for GetUpdates {
@@ -18,6 +19,29 @@ impl TgMethod for GetUpdates {
     const PATH: &'static str = "getUpdates";
 }
 
+impl GetUpdates {
+    pub fn with_offset(mut self, offset: i64) -> Self {
+        self.offset = Some(offset);
+        self
+    }
+
+    pub fn with_limit(mut self, limit: i64) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+    pub fn with_timeout(mut self, timeout: i64) -> Self {
+        self.timeout = Some(timeout);
+        self
+    }
+
+    pub fn with_allowed_updates(mut self, allowed_updates: Vec<String>) -> Self {
+        self.allowed_updates = Some(allowed_updates);
+        self
+    }
+
+}
+
 impl FormSer for SetWebhook {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.url.serialize("url".into(), form);
@@ -26,6 +50,7 @@ impl FormSer for SetWebhook {
         form = self.max_connections.serialize("max_connections".into(), form);
         form = self.allowed_updates.serialize("allowed_updates".into(), form);
         form = self.drop_pending_updates.serialize("drop_pending_updates".into(), form);
+        form = self.secret_token.serialize("secret_token".into(), form);
         form
     }
 }
@@ -44,8 +69,42 @@ impl SetWebhook {
             max_connections: None,
             allowed_updates: None,
             drop_pending_updates: None,
+            secret_token: None,
         }
     }
+}
+
+impl SetWebhook {
+    pub fn with_certificate(mut self, certificate: InputFile) -> Self {
+        self.certificate = Some(certificate);
+        self
+    }
+
+    pub fn with_ip_address(mut self, ip_address: String) -> Self {
+        self.ip_address = Some(ip_address);
+        self
+    }
+
+    pub fn with_max_connections(mut self, max_connections: i64) -> Self {
+        self.max_connections = Some(max_connections);
+        self
+    }
+
+    pub fn with_allowed_updates(mut self, allowed_updates: Vec<String>) -> Self {
+        self.allowed_updates = Some(allowed_updates);
+        self
+    }
+
+    pub fn with_drop_pending_updates(mut self, drop_pending_updates: bool) -> Self {
+        self.drop_pending_updates = Some(drop_pending_updates);
+        self
+    }
+
+    pub fn with_secret_token(mut self, secret_token: String) -> Self {
+        self.secret_token = Some(secret_token);
+        self
+    }
+
 }
 
 impl FormSer for DeleteWebhook {
@@ -58,6 +117,14 @@ impl FormSer for DeleteWebhook {
 impl TgMethod for DeleteWebhook {
     type ResponseType = bool;
     const PATH: &'static str = "deleteWebhook";
+}
+
+impl DeleteWebhook {
+    pub fn with_drop_pending_updates(mut self, drop_pending_updates: bool) -> Self {
+        self.drop_pending_updates = Some(drop_pending_updates);
+        self
+    }
+
 }
 
 impl FormSer for GetWebhookInfo {
@@ -142,6 +209,49 @@ impl SendMessage {
     }
 }
 
+impl SendMessage {
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_entities(mut self, entities: Vec<MessageEntity>) -> Self {
+        self.entities = Some(entities);
+        self
+    }
+
+    pub fn with_disable_web_page_preview(mut self, disable_web_page_preview: bool) -> Self {
+        self.disable_web_page_preview = Some(disable_web_page_preview);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for ForwardMessage {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -168,6 +278,19 @@ impl ForwardMessage {
             message_id,
         }
     }
+}
+
+impl ForwardMessage {
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
 }
 
 impl FormSer for CopyMessage {
@@ -210,6 +333,49 @@ impl CopyMessage {
     }
 }
 
+impl CopyMessage {
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SendPhoto {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -246,6 +412,49 @@ impl SendPhoto {
             reply_markup: None,
         }
     }
+}
+
+impl SendPhoto {
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for SendAudio {
@@ -294,6 +503,69 @@ impl SendAudio {
     }
 }
 
+impl SendAudio {
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_duration(mut self, duration: i64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
+    pub fn with_performer(mut self, performer: String) -> Self {
+        self.performer = Some(performer);
+        self
+    }
+
+    pub fn with_title(mut self, title: String) -> Self {
+        self.title = Some(title);
+        self
+    }
+
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SendDocument {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -334,6 +606,59 @@ impl SendDocument {
             reply_markup: None,
         }
     }
+}
+
+impl SendDocument {
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_disable_content_type_detection(mut self, disable_content_type_detection: bool) -> Self {
+        self.disable_content_type_detection = Some(disable_content_type_detection);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for SendVideo {
@@ -384,6 +709,74 @@ impl SendVideo {
     }
 }
 
+impl SendVideo {
+    pub fn with_duration(mut self, duration: i64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
+    pub fn with_width(mut self, width: i64) -> Self {
+        self.width = Some(width);
+        self
+    }
+
+    pub fn with_height(mut self, height: i64) -> Self {
+        self.height = Some(height);
+        self
+    }
+
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_supports_streaming(mut self, supports_streaming: bool) -> Self {
+        self.supports_streaming = Some(supports_streaming);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SendAnimation {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -430,6 +823,69 @@ impl SendAnimation {
     }
 }
 
+impl SendAnimation {
+    pub fn with_duration(mut self, duration: i64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
+    pub fn with_width(mut self, width: i64) -> Self {
+        self.width = Some(width);
+        self
+    }
+
+    pub fn with_height(mut self, height: i64) -> Self {
+        self.height = Some(height);
+        self
+    }
+
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SendVoice {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -470,6 +926,54 @@ impl SendVoice {
     }
 }
 
+impl SendVoice {
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_duration(mut self, duration: i64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SendVideoNote {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -508,6 +1012,49 @@ impl SendVideoNote {
     }
 }
 
+impl SendVideoNote {
+    pub fn with_duration(mut self, duration: i64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
+    pub fn with_length(mut self, length: i64) -> Self {
+        self.length = Some(length);
+        self
+    }
+
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SendMediaGroup {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -536,6 +1083,29 @@ impl SendMediaGroup {
             allow_sending_without_reply: None,
         }
     }
+}
+
+impl SendMediaGroup {
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
 }
 
 impl FormSer for SendLocation {
@@ -580,6 +1150,54 @@ impl SendLocation {
     }
 }
 
+impl SendLocation {
+    pub fn with_horizontal_accuracy(mut self, horizontal_accuracy: f64) -> Self {
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
+    }
+
+    pub fn with_live_period(mut self, live_period: i64) -> Self {
+        self.live_period = Some(live_period);
+        self
+    }
+
+    pub fn with_heading(mut self, heading: i64) -> Self {
+        self.heading = Some(heading);
+        self
+    }
+
+    pub fn with_proximity_alert_radius(mut self, proximity_alert_radius: i64) -> Self {
+        self.proximity_alert_radius = Some(proximity_alert_radius);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for EditMessageLiveLocation {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -616,6 +1234,44 @@ impl EditMessageLiveLocation {
     }
 }
 
+impl EditMessageLiveLocation {
+    pub fn with_chat_id(mut self, chat_id: ChatId) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+    pub fn with_horizontal_accuracy(mut self, horizontal_accuracy: f64) -> Self {
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
+    }
+
+    pub fn with_heading(mut self, heading: i64) -> Self {
+        self.heading = Some(heading);
+        self
+    }
+
+    pub fn with_proximity_alert_radius(mut self, proximity_alert_radius: i64) -> Self {
+        self.proximity_alert_radius = Some(proximity_alert_radius);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for StopMessageLiveLocation {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -629,6 +1285,29 @@ impl FormSer for StopMessageLiveLocation {
 impl TgMethod for StopMessageLiveLocation {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "stopMessageLiveLocation";
+}
+
+impl StopMessageLiveLocation {
+    pub fn with_chat_id(mut self, chat_id: ChatId) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for SendVenue {
@@ -677,6 +1356,54 @@ impl SendVenue {
     }
 }
 
+impl SendVenue {
+    pub fn with_foursquare_id(mut self, foursquare_id: String) -> Self {
+        self.foursquare_id = Some(foursquare_id);
+        self
+    }
+
+    pub fn with_foursquare_type(mut self, foursquare_type: String) -> Self {
+        self.foursquare_type = Some(foursquare_type);
+        self
+    }
+
+    pub fn with_google_place_id(mut self, google_place_id: String) -> Self {
+        self.google_place_id = Some(google_place_id);
+        self
+    }
+
+    pub fn with_google_place_type(mut self, google_place_type: String) -> Self {
+        self.google_place_type = Some(google_place_type);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SendContact {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -713,6 +1440,44 @@ impl SendContact {
             reply_markup: None,
         }
     }
+}
+
+impl SendContact {
+    pub fn with_last_name(mut self, last_name: String) -> Self {
+        self.last_name = Some(last_name);
+        self
+    }
+
+    pub fn with_vcard(mut self, vcard: String) -> Self {
+        self.vcard = Some(vcard);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for SendPoll {
@@ -769,6 +1534,84 @@ impl SendPoll {
     }
 }
 
+impl SendPoll {
+    pub fn with_is_anonymous(mut self, is_anonymous: bool) -> Self {
+        self.is_anonymous = Some(is_anonymous);
+        self
+    }
+
+    pub fn with_type_(mut self, type_: String) -> Self {
+        self.type_ = Some(type_);
+        self
+    }
+
+    pub fn with_allows_multiple_answers(mut self, allows_multiple_answers: bool) -> Self {
+        self.allows_multiple_answers = Some(allows_multiple_answers);
+        self
+    }
+
+    pub fn with_correct_option_id(mut self, correct_option_id: i64) -> Self {
+        self.correct_option_id = Some(correct_option_id);
+        self
+    }
+
+    pub fn with_explanation(mut self, explanation: String) -> Self {
+        self.explanation = Some(explanation);
+        self
+    }
+
+    pub fn with_explanation_parse_mode(mut self, explanation_parse_mode: String) -> Self {
+        self.explanation_parse_mode = Some(explanation_parse_mode);
+        self
+    }
+
+    pub fn with_explanation_entities(mut self, explanation_entities: Vec<MessageEntity>) -> Self {
+        self.explanation_entities = Some(explanation_entities);
+        self
+    }
+
+    pub fn with_open_period(mut self, open_period: i64) -> Self {
+        self.open_period = Some(open_period);
+        self
+    }
+
+    pub fn with_close_date(mut self, close_date: i64) -> Self {
+        self.close_date = Some(close_date);
+        self
+    }
+
+    pub fn with_is_closed(mut self, is_closed: bool) -> Self {
+        self.is_closed = Some(is_closed);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SendDice {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -799,6 +1642,39 @@ impl SendDice {
             reply_markup: None,
         }
     }
+}
+
+impl SendDice {
+    pub fn with_emoji(mut self, emoji: String) -> Self {
+        self.emoji = Some(emoji);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for SendChatAction {
@@ -847,6 +1723,19 @@ impl GetUserProfilePhotos {
     }
 }
 
+impl GetUserProfilePhotos {
+    pub fn with_offset(mut self, offset: i64) -> Self {
+        self.offset = Some(offset);
+        self
+    }
+
+    pub fn with_limit(mut self, limit: i64) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+}
+
 impl FormSer for GetFile {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.file_id.serialize("file_id".into(), form);
@@ -893,6 +1782,19 @@ impl BanChatMember {
     }
 }
 
+impl BanChatMember {
+    pub fn with_until_date(mut self, until_date: i64) -> Self {
+        self.until_date = Some(until_date);
+        self
+    }
+
+    pub fn with_revoke_messages(mut self, revoke_messages: bool) -> Self {
+        self.revoke_messages = Some(revoke_messages);
+        self
+    }
+
+}
+
 impl FormSer for UnbanChatMember {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -915,6 +1817,14 @@ impl UnbanChatMember {
             only_if_banned: None,
         }
     }
+}
+
+impl UnbanChatMember {
+    pub fn with_only_if_banned(mut self, only_if_banned: bool) -> Self {
+        self.only_if_banned = Some(only_if_banned);
+        self
+    }
+
 }
 
 impl FormSer for RestrictChatMember {
@@ -943,6 +1853,14 @@ impl RestrictChatMember {
     }
 }
 
+impl RestrictChatMember {
+    pub fn with_until_date(mut self, until_date: i64) -> Self {
+        self.until_date = Some(until_date);
+        self
+    }
+
+}
+
 impl FormSer for PromoteChatMember {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -952,7 +1870,7 @@ impl FormSer for PromoteChatMember {
         form = self.can_post_messages.serialize("can_post_messages".into(), form);
         form = self.can_edit_messages.serialize("can_edit_messages".into(), form);
         form = self.can_delete_messages.serialize("can_delete_messages".into(), form);
-        form = self.can_manage_voice_chats.serialize("can_manage_voice_chats".into(), form);
+        form = self.can_manage_video_chats.serialize("can_manage_video_chats".into(), form);
         form = self.can_restrict_members.serialize("can_restrict_members".into(), form);
         form = self.can_promote_members.serialize("can_promote_members".into(), form);
         form = self.can_change_info.serialize("can_change_info".into(), form);
@@ -977,7 +1895,7 @@ impl PromoteChatMember {
             can_post_messages: None,
             can_edit_messages: None,
             can_delete_messages: None,
-            can_manage_voice_chats: None,
+            can_manage_video_chats: None,
             can_restrict_members: None,
             can_promote_members: None,
             can_change_info: None,
@@ -985,6 +1903,64 @@ impl PromoteChatMember {
             can_pin_messages: None,
         }
     }
+}
+
+impl PromoteChatMember {
+    pub fn with_is_anonymous(mut self, is_anonymous: bool) -> Self {
+        self.is_anonymous = Some(is_anonymous);
+        self
+    }
+
+    pub fn with_can_manage_chat(mut self, can_manage_chat: bool) -> Self {
+        self.can_manage_chat = Some(can_manage_chat);
+        self
+    }
+
+    pub fn with_can_post_messages(mut self, can_post_messages: bool) -> Self {
+        self.can_post_messages = Some(can_post_messages);
+        self
+    }
+
+    pub fn with_can_edit_messages(mut self, can_edit_messages: bool) -> Self {
+        self.can_edit_messages = Some(can_edit_messages);
+        self
+    }
+
+    pub fn with_can_delete_messages(mut self, can_delete_messages: bool) -> Self {
+        self.can_delete_messages = Some(can_delete_messages);
+        self
+    }
+
+    pub fn with_can_manage_video_chats(mut self, can_manage_video_chats: bool) -> Self {
+        self.can_manage_video_chats = Some(can_manage_video_chats);
+        self
+    }
+
+    pub fn with_can_restrict_members(mut self, can_restrict_members: bool) -> Self {
+        self.can_restrict_members = Some(can_restrict_members);
+        self
+    }
+
+    pub fn with_can_promote_members(mut self, can_promote_members: bool) -> Self {
+        self.can_promote_members = Some(can_promote_members);
+        self
+    }
+
+    pub fn with_can_change_info(mut self, can_change_info: bool) -> Self {
+        self.can_change_info = Some(can_change_info);
+        self
+    }
+
+    pub fn with_can_invite_users(mut self, can_invite_users: bool) -> Self {
+        self.can_invite_users = Some(can_invite_users);
+        self
+    }
+
+    pub fn with_can_pin_messages(mut self, can_pin_messages: bool) -> Self {
+        self.can_pin_messages = Some(can_pin_messages);
+        self
+    }
+
 }
 
 impl FormSer for SetChatAdministratorCustomTitle {
@@ -1125,6 +2101,29 @@ impl CreateChatInviteLink {
     }
 }
 
+impl CreateChatInviteLink {
+    pub fn with_name(mut self, name: String) -> Self {
+        self.name = Some(name);
+        self
+    }
+
+    pub fn with_expire_date(mut self, expire_date: i64) -> Self {
+        self.expire_date = Some(expire_date);
+        self
+    }
+
+    pub fn with_member_limit(mut self, member_limit: i64) -> Self {
+        self.member_limit = Some(member_limit);
+        self
+    }
+
+    pub fn with_creates_join_request(mut self, creates_join_request: bool) -> Self {
+        self.creates_join_request = Some(creates_join_request);
+        self
+    }
+
+}
+
 impl FormSer for EditChatInviteLink {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -1153,6 +2152,29 @@ impl EditChatInviteLink {
             creates_join_request: None,
         }
     }
+}
+
+impl EditChatInviteLink {
+    pub fn with_name(mut self, name: String) -> Self {
+        self.name = Some(name);
+        self
+    }
+
+    pub fn with_expire_date(mut self, expire_date: i64) -> Self {
+        self.expire_date = Some(expire_date);
+        self
+    }
+
+    pub fn with_member_limit(mut self, member_limit: i64) -> Self {
+        self.member_limit = Some(member_limit);
+        self
+    }
+
+    pub fn with_creates_join_request(mut self, creates_join_request: bool) -> Self {
+        self.creates_join_request = Some(creates_join_request);
+        self
+    }
+
 }
 
 impl FormSer for RevokeChatInviteLink {
@@ -1307,6 +2329,14 @@ impl SetChatDescription {
     }
 }
 
+impl SetChatDescription {
+    pub fn with_description(mut self, description: String) -> Self {
+        self.description = Some(description);
+        self
+    }
+
+}
+
 impl FormSer for PinChatMessage {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -1331,6 +2361,14 @@ impl PinChatMessage {
     }
 }
 
+impl PinChatMessage {
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+}
+
 impl FormSer for UnpinChatMessage {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -1351,6 +2389,14 @@ impl UnpinChatMessage {
             message_id: None,
         }
     }
+}
+
+impl UnpinChatMessage {
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
 }
 
 impl FormSer for UnpinAllChatMessages {
@@ -1545,6 +2591,29 @@ impl AnswerCallbackQuery {
     }
 }
 
+impl AnswerCallbackQuery {
+    pub fn with_text(mut self, text: String) -> Self {
+        self.text = Some(text);
+        self
+    }
+
+    pub fn with_show_alert(mut self, show_alert: bool) -> Self {
+        self.show_alert = Some(show_alert);
+        self
+    }
+
+    pub fn with_url(mut self, url: String) -> Self {
+        self.url = Some(url);
+        self
+    }
+
+    pub fn with_cache_time(mut self, cache_time: i64) -> Self {
+        self.cache_time = Some(cache_time);
+        self
+    }
+
+}
+
 impl FormSer for SetMyCommands {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.commands.serialize("commands".into(), form);
@@ -1569,6 +2638,19 @@ impl SetMyCommands {
     }
 }
 
+impl SetMyCommands {
+    pub fn with_scope(mut self, scope: BotCommandScope) -> Self {
+        self.scope = Some(scope);
+        self
+    }
+
+    pub fn with_language_code(mut self, language_code: String) -> Self {
+        self.language_code = Some(language_code);
+        self
+    }
+
+}
+
 impl FormSer for DeleteMyCommands {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.scope.serialize("scope".into(), form);
@@ -1582,6 +2664,19 @@ impl TgMethod for DeleteMyCommands {
     const PATH: &'static str = "deleteMyCommands";
 }
 
+impl DeleteMyCommands {
+    pub fn with_scope(mut self, scope: BotCommandScope) -> Self {
+        self.scope = Some(scope);
+        self
+    }
+
+    pub fn with_language_code(mut self, language_code: String) -> Self {
+        self.language_code = Some(language_code);
+        self
+    }
+
+}
+
 impl FormSer for GetMyCommands {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.scope.serialize("scope".into(), form);
@@ -1593,6 +2688,111 @@ impl FormSer for GetMyCommands {
 impl TgMethod for GetMyCommands {
     type ResponseType = Vec<BotCommand>;
     const PATH: &'static str = "getMyCommands";
+}
+
+impl GetMyCommands {
+    pub fn with_scope(mut self, scope: BotCommandScope) -> Self {
+        self.scope = Some(scope);
+        self
+    }
+
+    pub fn with_language_code(mut self, language_code: String) -> Self {
+        self.language_code = Some(language_code);
+        self
+    }
+
+}
+
+impl FormSer for SetChatMenuButton {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.chat_id.serialize("chat_id".into(), form);
+        form = self.menu_button.serialize("menu_button".into(), form);
+        form
+    }
+}
+
+impl TgMethod for SetChatMenuButton {
+    type ResponseType = bool;
+    const PATH: &'static str = "setChatMenuButton";
+}
+
+impl SetChatMenuButton {
+    pub fn with_chat_id(mut self, chat_id: i64) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_menu_button(mut self, menu_button: MenuButton) -> Self {
+        self.menu_button = Some(menu_button);
+        self
+    }
+
+}
+
+impl FormSer for GetChatMenuButton {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.chat_id.serialize("chat_id".into(), form);
+        form
+    }
+}
+
+impl TgMethod for GetChatMenuButton {
+    type ResponseType = MenuButton;
+    const PATH: &'static str = "getChatMenuButton";
+}
+
+impl GetChatMenuButton {
+    pub fn with_chat_id(mut self, chat_id: i64) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+}
+
+impl FormSer for SetMyDefaultAdministratorRights {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.rights.serialize("rights".into(), form);
+        form = self.for_channels.serialize("for_channels".into(), form);
+        form
+    }
+}
+
+impl TgMethod for SetMyDefaultAdministratorRights {
+    type ResponseType = bool;
+    const PATH: &'static str = "setMyDefaultAdministratorRights";
+}
+
+impl SetMyDefaultAdministratorRights {
+    pub fn with_rights(mut self, rights: ChatAdministratorRights) -> Self {
+        self.rights = Some(rights);
+        self
+    }
+
+    pub fn with_for_channels(mut self, for_channels: bool) -> Self {
+        self.for_channels = Some(for_channels);
+        self
+    }
+
+}
+
+impl FormSer for GetMyDefaultAdministratorRights {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.for_channels.serialize("for_channels".into(), form);
+        form
+    }
+}
+
+impl TgMethod for GetMyDefaultAdministratorRights {
+    type ResponseType = ChatAdministratorRights;
+    const PATH: &'static str = "getMyDefaultAdministratorRights";
+}
+
+impl GetMyDefaultAdministratorRights {
+    pub fn with_for_channels(mut self, for_channels: bool) -> Self {
+        self.for_channels = Some(for_channels);
+        self
+    }
+
 }
 
 impl FormSer for EditMessageText {
@@ -1629,6 +2829,44 @@ impl EditMessageText {
     }
 }
 
+impl EditMessageText {
+    pub fn with_chat_id(mut self, chat_id: ChatId) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_entities(mut self, entities: Vec<MessageEntity>) -> Self {
+        self.entities = Some(entities);
+        self
+    }
+
+    pub fn with_disable_web_page_preview(mut self, disable_web_page_preview: bool) -> Self {
+        self.disable_web_page_preview = Some(disable_web_page_preview);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for EditMessageCaption {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -1645,6 +2883,44 @@ impl FormSer for EditMessageCaption {
 impl TgMethod for EditMessageCaption {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "editMessageCaption";
+}
+
+impl EditMessageCaption {
+    pub fn with_chat_id(mut self, chat_id: ChatId) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for EditMessageMedia {
@@ -1675,6 +2951,29 @@ impl EditMessageMedia {
     }
 }
 
+impl EditMessageMedia {
+    pub fn with_chat_id(mut self, chat_id: ChatId) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for EditMessageReplyMarkup {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat_id.serialize("chat_id".into(), form);
@@ -1688,6 +2987,29 @@ impl FormSer for EditMessageReplyMarkup {
 impl TgMethod for EditMessageReplyMarkup {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "editMessageReplyMarkup";
+}
+
+impl EditMessageReplyMarkup {
+    pub fn with_chat_id(mut self, chat_id: ChatId) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for StopPoll {
@@ -1712,6 +3034,14 @@ impl StopPoll {
             reply_markup: None,
         }
     }
+}
+
+impl StopPoll {
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for DeleteMessage {
@@ -1766,6 +3096,34 @@ impl SendSticker {
             reply_markup: None,
         }
     }
+}
+
+impl SendSticker {
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: ReplyMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for GetStickerSet {
@@ -1846,6 +3204,34 @@ impl CreateNewStickerSet {
     }
 }
 
+impl CreateNewStickerSet {
+    pub fn with_png_sticker(mut self, png_sticker: InputFile) -> Self {
+        self.png_sticker = Some(png_sticker);
+        self
+    }
+
+    pub fn with_tgs_sticker(mut self, tgs_sticker: InputFile) -> Self {
+        self.tgs_sticker = Some(tgs_sticker);
+        self
+    }
+
+    pub fn with_webm_sticker(mut self, webm_sticker: InputFile) -> Self {
+        self.webm_sticker = Some(webm_sticker);
+        self
+    }
+
+    pub fn with_contains_masks(mut self, contains_masks: bool) -> Self {
+        self.contains_masks = Some(contains_masks);
+        self
+    }
+
+    pub fn with_mask_position(mut self, mask_position: MaskPosition) -> Self {
+        self.mask_position = Some(mask_position);
+        self
+    }
+
+}
+
 impl FormSer for AddStickerToSet {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.user_id.serialize("user_id".into(), form);
@@ -1876,6 +3262,29 @@ impl AddStickerToSet {
             mask_position: None,
         }
     }
+}
+
+impl AddStickerToSet {
+    pub fn with_png_sticker(mut self, png_sticker: InputFile) -> Self {
+        self.png_sticker = Some(png_sticker);
+        self
+    }
+
+    pub fn with_tgs_sticker(mut self, tgs_sticker: InputFile) -> Self {
+        self.tgs_sticker = Some(tgs_sticker);
+        self
+    }
+
+    pub fn with_webm_sticker(mut self, webm_sticker: InputFile) -> Self {
+        self.webm_sticker = Some(webm_sticker);
+        self
+    }
+
+    pub fn with_mask_position(mut self, mask_position: MaskPosition) -> Self {
+        self.mask_position = Some(mask_position);
+        self
+    }
+
 }
 
 impl FormSer for SetStickerPositionInSet {
@@ -1944,6 +3353,14 @@ impl SetStickerSetThumb {
     }
 }
 
+impl SetStickerSetThumb {
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+}
+
 impl FormSer for AnswerInlineQuery {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.inline_query_id.serialize("inline_query_id".into(), form);
@@ -1972,6 +3389,56 @@ impl AnswerInlineQuery {
             next_offset: None,
             switch_pm_text: None,
             switch_pm_parameter: None,
+        }
+    }
+}
+
+impl AnswerInlineQuery {
+    pub fn with_cache_time(mut self, cache_time: i64) -> Self {
+        self.cache_time = Some(cache_time);
+        self
+    }
+
+    pub fn with_is_personal(mut self, is_personal: bool) -> Self {
+        self.is_personal = Some(is_personal);
+        self
+    }
+
+    pub fn with_next_offset(mut self, next_offset: String) -> Self {
+        self.next_offset = Some(next_offset);
+        self
+    }
+
+    pub fn with_switch_pm_text(mut self, switch_pm_text: String) -> Self {
+        self.switch_pm_text = Some(switch_pm_text);
+        self
+    }
+
+    pub fn with_switch_pm_parameter(mut self, switch_pm_parameter: String) -> Self {
+        self.switch_pm_parameter = Some(switch_pm_parameter);
+        self
+    }
+
+}
+
+impl FormSer for AnswerWebAppQuery {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.web_app_query_id.serialize("web_app_query_id".into(), form);
+        form = self.result.serialize("result".into(), form);
+        form
+    }
+}
+
+impl TgMethod for AnswerWebAppQuery {
+    type ResponseType = SentWebAppMessage;
+    const PATH: &'static str = "answerWebAppQuery";
+}
+
+impl AnswerWebAppQuery {
+    pub fn new(web_app_query_id: String, result: InlineQueryResult, ) -> Self {
+        Self {
+            web_app_query_id,
+            result,
         }
     }
 }
@@ -2048,6 +3515,240 @@ impl SendInvoice {
     }
 }
 
+impl SendInvoice {
+    pub fn with_max_tip_amount(mut self, max_tip_amount: i64) -> Self {
+        self.max_tip_amount = Some(max_tip_amount);
+        self
+    }
+
+    pub fn with_suggested_tip_amounts(mut self, suggested_tip_amounts: Vec<i64>) -> Self {
+        self.suggested_tip_amounts = Some(suggested_tip_amounts);
+        self
+    }
+
+    pub fn with_start_parameter(mut self, start_parameter: String) -> Self {
+        self.start_parameter = Some(start_parameter);
+        self
+    }
+
+    pub fn with_provider_data(mut self, provider_data: String) -> Self {
+        self.provider_data = Some(provider_data);
+        self
+    }
+
+    pub fn with_photo_url(mut self, photo_url: String) -> Self {
+        self.photo_url = Some(photo_url);
+        self
+    }
+
+    pub fn with_photo_size(mut self, photo_size: i64) -> Self {
+        self.photo_size = Some(photo_size);
+        self
+    }
+
+    pub fn with_photo_width(mut self, photo_width: i64) -> Self {
+        self.photo_width = Some(photo_width);
+        self
+    }
+
+    pub fn with_photo_height(mut self, photo_height: i64) -> Self {
+        self.photo_height = Some(photo_height);
+        self
+    }
+
+    pub fn with_need_name(mut self, need_name: bool) -> Self {
+        self.need_name = Some(need_name);
+        self
+    }
+
+    pub fn with_need_phone_number(mut self, need_phone_number: bool) -> Self {
+        self.need_phone_number = Some(need_phone_number);
+        self
+    }
+
+    pub fn with_need_email(mut self, need_email: bool) -> Self {
+        self.need_email = Some(need_email);
+        self
+    }
+
+    pub fn with_need_shipping_address(mut self, need_shipping_address: bool) -> Self {
+        self.need_shipping_address = Some(need_shipping_address);
+        self
+    }
+
+    pub fn with_send_phone_number_to_provider(mut self, send_phone_number_to_provider: bool) -> Self {
+        self.send_phone_number_to_provider = Some(send_phone_number_to_provider);
+        self
+    }
+
+    pub fn with_send_email_to_provider(mut self, send_email_to_provider: bool) -> Self {
+        self.send_email_to_provider = Some(send_email_to_provider);
+        self
+    }
+
+    pub fn with_is_flexible(mut self, is_flexible: bool) -> Self {
+        self.is_flexible = Some(is_flexible);
+        self
+    }
+
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
+impl FormSer for CreateInvoiceLink {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.title.serialize("title".into(), form);
+        form = self.description.serialize("description".into(), form);
+        form = self.payload.serialize("payload".into(), form);
+        form = self.provider_token.serialize("provider_token".into(), form);
+        form = self.currency.serialize("currency".into(), form);
+        form = self.prices.serialize("prices".into(), form);
+        form = self.max_tip_amount.serialize("max_tip_amount".into(), form);
+        form = self.suggested_tip_amounts.serialize("suggested_tip_amounts".into(), form);
+        form = self.provider_data.serialize("provider_data".into(), form);
+        form = self.photo_url.serialize("photo_url".into(), form);
+        form = self.photo_size.serialize("photo_size".into(), form);
+        form = self.photo_width.serialize("photo_width".into(), form);
+        form = self.photo_height.serialize("photo_height".into(), form);
+        form = self.need_name.serialize("need_name".into(), form);
+        form = self.need_phone_number.serialize("need_phone_number".into(), form);
+        form = self.need_email.serialize("need_email".into(), form);
+        form = self.need_shipping_address.serialize("need_shipping_address".into(), form);
+        form = self.send_phone_number_to_provider.serialize("send_phone_number_to_provider".into(), form);
+        form = self.send_email_to_provider.serialize("send_email_to_provider".into(), form);
+        form = self.is_flexible.serialize("is_flexible".into(), form);
+        form
+    }
+}
+
+impl TgMethod for CreateInvoiceLink {
+    type ResponseType = String;
+    const PATH: &'static str = "createInvoiceLink";
+}
+
+impl CreateInvoiceLink {
+    pub fn new(title: String, description: String, payload: String, provider_token: String, currency: String, prices: Vec<LabeledPrice>, ) -> Self {
+        Self {
+            title,
+            description,
+            payload,
+            provider_token,
+            currency,
+            prices,
+            max_tip_amount: None,
+            suggested_tip_amounts: None,
+            provider_data: None,
+            photo_url: None,
+            photo_size: None,
+            photo_width: None,
+            photo_height: None,
+            need_name: None,
+            need_phone_number: None,
+            need_email: None,
+            need_shipping_address: None,
+            send_phone_number_to_provider: None,
+            send_email_to_provider: None,
+            is_flexible: None,
+        }
+    }
+}
+
+impl CreateInvoiceLink {
+    pub fn with_max_tip_amount(mut self, max_tip_amount: i64) -> Self {
+        self.max_tip_amount = Some(max_tip_amount);
+        self
+    }
+
+    pub fn with_suggested_tip_amounts(mut self, suggested_tip_amounts: Vec<i64>) -> Self {
+        self.suggested_tip_amounts = Some(suggested_tip_amounts);
+        self
+    }
+
+    pub fn with_provider_data(mut self, provider_data: String) -> Self {
+        self.provider_data = Some(provider_data);
+        self
+    }
+
+    pub fn with_photo_url(mut self, photo_url: String) -> Self {
+        self.photo_url = Some(photo_url);
+        self
+    }
+
+    pub fn with_photo_size(mut self, photo_size: i64) -> Self {
+        self.photo_size = Some(photo_size);
+        self
+    }
+
+    pub fn with_photo_width(mut self, photo_width: i64) -> Self {
+        self.photo_width = Some(photo_width);
+        self
+    }
+
+    pub fn with_photo_height(mut self, photo_height: i64) -> Self {
+        self.photo_height = Some(photo_height);
+        self
+    }
+
+    pub fn with_need_name(mut self, need_name: bool) -> Self {
+        self.need_name = Some(need_name);
+        self
+    }
+
+    pub fn with_need_phone_number(mut self, need_phone_number: bool) -> Self {
+        self.need_phone_number = Some(need_phone_number);
+        self
+    }
+
+    pub fn with_need_email(mut self, need_email: bool) -> Self {
+        self.need_email = Some(need_email);
+        self
+    }
+
+    pub fn with_need_shipping_address(mut self, need_shipping_address: bool) -> Self {
+        self.need_shipping_address = Some(need_shipping_address);
+        self
+    }
+
+    pub fn with_send_phone_number_to_provider(mut self, send_phone_number_to_provider: bool) -> Self {
+        self.send_phone_number_to_provider = Some(send_phone_number_to_provider);
+        self
+    }
+
+    pub fn with_send_email_to_provider(mut self, send_email_to_provider: bool) -> Self {
+        self.send_email_to_provider = Some(send_email_to_provider);
+        self
+    }
+
+    pub fn with_is_flexible(mut self, is_flexible: bool) -> Self {
+        self.is_flexible = Some(is_flexible);
+        self
+    }
+
+}
+
 impl FormSer for AnswerShippingQuery {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.shipping_query_id.serialize("shipping_query_id".into(), form);
@@ -2074,6 +3775,19 @@ impl AnswerShippingQuery {
     }
 }
 
+impl AnswerShippingQuery {
+    pub fn with_shipping_options(mut self, shipping_options: Vec<ShippingOption>) -> Self {
+        self.shipping_options = Some(shipping_options);
+        self
+    }
+
+    pub fn with_error_message(mut self, error_message: String) -> Self {
+        self.error_message = Some(error_message);
+        self
+    }
+
+}
+
 impl FormSer for AnswerPreCheckoutQuery {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.pre_checkout_query_id.serialize("pre_checkout_query_id".into(), form);
@@ -2096,6 +3810,14 @@ impl AnswerPreCheckoutQuery {
             error_message: None,
         }
     }
+}
+
+impl AnswerPreCheckoutQuery {
+    pub fn with_error_message(mut self, error_message: String) -> Self {
+        self.error_message = Some(error_message);
+        self
+    }
+
 }
 
 impl FormSer for SetPassportDataErrors {
@@ -2152,6 +3874,34 @@ impl SendGame {
     }
 }
 
+impl SendGame {
+    pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
+        self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    pub fn with_protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
+        self
+    }
+
+    pub fn with_reply_to_message_id(mut self, reply_to_message_id: i64) -> Self {
+        self.reply_to_message_id = Some(reply_to_message_id);
+        self
+    }
+
+    pub fn with_allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
+}
+
 impl FormSer for SetGameScore {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.user_id.serialize("user_id".into(), form);
@@ -2184,6 +3934,34 @@ impl SetGameScore {
     }
 }
 
+impl SetGameScore {
+    pub fn with_force(mut self, force: bool) -> Self {
+        self.force = Some(force);
+        self
+    }
+
+    pub fn with_disable_edit_message(mut self, disable_edit_message: bool) -> Self {
+        self.disable_edit_message = Some(disable_edit_message);
+        self
+    }
+
+    pub fn with_chat_id(mut self, chat_id: i64) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+}
+
 impl FormSer for GetGameHighScores {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.user_id.serialize("user_id".into(), form);
@@ -2208,5 +3986,23 @@ impl GetGameHighScores {
             inline_message_id: None,
         }
     }
+}
+
+impl GetGameHighScores {
+    pub fn with_chat_id(mut self, chat_id: i64) -> Self {
+        self.chat_id = Some(chat_id);
+        self
+    }
+
+    pub fn with_message_id(mut self, message_id: i64) -> Self {
+        self.message_id = Some(message_id);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
 }
 

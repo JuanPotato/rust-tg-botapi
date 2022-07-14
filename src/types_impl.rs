@@ -1,5 +1,6 @@
-use crate::objects::*;
-use crate::better::*;
+use crate::types::*;
+use crate::form_ser::*;
+use crate::helpers::*;
 
 impl FormSer for ChatMember {
     fn serialize(&self, key: String, mut form: Form) -> Form {
@@ -106,6 +107,34 @@ impl From<BotCommandScopeChatMember> for BotCommandScope {
     }
 }
 
+impl FormSer for MenuButton {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        match self {
+            MenuButton::Commands(e) => e.serialize(key, form),
+            MenuButton::WebApp(e) => e.serialize(key, form),
+            MenuButton::Default(e) => e.serialize(key, form),
+        }
+    }
+}
+
+impl From<MenuButtonCommands> for MenuButton {
+    fn from(o: MenuButtonCommands) -> Self {
+        Self::Commands(o)
+    }
+}
+
+impl From<MenuButtonWebApp> for MenuButton {
+    fn from(o: MenuButtonWebApp) -> Self {
+        Self::WebApp(o)
+    }
+}
+
+impl From<MenuButtonDefault> for MenuButton {
+    fn from(o: MenuButtonDefault) -> Self {
+        Self::Default(o)
+    }
+}
+
 impl FormSer for InputMedia {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         match self {
@@ -145,153 +174,6 @@ impl From<InputMediaPhoto> for InputMedia {
 impl From<InputMediaVideo> for InputMedia {
     fn from(o: InputMediaVideo) -> Self {
         Self::Video(o)
-    }
-}
-
-impl FormSer for InlineQueryResult {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        match self {
-            InlineQueryResult::CachedAudio(e) => e.serialize(key, form),
-            InlineQueryResult::CachedDocument(e) => e.serialize(key, form),
-            InlineQueryResult::CachedGif(e) => e.serialize(key, form),
-            InlineQueryResult::CachedMpeg4Gif(e) => e.serialize(key, form),
-            InlineQueryResult::CachedPhoto(e) => e.serialize(key, form),
-            InlineQueryResult::CachedSticker(e) => e.serialize(key, form),
-            InlineQueryResult::CachedVideo(e) => e.serialize(key, form),
-            InlineQueryResult::CachedVoice(e) => e.serialize(key, form),
-            InlineQueryResult::Article(e) => e.serialize(key, form),
-            InlineQueryResult::Audio(e) => e.serialize(key, form),
-            InlineQueryResult::Contact(e) => e.serialize(key, form),
-            InlineQueryResult::Game(e) => e.serialize(key, form),
-            InlineQueryResult::Document(e) => e.serialize(key, form),
-            InlineQueryResult::Gif(e) => e.serialize(key, form),
-            InlineQueryResult::Location(e) => e.serialize(key, form),
-            InlineQueryResult::Mpeg4Gif(e) => e.serialize(key, form),
-            InlineQueryResult::Photo(e) => e.serialize(key, form),
-            InlineQueryResult::Venue(e) => e.serialize(key, form),
-            InlineQueryResult::Video(e) => e.serialize(key, form),
-            InlineQueryResult::Voice(e) => e.serialize(key, form),
-        }
-    }
-}
-
-impl From<InlineQueryResultCachedAudio> for InlineQueryResult {
-    fn from(o: InlineQueryResultCachedAudio) -> Self {
-        Self::CachedAudio(o)
-    }
-}
-
-impl From<InlineQueryResultCachedDocument> for InlineQueryResult {
-    fn from(o: InlineQueryResultCachedDocument) -> Self {
-        Self::CachedDocument(o)
-    }
-}
-
-impl From<InlineQueryResultCachedGif> for InlineQueryResult {
-    fn from(o: InlineQueryResultCachedGif) -> Self {
-        Self::CachedGif(o)
-    }
-}
-
-impl From<InlineQueryResultCachedMpeg4Gif> for InlineQueryResult {
-    fn from(o: InlineQueryResultCachedMpeg4Gif) -> Self {
-        Self::CachedMpeg4Gif(o)
-    }
-}
-
-impl From<InlineQueryResultCachedPhoto> for InlineQueryResult {
-    fn from(o: InlineQueryResultCachedPhoto) -> Self {
-        Self::CachedPhoto(o)
-    }
-}
-
-impl From<InlineQueryResultCachedSticker> for InlineQueryResult {
-    fn from(o: InlineQueryResultCachedSticker) -> Self {
-        Self::CachedSticker(o)
-    }
-}
-
-impl From<InlineQueryResultCachedVideo> for InlineQueryResult {
-    fn from(o: InlineQueryResultCachedVideo) -> Self {
-        Self::CachedVideo(o)
-    }
-}
-
-impl From<InlineQueryResultCachedVoice> for InlineQueryResult {
-    fn from(o: InlineQueryResultCachedVoice) -> Self {
-        Self::CachedVoice(o)
-    }
-}
-
-impl From<InlineQueryResultArticle> for InlineQueryResult {
-    fn from(o: InlineQueryResultArticle) -> Self {
-        Self::Article(o)
-    }
-}
-
-impl From<InlineQueryResultAudio> for InlineQueryResult {
-    fn from(o: InlineQueryResultAudio) -> Self {
-        Self::Audio(o)
-    }
-}
-
-impl From<InlineQueryResultContact> for InlineQueryResult {
-    fn from(o: InlineQueryResultContact) -> Self {
-        Self::Contact(o)
-    }
-}
-
-impl From<InlineQueryResultGame> for InlineQueryResult {
-    fn from(o: InlineQueryResultGame) -> Self {
-        Self::Game(o)
-    }
-}
-
-impl From<InlineQueryResultDocument> for InlineQueryResult {
-    fn from(o: InlineQueryResultDocument) -> Self {
-        Self::Document(o)
-    }
-}
-
-impl From<InlineQueryResultGif> for InlineQueryResult {
-    fn from(o: InlineQueryResultGif) -> Self {
-        Self::Gif(o)
-    }
-}
-
-impl From<InlineQueryResultLocation> for InlineQueryResult {
-    fn from(o: InlineQueryResultLocation) -> Self {
-        Self::Location(o)
-    }
-}
-
-impl From<InlineQueryResultMpeg4Gif> for InlineQueryResult {
-    fn from(o: InlineQueryResultMpeg4Gif) -> Self {
-        Self::Mpeg4Gif(o)
-    }
-}
-
-impl From<InlineQueryResultPhoto> for InlineQueryResult {
-    fn from(o: InlineQueryResultPhoto) -> Self {
-        Self::Photo(o)
-    }
-}
-
-impl From<InlineQueryResultVenue> for InlineQueryResult {
-    fn from(o: InlineQueryResultVenue) -> Self {
-        Self::Venue(o)
-    }
-}
-
-impl From<InlineQueryResultVideo> for InlineQueryResult {
-    fn from(o: InlineQueryResultVideo) -> Self {
-        Self::Video(o)
-    }
-}
-
-impl From<InlineQueryResultVoice> for InlineQueryResult {
-    fn from(o: InlineQueryResultVoice) -> Self {
-        Self::Voice(o)
     }
 }
 
@@ -415,6 +297,7 @@ impl FormSer for WebhookInfo {
         form = self.ip_address.serialize(format!("{}[ip_address]", key), form);
         form = self.last_error_date.serialize(format!("{}[last_error_date]", key), form);
         form = self.last_error_message.serialize(format!("{}[last_error_message]", key), form);
+        form = self.last_synchronization_error_date.serialize(format!("{}[last_synchronization_error_date]", key), form);
         form = self.max_connections.serialize(format!("{}[max_connections]", key), form);
         form = self.allowed_updates.serialize(format!("{}[allowed_updates]", key), form);
         form
@@ -430,10 +313,44 @@ impl WebhookInfo {
             ip_address: None,
             last_error_date: None,
             last_error_message: None,
+            last_synchronization_error_date: None,
             max_connections: None,
             allowed_updates: None,
         }
     }
+}
+
+impl WebhookInfo {
+    pub fn with_ip_address(mut self, ip_address: String) -> Self {
+        self.ip_address = Some(ip_address);
+        self
+    }
+
+    pub fn with_last_error_date(mut self, last_error_date: i64) -> Self {
+        self.last_error_date = Some(last_error_date);
+        self
+    }
+
+    pub fn with_last_error_message(mut self, last_error_message: String) -> Self {
+        self.last_error_message = Some(last_error_message);
+        self
+    }
+
+    pub fn with_last_synchronization_error_date(mut self, last_synchronization_error_date: i64) -> Self {
+        self.last_synchronization_error_date = Some(last_synchronization_error_date);
+        self
+    }
+
+    pub fn with_max_connections(mut self, max_connections: i64) -> Self {
+        self.max_connections = Some(max_connections);
+        self
+    }
+
+    pub fn with_allowed_updates(mut self, allowed_updates: Vec<String>) -> Self {
+        self.allowed_updates = Some(allowed_updates);
+        self
+    }
+
 }
 
 impl FormSer for User {
@@ -444,6 +361,8 @@ impl FormSer for User {
         form = self.last_name.serialize(format!("{}[last_name]", key), form);
         form = self.username.serialize(format!("{}[username]", key), form);
         form = self.language_code.serialize(format!("{}[language_code]", key), form);
+        form = self.is_premium.serialize(format!("{}[is_premium]", key), form);
+        form = self.added_to_attachment_menu.serialize(format!("{}[added_to_attachment_menu]", key), form);
         form = self.can_join_groups.serialize(format!("{}[can_join_groups]", key), form);
         form = self.can_read_all_group_messages.serialize(format!("{}[can_read_all_group_messages]", key), form);
         form = self.supports_inline_queries.serialize(format!("{}[supports_inline_queries]", key), form);
@@ -460,11 +379,56 @@ impl User {
             last_name: None,
             username: None,
             language_code: None,
+            is_premium: None,
+            added_to_attachment_menu: None,
             can_join_groups: None,
             can_read_all_group_messages: None,
             supports_inline_queries: None,
         }
     }
+}
+
+impl User {
+    pub fn with_last_name(mut self, last_name: String) -> Self {
+        self.last_name = Some(last_name);
+        self
+    }
+
+    pub fn with_username(mut self, username: String) -> Self {
+        self.username = Some(username);
+        self
+    }
+
+    pub fn with_language_code(mut self, language_code: String) -> Self {
+        self.language_code = Some(language_code);
+        self
+    }
+
+    pub fn with_is_premium(mut self, is_premium: bool) -> Self {
+        self.is_premium = Some(is_premium);
+        self
+    }
+
+    pub fn with_added_to_attachment_menu(mut self, added_to_attachment_menu: bool) -> Self {
+        self.added_to_attachment_menu = Some(added_to_attachment_menu);
+        self
+    }
+
+    pub fn with_can_join_groups(mut self, can_join_groups: bool) -> Self {
+        self.can_join_groups = Some(can_join_groups);
+        self
+    }
+
+    pub fn with_can_read_all_group_messages(mut self, can_read_all_group_messages: bool) -> Self {
+        self.can_read_all_group_messages = Some(can_read_all_group_messages);
+        self
+    }
+
+    pub fn with_supports_inline_queries(mut self, supports_inline_queries: bool) -> Self {
+        self.supports_inline_queries = Some(supports_inline_queries);
+        self
+    }
+
 }
 
 impl FormSer for Chat {
@@ -478,6 +442,8 @@ impl FormSer for Chat {
         form = self.photo.serialize(format!("{}[photo]", key), form);
         form = self.bio.serialize(format!("{}[bio]", key), form);
         form = self.has_private_forwards.serialize(format!("{}[has_private_forwards]", key), form);
+        form = self.join_to_send_messages.serialize(format!("{}[join_to_send_messages]", key), form);
+        form = self.join_by_request.serialize(format!("{}[join_by_request]", key), form);
         form = self.description.serialize(format!("{}[description]", key), form);
         form = self.invite_link.serialize(format!("{}[invite_link]", key), form);
         form = self.pinned_message.serialize(format!("{}[pinned_message]", key), form);
@@ -505,6 +471,8 @@ impl Chat {
             photo: None,
             bio: None,
             has_private_forwards: None,
+            join_to_send_messages: None,
+            join_by_request: None,
             description: None,
             invite_link: None,
             pinned_message: None,
@@ -518,6 +486,109 @@ impl Chat {
             location: None,
         }
     }
+}
+
+impl Chat {
+    pub fn with_title(mut self, title: String) -> Self {
+        self.title = Some(title);
+        self
+    }
+
+    pub fn with_username(mut self, username: String) -> Self {
+        self.username = Some(username);
+        self
+    }
+
+    pub fn with_first_name(mut self, first_name: String) -> Self {
+        self.first_name = Some(first_name);
+        self
+    }
+
+    pub fn with_last_name(mut self, last_name: String) -> Self {
+        self.last_name = Some(last_name);
+        self
+    }
+
+    pub fn with_photo(mut self, photo: ChatPhoto) -> Self {
+        self.photo = Some(photo);
+        self
+    }
+
+    pub fn with_bio(mut self, bio: String) -> Self {
+        self.bio = Some(bio);
+        self
+    }
+
+    pub fn with_has_private_forwards(mut self, has_private_forwards: bool) -> Self {
+        self.has_private_forwards = Some(has_private_forwards);
+        self
+    }
+
+    pub fn with_join_to_send_messages(mut self, join_to_send_messages: bool) -> Self {
+        self.join_to_send_messages = Some(join_to_send_messages);
+        self
+    }
+
+    pub fn with_join_by_request(mut self, join_by_request: bool) -> Self {
+        self.join_by_request = Some(join_by_request);
+        self
+    }
+
+    pub fn with_description(mut self, description: String) -> Self {
+        self.description = Some(description);
+        self
+    }
+
+    pub fn with_invite_link(mut self, invite_link: String) -> Self {
+        self.invite_link = Some(invite_link);
+        self
+    }
+
+    pub fn with_pinned_message(mut self, pinned_message: Box<Message>) -> Self {
+        self.pinned_message = Some(pinned_message);
+        self
+    }
+
+    pub fn with_permissions(mut self, permissions: ChatPermissions) -> Self {
+        self.permissions = Some(permissions);
+        self
+    }
+
+    pub fn with_slow_mode_delay(mut self, slow_mode_delay: i64) -> Self {
+        self.slow_mode_delay = Some(slow_mode_delay);
+        self
+    }
+
+    pub fn with_message_auto_delete_time(mut self, message_auto_delete_time: i64) -> Self {
+        self.message_auto_delete_time = Some(message_auto_delete_time);
+        self
+    }
+
+    pub fn with_has_protected_content(mut self, has_protected_content: bool) -> Self {
+        self.has_protected_content = Some(has_protected_content);
+        self
+    }
+
+    pub fn with_sticker_set_name(mut self, sticker_set_name: String) -> Self {
+        self.sticker_set_name = Some(sticker_set_name);
+        self
+    }
+
+    pub fn with_can_set_sticker_set(mut self, can_set_sticker_set: bool) -> Self {
+        self.can_set_sticker_set = Some(can_set_sticker_set);
+        self
+    }
+
+    pub fn with_linked_chat_id(mut self, linked_chat_id: i64) -> Self {
+        self.linked_chat_id = Some(linked_chat_id);
+        self
+    }
+
+    pub fn with_location(mut self, location: ChatLocation) -> Self {
+        self.location = Some(location);
+        self
+    }
+
 }
 
 impl FormSer for Message {
@@ -575,10 +646,11 @@ impl FormSer for Message {
         form = self.connected_website.serialize(format!("{}[connected_website]", key), form);
         form = self.passport_data.serialize(format!("{}[passport_data]", key), form);
         form = self.proximity_alert_triggered.serialize(format!("{}[proximity_alert_triggered]", key), form);
-        form = self.voice_chat_scheduled.serialize(format!("{}[voice_chat_scheduled]", key), form);
-        form = self.voice_chat_started.serialize(format!("{}[voice_chat_started]", key), form);
-        form = self.voice_chat_ended.serialize(format!("{}[voice_chat_ended]", key), form);
-        form = self.voice_chat_participants_invited.serialize(format!("{}[voice_chat_participants_invited]", key), form);
+        form = self.video_chat_scheduled.serialize(format!("{}[video_chat_scheduled]", key), form);
+        form = self.video_chat_started.serialize(format!("{}[video_chat_started]", key), form);
+        form = self.video_chat_ended.serialize(format!("{}[video_chat_ended]", key), form);
+        form = self.video_chat_participants_invited.serialize(format!("{}[video_chat_participants_invited]", key), form);
+        form = self.web_app_data.serialize(format!("{}[web_app_data]", key), form);
         form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
         form
     }
@@ -640,13 +712,297 @@ impl Message {
             connected_website: None,
             passport_data: None,
             proximity_alert_triggered: None,
-            voice_chat_scheduled: None,
-            voice_chat_started: None,
-            voice_chat_ended: None,
-            voice_chat_participants_invited: None,
+            video_chat_scheduled: None,
+            video_chat_started: None,
+            video_chat_ended: None,
+            video_chat_participants_invited: None,
+            web_app_data: None,
             reply_markup: None,
         }
     }
+}
+
+impl Message {
+    pub fn with_from(mut self, from: User) -> Self {
+        self.from = Some(from);
+        self
+    }
+
+    pub fn with_sender_chat(mut self, sender_chat: Chat) -> Self {
+        self.sender_chat = Some(sender_chat);
+        self
+    }
+
+    pub fn with_forward_from(mut self, forward_from: User) -> Self {
+        self.forward_from = Some(forward_from);
+        self
+    }
+
+    pub fn with_forward_from_chat(mut self, forward_from_chat: Chat) -> Self {
+        self.forward_from_chat = Some(forward_from_chat);
+        self
+    }
+
+    pub fn with_forward_from_message_id(mut self, forward_from_message_id: i64) -> Self {
+        self.forward_from_message_id = Some(forward_from_message_id);
+        self
+    }
+
+    pub fn with_forward_signature(mut self, forward_signature: String) -> Self {
+        self.forward_signature = Some(forward_signature);
+        self
+    }
+
+    pub fn with_forward_sender_name(mut self, forward_sender_name: String) -> Self {
+        self.forward_sender_name = Some(forward_sender_name);
+        self
+    }
+
+    pub fn with_forward_date(mut self, forward_date: i64) -> Self {
+        self.forward_date = Some(forward_date);
+        self
+    }
+
+    pub fn with_is_automatic_forward(mut self, is_automatic_forward: bool) -> Self {
+        self.is_automatic_forward = Some(is_automatic_forward);
+        self
+    }
+
+    pub fn with_reply_to_message(mut self, reply_to_message: Box<Message>) -> Self {
+        self.reply_to_message = Some(reply_to_message);
+        self
+    }
+
+    pub fn with_via_bot(mut self, via_bot: User) -> Self {
+        self.via_bot = Some(via_bot);
+        self
+    }
+
+    pub fn with_edit_date(mut self, edit_date: i64) -> Self {
+        self.edit_date = Some(edit_date);
+        self
+    }
+
+    pub fn with_has_protected_content(mut self, has_protected_content: bool) -> Self {
+        self.has_protected_content = Some(has_protected_content);
+        self
+    }
+
+    pub fn with_media_group_id(mut self, media_group_id: String) -> Self {
+        self.media_group_id = Some(media_group_id);
+        self
+    }
+
+    pub fn with_author_signature(mut self, author_signature: String) -> Self {
+        self.author_signature = Some(author_signature);
+        self
+    }
+
+    pub fn with_text(mut self, text: String) -> Self {
+        self.text = Some(text);
+        self
+    }
+
+    pub fn with_entities(mut self, entities: Vec<MessageEntity>) -> Self {
+        self.entities = Some(entities);
+        self
+    }
+
+    pub fn with_animation(mut self, animation: Animation) -> Self {
+        self.animation = Some(animation);
+        self
+    }
+
+    pub fn with_audio(mut self, audio: Audio) -> Self {
+        self.audio = Some(audio);
+        self
+    }
+
+    pub fn with_document(mut self, document: Document) -> Self {
+        self.document = Some(document);
+        self
+    }
+
+    pub fn with_photo(mut self, photo: Vec<PhotoSize>) -> Self {
+        self.photo = Some(photo);
+        self
+    }
+
+    pub fn with_sticker(mut self, sticker: Sticker) -> Self {
+        self.sticker = Some(sticker);
+        self
+    }
+
+    pub fn with_video(mut self, video: Video) -> Self {
+        self.video = Some(video);
+        self
+    }
+
+    pub fn with_video_note(mut self, video_note: VideoNote) -> Self {
+        self.video_note = Some(video_note);
+        self
+    }
+
+    pub fn with_voice(mut self, voice: Voice) -> Self {
+        self.voice = Some(voice);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_contact(mut self, contact: Contact) -> Self {
+        self.contact = Some(contact);
+        self
+    }
+
+    pub fn with_dice(mut self, dice: Dice) -> Self {
+        self.dice = Some(dice);
+        self
+    }
+
+    pub fn with_game(mut self, game: Game) -> Self {
+        self.game = Some(game);
+        self
+    }
+
+    pub fn with_poll(mut self, poll: Poll) -> Self {
+        self.poll = Some(poll);
+        self
+    }
+
+    pub fn with_venue(mut self, venue: Venue) -> Self {
+        self.venue = Some(venue);
+        self
+    }
+
+    pub fn with_location(mut self, location: Location) -> Self {
+        self.location = Some(location);
+        self
+    }
+
+    pub fn with_new_chat_members(mut self, new_chat_members: Vec<User>) -> Self {
+        self.new_chat_members = Some(new_chat_members);
+        self
+    }
+
+    pub fn with_left_chat_member(mut self, left_chat_member: User) -> Self {
+        self.left_chat_member = Some(left_chat_member);
+        self
+    }
+
+    pub fn with_new_chat_title(mut self, new_chat_title: String) -> Self {
+        self.new_chat_title = Some(new_chat_title);
+        self
+    }
+
+    pub fn with_new_chat_photo(mut self, new_chat_photo: Vec<PhotoSize>) -> Self {
+        self.new_chat_photo = Some(new_chat_photo);
+        self
+    }
+
+    pub fn with_delete_chat_photo(mut self, delete_chat_photo: bool) -> Self {
+        self.delete_chat_photo = Some(delete_chat_photo);
+        self
+    }
+
+    pub fn with_group_chat_created(mut self, group_chat_created: bool) -> Self {
+        self.group_chat_created = Some(group_chat_created);
+        self
+    }
+
+    pub fn with_supergroup_chat_created(mut self, supergroup_chat_created: bool) -> Self {
+        self.supergroup_chat_created = Some(supergroup_chat_created);
+        self
+    }
+
+    pub fn with_channel_chat_created(mut self, channel_chat_created: bool) -> Self {
+        self.channel_chat_created = Some(channel_chat_created);
+        self
+    }
+
+    pub fn with_message_auto_delete_timer_changed(mut self, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged) -> Self {
+        self.message_auto_delete_timer_changed = Some(message_auto_delete_timer_changed);
+        self
+    }
+
+    pub fn with_migrate_to_chat_id(mut self, migrate_to_chat_id: i64) -> Self {
+        self.migrate_to_chat_id = Some(migrate_to_chat_id);
+        self
+    }
+
+    pub fn with_migrate_from_chat_id(mut self, migrate_from_chat_id: i64) -> Self {
+        self.migrate_from_chat_id = Some(migrate_from_chat_id);
+        self
+    }
+
+    pub fn with_pinned_message(mut self, pinned_message: Box<Message>) -> Self {
+        self.pinned_message = Some(pinned_message);
+        self
+    }
+
+    pub fn with_invoice(mut self, invoice: Invoice) -> Self {
+        self.invoice = Some(invoice);
+        self
+    }
+
+    pub fn with_successful_payment(mut self, successful_payment: SuccessfulPayment) -> Self {
+        self.successful_payment = Some(successful_payment);
+        self
+    }
+
+    pub fn with_connected_website(mut self, connected_website: String) -> Self {
+        self.connected_website = Some(connected_website);
+        self
+    }
+
+    pub fn with_passport_data(mut self, passport_data: PassportData) -> Self {
+        self.passport_data = Some(passport_data);
+        self
+    }
+
+    pub fn with_proximity_alert_triggered(mut self, proximity_alert_triggered: ProximityAlertTriggered) -> Self {
+        self.proximity_alert_triggered = Some(proximity_alert_triggered);
+        self
+    }
+
+    pub fn with_video_chat_scheduled(mut self, video_chat_scheduled: VideoChatScheduled) -> Self {
+        self.video_chat_scheduled = Some(video_chat_scheduled);
+        self
+    }
+
+    pub fn with_video_chat_started(mut self, video_chat_started: VideoChatStarted) -> Self {
+        self.video_chat_started = Some(video_chat_started);
+        self
+    }
+
+    pub fn with_video_chat_ended(mut self, video_chat_ended: VideoChatEnded) -> Self {
+        self.video_chat_ended = Some(video_chat_ended);
+        self
+    }
+
+    pub fn with_video_chat_participants_invited(mut self, video_chat_participants_invited: VideoChatParticipantsInvited) -> Self {
+        self.video_chat_participants_invited = Some(video_chat_participants_invited);
+        self
+    }
+
+    pub fn with_web_app_data(mut self, web_app_data: WebAppData) -> Self {
+        self.web_app_data = Some(web_app_data);
+        self
+    }
+
+    pub fn with_reply_markup(mut self, reply_markup: InlineKeyboardMarkup) -> Self {
+        self.reply_markup = Some(reply_markup);
+        self
+    }
+
 }
 
 impl FormSer for MessageId {
@@ -689,6 +1045,24 @@ impl MessageEntity {
     }
 }
 
+impl MessageEntity {
+    pub fn with_url(mut self, url: String) -> Self {
+        self.url = Some(url);
+        self
+    }
+
+    pub fn with_user(mut self, user: User) -> Self {
+        self.user = Some(user);
+        self
+    }
+
+    pub fn with_language(mut self, language: String) -> Self {
+        self.language = Some(language);
+        self
+    }
+
+}
+
 impl FormSer for PhotoSize {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.file_id.serialize(format!("{}[file_id]", key), form);
@@ -710,6 +1084,14 @@ impl PhotoSize {
             file_size: None,
         }
     }
+}
+
+impl PhotoSize {
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
 }
 
 impl FormSer for Animation {
@@ -743,6 +1125,29 @@ impl Animation {
     }
 }
 
+impl Animation {
+    pub fn with_thumb(mut self, thumb: PhotoSize) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_file_name(mut self, file_name: String) -> Self {
+        self.file_name = Some(file_name);
+        self
+    }
+
+    pub fn with_mime_type(mut self, mime_type: String) -> Self {
+        self.mime_type = Some(mime_type);
+        self
+    }
+
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
+}
+
 impl FormSer for Audio {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.file_id.serialize(format!("{}[file_id]", key), form);
@@ -774,6 +1179,39 @@ impl Audio {
     }
 }
 
+impl Audio {
+    pub fn with_performer(mut self, performer: String) -> Self {
+        self.performer = Some(performer);
+        self
+    }
+
+    pub fn with_title(mut self, title: String) -> Self {
+        self.title = Some(title);
+        self
+    }
+
+    pub fn with_file_name(mut self, file_name: String) -> Self {
+        self.file_name = Some(file_name);
+        self
+    }
+
+    pub fn with_mime_type(mut self, mime_type: String) -> Self {
+        self.mime_type = Some(mime_type);
+        self
+    }
+
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
+    pub fn with_thumb(mut self, thumb: PhotoSize) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+}
+
 impl FormSer for Document {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.file_id.serialize(format!("{}[file_id]", key), form);
@@ -797,6 +1235,29 @@ impl Document {
             file_size: None,
         }
     }
+}
+
+impl Document {
+    pub fn with_thumb(mut self, thumb: PhotoSize) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_file_name(mut self, file_name: String) -> Self {
+        self.file_name = Some(file_name);
+        self
+    }
+
+    pub fn with_mime_type(mut self, mime_type: String) -> Self {
+        self.mime_type = Some(mime_type);
+        self
+    }
+
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
 }
 
 impl FormSer for Video {
@@ -830,6 +1291,29 @@ impl Video {
     }
 }
 
+impl Video {
+    pub fn with_thumb(mut self, thumb: PhotoSize) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_file_name(mut self, file_name: String) -> Self {
+        self.file_name = Some(file_name);
+        self
+    }
+
+    pub fn with_mime_type(mut self, mime_type: String) -> Self {
+        self.mime_type = Some(mime_type);
+        self
+    }
+
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
+}
+
 impl FormSer for VideoNote {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.file_id.serialize(format!("{}[file_id]", key), form);
@@ -855,6 +1339,19 @@ impl VideoNote {
     }
 }
 
+impl VideoNote {
+    pub fn with_thumb(mut self, thumb: PhotoSize) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
+}
+
 impl FormSer for Voice {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.file_id.serialize(format!("{}[file_id]", key), form);
@@ -878,6 +1375,19 @@ impl Voice {
     }
 }
 
+impl Voice {
+    pub fn with_mime_type(mut self, mime_type: String) -> Self {
+        self.mime_type = Some(mime_type);
+        self
+    }
+
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
+}
+
 impl FormSer for Contact {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.phone_number.serialize(format!("{}[phone_number]", key), form);
@@ -899,6 +1409,24 @@ impl Contact {
             vcard: None,
         }
     }
+}
+
+impl Contact {
+    pub fn with_last_name(mut self, last_name: String) -> Self {
+        self.last_name = Some(last_name);
+        self
+    }
+
+    pub fn with_user_id(mut self, user_id: i64) -> Self {
+        self.user_id = Some(user_id);
+        self
+    }
+
+    pub fn with_vcard(mut self, vcard: String) -> Self {
+        self.vcard = Some(vcard);
+        self
+    }
+
 }
 
 impl FormSer for Dice {
@@ -993,6 +1521,34 @@ impl Poll {
     }
 }
 
+impl Poll {
+    pub fn with_correct_option_id(mut self, correct_option_id: i64) -> Self {
+        self.correct_option_id = Some(correct_option_id);
+        self
+    }
+
+    pub fn with_explanation(mut self, explanation: String) -> Self {
+        self.explanation = Some(explanation);
+        self
+    }
+
+    pub fn with_explanation_entities(mut self, explanation_entities: Vec<MessageEntity>) -> Self {
+        self.explanation_entities = Some(explanation_entities);
+        self
+    }
+
+    pub fn with_open_period(mut self, open_period: i64) -> Self {
+        self.open_period = Some(open_period);
+        self
+    }
+
+    pub fn with_close_date(mut self, close_date: i64) -> Self {
+        self.close_date = Some(close_date);
+        self
+    }
+
+}
+
 impl FormSer for Location {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.longitude.serialize(format!("{}[longitude]", key), form);
@@ -1018,6 +1574,29 @@ impl Location {
     }
 }
 
+impl Location {
+    pub fn with_horizontal_accuracy(mut self, horizontal_accuracy: f64) -> Self {
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
+    }
+
+    pub fn with_live_period(mut self, live_period: i64) -> Self {
+        self.live_period = Some(live_period);
+        self
+    }
+
+    pub fn with_heading(mut self, heading: i64) -> Self {
+        self.heading = Some(heading);
+        self
+    }
+
+    pub fn with_proximity_alert_radius(mut self, proximity_alert_radius: i64) -> Self {
+        self.proximity_alert_radius = Some(proximity_alert_radius);
+        self
+    }
+
+}
+
 impl FormSer for Venue {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.location.serialize(format!("{}[location]", key), form);
@@ -1041,6 +1620,46 @@ impl Venue {
             foursquare_type: None,
             google_place_id: None,
             google_place_type: None,
+        }
+    }
+}
+
+impl Venue {
+    pub fn with_foursquare_id(mut self, foursquare_id: String) -> Self {
+        self.foursquare_id = Some(foursquare_id);
+        self
+    }
+
+    pub fn with_foursquare_type(mut self, foursquare_type: String) -> Self {
+        self.foursquare_type = Some(foursquare_type);
+        self
+    }
+
+    pub fn with_google_place_id(mut self, google_place_id: String) -> Self {
+        self.google_place_id = Some(google_place_id);
+        self
+    }
+
+    pub fn with_google_place_type(mut self, google_place_type: String) -> Self {
+        self.google_place_type = Some(google_place_type);
+        self
+    }
+
+}
+
+impl FormSer for WebAppData {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.data.serialize(format!("{}[data]", key), form);
+        form = self.button_text.serialize(format!("{}[button_text]", key), form);
+        form
+    }
+}
+
+impl WebAppData {
+    pub fn new(data: String, button_text: String, ) -> Self {
+        Self {
+            data,
+            button_text,
         }
     }
 }
@@ -1079,14 +1698,14 @@ impl MessageAutoDeleteTimerChanged {
     }
 }
 
-impl FormSer for VoiceChatScheduled {
+impl FormSer for VideoChatScheduled {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.start_date.serialize(format!("{}[start_date]", key), form);
         form
     }
 }
 
-impl VoiceChatScheduled {
+impl VideoChatScheduled {
     pub fn new(start_date: i64, ) -> Self {
         Self {
             start_date,
@@ -1094,20 +1713,20 @@ impl VoiceChatScheduled {
     }
 }
 
-impl FormSer for VoiceChatStarted {
+impl FormSer for VideoChatStarted {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form
     }
 }
 
-impl FormSer for VoiceChatEnded {
+impl FormSer for VideoChatEnded {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.duration.serialize(format!("{}[duration]", key), form);
         form
     }
 }
 
-impl VoiceChatEnded {
+impl VideoChatEnded {
     pub fn new(duration: i64, ) -> Self {
         Self {
             duration,
@@ -1115,10 +1734,18 @@ impl VoiceChatEnded {
     }
 }
 
-impl FormSer for VoiceChatParticipantsInvited {
+impl FormSer for VideoChatParticipantsInvited {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.users.serialize(format!("{}[users]", key), form);
         form
+    }
+}
+
+impl VideoChatParticipantsInvited {
+    pub fn new(users: Vec<User>, ) -> Self {
+        Self {
+            users,
+        }
     }
 }
 
@@ -1160,6 +1787,34 @@ impl File {
     }
 }
 
+impl File {
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
+    pub fn with_file_path(mut self, file_path: String) -> Self {
+        self.file_path = Some(file_path);
+        self
+    }
+
+}
+
+impl FormSer for WebAppInfo {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.url.serialize(format!("{}[url]", key), form);
+        form
+    }
+}
+
+impl WebAppInfo {
+    pub fn new(url: String, ) -> Self {
+        Self {
+            url,
+        }
+    }
+}
+
 impl FormSer for ReplyKeyboardMarkup {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.keyboard.serialize(format!("{}[keyboard]", key), form);
@@ -1183,12 +1838,36 @@ impl ReplyKeyboardMarkup {
     }
 }
 
+impl ReplyKeyboardMarkup {
+    pub fn with_resize_keyboard(mut self, resize_keyboard: bool) -> Self {
+        self.resize_keyboard = Some(resize_keyboard);
+        self
+    }
+
+    pub fn with_one_time_keyboard(mut self, one_time_keyboard: bool) -> Self {
+        self.one_time_keyboard = Some(one_time_keyboard);
+        self
+    }
+
+    pub fn with_input_field_placeholder(mut self, input_field_placeholder: String) -> Self {
+        self.input_field_placeholder = Some(input_field_placeholder);
+        self
+    }
+
+    pub fn with_selective(mut self, selective: bool) -> Self {
+        self.selective = Some(selective);
+        self
+    }
+
+}
+
 impl FormSer for KeyboardButton {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.text.serialize(format!("{}[text]", key), form);
         form = self.request_contact.serialize(format!("{}[request_contact]", key), form);
         form = self.request_location.serialize(format!("{}[request_location]", key), form);
         form = self.request_poll.serialize(format!("{}[request_poll]", key), form);
+        form = self.web_app.serialize(format!("{}[web_app]", key), form);
         form
     }
 }
@@ -1200,8 +1879,32 @@ impl KeyboardButton {
             request_contact: None,
             request_location: None,
             request_poll: None,
+            web_app: None,
         }
     }
+}
+
+impl KeyboardButton {
+    pub fn with_request_contact(mut self, request_contact: bool) -> Self {
+        self.request_contact = Some(request_contact);
+        self
+    }
+
+    pub fn with_request_location(mut self, request_location: bool) -> Self {
+        self.request_location = Some(request_location);
+        self
+    }
+
+    pub fn with_request_poll(mut self, request_poll: KeyboardButtonPollType) -> Self {
+        self.request_poll = Some(request_poll);
+        self
+    }
+
+    pub fn with_web_app(mut self, web_app: WebAppInfo) -> Self {
+        self.web_app = Some(web_app);
+        self
+    }
+
 }
 
 impl FormSer for KeyboardButtonPollType {
@@ -1209,6 +1912,14 @@ impl FormSer for KeyboardButtonPollType {
         form = self.type_.serialize(format!("{}[type]", key), form);
         form
     }
+}
+
+impl KeyboardButtonPollType {
+    pub fn with_type_(mut self, type_: String) -> Self {
+        self.type_ = Some(type_);
+        self
+    }
+
 }
 
 impl FormSer for ReplyKeyboardRemove {
@@ -1226,6 +1937,14 @@ impl ReplyKeyboardRemove {
             selective: None,
         }
     }
+}
+
+impl ReplyKeyboardRemove {
+    pub fn with_selective(mut self, selective: bool) -> Self {
+        self.selective = Some(selective);
+        self
+    }
+
 }
 
 impl FormSer for InlineKeyboardMarkup {
@@ -1247,8 +1966,9 @@ impl FormSer for InlineKeyboardButton {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.text.serialize(format!("{}[text]", key), form);
         form = self.url.serialize(format!("{}[url]", key), form);
-        form = self.login_url.serialize(format!("{}[login_url]", key), form);
         form = self.callback_data.serialize(format!("{}[callback_data]", key), form);
+        form = self.web_app.serialize(format!("{}[web_app]", key), form);
+        form = self.login_url.serialize(format!("{}[login_url]", key), form);
         form = self.switch_inline_query.serialize(format!("{}[switch_inline_query]", key), form);
         form = self.switch_inline_query_current_chat.serialize(format!("{}[switch_inline_query_current_chat]", key), form);
         form = self.callback_game.serialize(format!("{}[callback_game]", key), form);
@@ -1262,14 +1982,58 @@ impl InlineKeyboardButton {
         Self {
             text,
             url: None,
-            login_url: None,
             callback_data: None,
+            web_app: None,
+            login_url: None,
             switch_inline_query: None,
             switch_inline_query_current_chat: None,
             callback_game: None,
             pay: None,
         }
     }
+}
+
+impl InlineKeyboardButton {
+    pub fn with_url(mut self, url: String) -> Self {
+        self.url = Some(url);
+        self
+    }
+
+    pub fn with_callback_data(mut self, callback_data: String) -> Self {
+        self.callback_data = Some(callback_data);
+        self
+    }
+
+    pub fn with_web_app(mut self, web_app: WebAppInfo) -> Self {
+        self.web_app = Some(web_app);
+        self
+    }
+
+    pub fn with_login_url(mut self, login_url: LoginUrl) -> Self {
+        self.login_url = Some(login_url);
+        self
+    }
+
+    pub fn with_switch_inline_query(mut self, switch_inline_query: String) -> Self {
+        self.switch_inline_query = Some(switch_inline_query);
+        self
+    }
+
+    pub fn with_switch_inline_query_current_chat(mut self, switch_inline_query_current_chat: String) -> Self {
+        self.switch_inline_query_current_chat = Some(switch_inline_query_current_chat);
+        self
+    }
+
+    pub fn with_callback_game(mut self, callback_game: CallbackGame) -> Self {
+        self.callback_game = Some(callback_game);
+        self
+    }
+
+    pub fn with_pay(mut self, pay: bool) -> Self {
+        self.pay = Some(pay);
+        self
+    }
+
 }
 
 impl FormSer for LoginUrl {
@@ -1291,6 +2055,24 @@ impl LoginUrl {
             request_write_access: None,
         }
     }
+}
+
+impl LoginUrl {
+    pub fn with_forward_text(mut self, forward_text: String) -> Self {
+        self.forward_text = Some(forward_text);
+        self
+    }
+
+    pub fn with_bot_username(mut self, bot_username: String) -> Self {
+        self.bot_username = Some(bot_username);
+        self
+    }
+
+    pub fn with_request_write_access(mut self, request_write_access: bool) -> Self {
+        self.request_write_access = Some(request_write_access);
+        self
+    }
+
 }
 
 impl FormSer for CallbackQuery {
@@ -1320,6 +2102,29 @@ impl CallbackQuery {
     }
 }
 
+impl CallbackQuery {
+    pub fn with_message(mut self, message: Box<Message>) -> Self {
+        self.message = Some(message);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+    pub fn with_data(mut self, data: String) -> Self {
+        self.data = Some(data);
+        self
+    }
+
+    pub fn with_game_short_name(mut self, game_short_name: String) -> Self {
+        self.game_short_name = Some(game_short_name);
+        self
+    }
+
+}
+
 impl FormSer for ForceReply {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.force_reply.serialize(format!("{}[force_reply]", key), form);
@@ -1337,6 +2142,19 @@ impl ForceReply {
             selective: None,
         }
     }
+}
+
+impl ForceReply {
+    pub fn with_input_field_placeholder(mut self, input_field_placeholder: String) -> Self {
+        self.input_field_placeholder = Some(input_field_placeholder);
+        self
+    }
+
+    pub fn with_selective(mut self, selective: bool) -> Self {
+        self.selective = Some(selective);
+        self
+    }
+
 }
 
 impl FormSer for ChatPhoto {
@@ -1391,6 +2209,82 @@ impl ChatInviteLink {
     }
 }
 
+impl ChatInviteLink {
+    pub fn with_name(mut self, name: String) -> Self {
+        self.name = Some(name);
+        self
+    }
+
+    pub fn with_expire_date(mut self, expire_date: i64) -> Self {
+        self.expire_date = Some(expire_date);
+        self
+    }
+
+    pub fn with_member_limit(mut self, member_limit: i64) -> Self {
+        self.member_limit = Some(member_limit);
+        self
+    }
+
+    pub fn with_pending_join_request_count(mut self, pending_join_request_count: i64) -> Self {
+        self.pending_join_request_count = Some(pending_join_request_count);
+        self
+    }
+
+}
+
+impl FormSer for ChatAdministratorRights {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.is_anonymous.serialize(format!("{}[is_anonymous]", key), form);
+        form = self.can_manage_chat.serialize(format!("{}[can_manage_chat]", key), form);
+        form = self.can_delete_messages.serialize(format!("{}[can_delete_messages]", key), form);
+        form = self.can_manage_video_chats.serialize(format!("{}[can_manage_video_chats]", key), form);
+        form = self.can_restrict_members.serialize(format!("{}[can_restrict_members]", key), form);
+        form = self.can_promote_members.serialize(format!("{}[can_promote_members]", key), form);
+        form = self.can_change_info.serialize(format!("{}[can_change_info]", key), form);
+        form = self.can_invite_users.serialize(format!("{}[can_invite_users]", key), form);
+        form = self.can_post_messages.serialize(format!("{}[can_post_messages]", key), form);
+        form = self.can_edit_messages.serialize(format!("{}[can_edit_messages]", key), form);
+        form = self.can_pin_messages.serialize(format!("{}[can_pin_messages]", key), form);
+        form
+    }
+}
+
+impl ChatAdministratorRights {
+    pub fn new(is_anonymous: bool, can_manage_chat: bool, can_delete_messages: bool, can_manage_video_chats: bool, can_restrict_members: bool, can_promote_members: bool, can_change_info: bool, can_invite_users: bool, ) -> Self {
+        Self {
+            is_anonymous,
+            can_manage_chat,
+            can_delete_messages,
+            can_manage_video_chats,
+            can_restrict_members,
+            can_promote_members,
+            can_change_info,
+            can_invite_users,
+            can_post_messages: None,
+            can_edit_messages: None,
+            can_pin_messages: None,
+        }
+    }
+}
+
+impl ChatAdministratorRights {
+    pub fn with_can_post_messages(mut self, can_post_messages: bool) -> Self {
+        self.can_post_messages = Some(can_post_messages);
+        self
+    }
+
+    pub fn with_can_edit_messages(mut self, can_edit_messages: bool) -> Self {
+        self.can_edit_messages = Some(can_edit_messages);
+        self
+    }
+
+    pub fn with_can_pin_messages(mut self, can_pin_messages: bool) -> Self {
+        self.can_pin_messages = Some(can_pin_messages);
+        self
+    }
+
+}
+
 impl FormSer for ChatMemberOwner {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.status.serialize(format!("{}[status]", key), form);
@@ -1412,6 +2306,14 @@ impl ChatMemberOwner {
     }
 }
 
+impl ChatMemberOwner {
+    pub fn with_custom_title(mut self, custom_title: String) -> Self {
+        self.custom_title = Some(custom_title);
+        self
+    }
+
+}
+
 impl FormSer for ChatMemberAdministrator {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.status.serialize(format!("{}[status]", key), form);
@@ -1420,7 +2322,7 @@ impl FormSer for ChatMemberAdministrator {
         form = self.is_anonymous.serialize(format!("{}[is_anonymous]", key), form);
         form = self.can_manage_chat.serialize(format!("{}[can_manage_chat]", key), form);
         form = self.can_delete_messages.serialize(format!("{}[can_delete_messages]", key), form);
-        form = self.can_manage_voice_chats.serialize(format!("{}[can_manage_voice_chats]", key), form);
+        form = self.can_manage_video_chats.serialize(format!("{}[can_manage_video_chats]", key), form);
         form = self.can_restrict_members.serialize(format!("{}[can_restrict_members]", key), form);
         form = self.can_promote_members.serialize(format!("{}[can_promote_members]", key), form);
         form = self.can_change_info.serialize(format!("{}[can_change_info]", key), form);
@@ -1434,7 +2336,7 @@ impl FormSer for ChatMemberAdministrator {
 }
 
 impl ChatMemberAdministrator {
-    pub fn new(status: String, user: User, can_be_edited: bool, is_anonymous: bool, can_manage_chat: bool, can_delete_messages: bool, can_manage_voice_chats: bool, can_restrict_members: bool, can_promote_members: bool, can_change_info: bool, can_invite_users: bool, ) -> Self {
+    pub fn new(status: String, user: User, can_be_edited: bool, is_anonymous: bool, can_manage_chat: bool, can_delete_messages: bool, can_manage_video_chats: bool, can_restrict_members: bool, can_promote_members: bool, can_change_info: bool, can_invite_users: bool, ) -> Self {
         Self {
             status,
             user,
@@ -1442,7 +2344,7 @@ impl ChatMemberAdministrator {
             is_anonymous,
             can_manage_chat,
             can_delete_messages,
-            can_manage_voice_chats,
+            can_manage_video_chats,
             can_restrict_members,
             can_promote_members,
             can_change_info,
@@ -1453,6 +2355,29 @@ impl ChatMemberAdministrator {
             custom_title: None,
         }
     }
+}
+
+impl ChatMemberAdministrator {
+    pub fn with_can_post_messages(mut self, can_post_messages: bool) -> Self {
+        self.can_post_messages = Some(can_post_messages);
+        self
+    }
+
+    pub fn with_can_edit_messages(mut self, can_edit_messages: bool) -> Self {
+        self.can_edit_messages = Some(can_edit_messages);
+        self
+    }
+
+    pub fn with_can_pin_messages(mut self, can_pin_messages: bool) -> Self {
+        self.can_pin_messages = Some(can_pin_messages);
+        self
+    }
+
+    pub fn with_custom_title(mut self, custom_title: String) -> Self {
+        self.custom_title = Some(custom_title);
+        self
+    }
+
 }
 
 impl FormSer for ChatMemberMember {
@@ -1570,6 +2495,14 @@ impl ChatMemberUpdated {
     }
 }
 
+impl ChatMemberUpdated {
+    pub fn with_invite_link(mut self, invite_link: ChatInviteLink) -> Self {
+        self.invite_link = Some(invite_link);
+        self
+    }
+
+}
+
 impl FormSer for ChatJoinRequest {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.chat.serialize(format!("{}[chat]", key), form);
@@ -1593,6 +2526,19 @@ impl ChatJoinRequest {
     }
 }
 
+impl ChatJoinRequest {
+    pub fn with_bio(mut self, bio: String) -> Self {
+        self.bio = Some(bio);
+        self
+    }
+
+    pub fn with_invite_link(mut self, invite_link: ChatInviteLink) -> Self {
+        self.invite_link = Some(invite_link);
+        self
+    }
+
+}
+
 impl FormSer for ChatPermissions {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.can_send_messages.serialize(format!("{}[can_send_messages]", key), form);
@@ -1605,6 +2551,49 @@ impl FormSer for ChatPermissions {
         form = self.can_pin_messages.serialize(format!("{}[can_pin_messages]", key), form);
         form
     }
+}
+
+impl ChatPermissions {
+    pub fn with_can_send_messages(mut self, can_send_messages: bool) -> Self {
+        self.can_send_messages = Some(can_send_messages);
+        self
+    }
+
+    pub fn with_can_send_media_messages(mut self, can_send_media_messages: bool) -> Self {
+        self.can_send_media_messages = Some(can_send_media_messages);
+        self
+    }
+
+    pub fn with_can_send_polls(mut self, can_send_polls: bool) -> Self {
+        self.can_send_polls = Some(can_send_polls);
+        self
+    }
+
+    pub fn with_can_send_other_messages(mut self, can_send_other_messages: bool) -> Self {
+        self.can_send_other_messages = Some(can_send_other_messages);
+        self
+    }
+
+    pub fn with_can_add_web_page_previews(mut self, can_add_web_page_previews: bool) -> Self {
+        self.can_add_web_page_previews = Some(can_add_web_page_previews);
+        self
+    }
+
+    pub fn with_can_change_info(mut self, can_change_info: bool) -> Self {
+        self.can_change_info = Some(can_change_info);
+        self
+    }
+
+    pub fn with_can_invite_users(mut self, can_invite_users: bool) -> Self {
+        self.can_invite_users = Some(can_invite_users);
+        self
+    }
+
+    pub fn with_can_pin_messages(mut self, can_pin_messages: bool) -> Self {
+        self.can_pin_messages = Some(can_pin_messages);
+        self
+    }
+
 }
 
 impl FormSer for ChatLocation {
@@ -1754,12 +2743,74 @@ impl BotCommandScopeChatMember {
     }
 }
 
+impl FormSer for MenuButtonCommands {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.type_.serialize(format!("{}[type]", key), form);
+        form
+    }
+}
+
+impl MenuButtonCommands {
+    pub fn new(type_: String, ) -> Self {
+        Self {
+            type_,
+        }
+    }
+}
+
+impl FormSer for MenuButtonWebApp {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.type_.serialize(format!("{}[type]", key), form);
+        form = self.text.serialize(format!("{}[text]", key), form);
+        form = self.web_app.serialize(format!("{}[web_app]", key), form);
+        form
+    }
+}
+
+impl MenuButtonWebApp {
+    pub fn new(type_: String, text: String, web_app: WebAppInfo, ) -> Self {
+        Self {
+            type_,
+            text,
+            web_app,
+        }
+    }
+}
+
+impl FormSer for MenuButtonDefault {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.type_.serialize(format!("{}[type]", key), form);
+        form
+    }
+}
+
+impl MenuButtonDefault {
+    pub fn new(type_: String, ) -> Self {
+        Self {
+            type_,
+        }
+    }
+}
+
 impl FormSer for ResponseParameters {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.migrate_to_chat_id.serialize(format!("{}[migrate_to_chat_id]", key), form);
         form = self.retry_after.serialize(format!("{}[retry_after]", key), form);
         form
     }
+}
+
+impl ResponseParameters {
+    pub fn with_migrate_to_chat_id(mut self, migrate_to_chat_id: i64) -> Self {
+        self.migrate_to_chat_id = Some(migrate_to_chat_id);
+        self
+    }
+
+    pub fn with_retry_after(mut self, retry_after: i64) -> Self {
+        self.retry_after = Some(retry_after);
+        self
+    }
+
 }
 
 impl FormSer for InputMediaPhoto {
@@ -1783,6 +2834,24 @@ impl InputMediaPhoto {
             caption_entities: None,
         }
     }
+}
+
+impl InputMediaPhoto {
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
 }
 
 impl FormSer for InputMediaVideo {
@@ -1818,6 +2887,49 @@ impl InputMediaVideo {
     }
 }
 
+impl InputMediaVideo {
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_width(mut self, width: i64) -> Self {
+        self.width = Some(width);
+        self
+    }
+
+    pub fn with_height(mut self, height: i64) -> Self {
+        self.height = Some(height);
+        self
+    }
+
+    pub fn with_duration(mut self, duration: i64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
+    pub fn with_supports_streaming(mut self, supports_streaming: bool) -> Self {
+        self.supports_streaming = Some(supports_streaming);
+        self
+    }
+
+}
+
 impl FormSer for InputMediaAnimation {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.type_.serialize(format!("{}[type]", key), form);
@@ -1847,6 +2959,44 @@ impl InputMediaAnimation {
             duration: None,
         }
     }
+}
+
+impl InputMediaAnimation {
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_width(mut self, width: i64) -> Self {
+        self.width = Some(width);
+        self
+    }
+
+    pub fn with_height(mut self, height: i64) -> Self {
+        self.height = Some(height);
+        self
+    }
+
+    pub fn with_duration(mut self, duration: i64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
 }
 
 impl FormSer for InputMediaAudio {
@@ -1880,6 +3030,44 @@ impl InputMediaAudio {
     }
 }
 
+impl InputMediaAudio {
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_duration(mut self, duration: i64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
+    pub fn with_performer(mut self, performer: String) -> Self {
+        self.performer = Some(performer);
+        self
+    }
+
+    pub fn with_title(mut self, title: String) -> Self {
+        self.title = Some(title);
+        self
+    }
+
+}
+
 impl FormSer for InputMediaDocument {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.type_.serialize(format!("{}[type]", key), form);
@@ -1907,6 +3095,34 @@ impl InputMediaDocument {
     }
 }
 
+impl InputMediaDocument {
+    pub fn with_thumb(mut self, thumb: InputFile) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_caption(mut self, caption: String) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_disable_content_type_detection(mut self, disable_content_type_detection: bool) -> Self {
+        self.disable_content_type_detection = Some(disable_content_type_detection);
+        self
+    }
+
+}
+
 impl FormSer for Sticker {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.file_id.serialize(format!("{}[file_id]", key), form);
@@ -1918,6 +3134,7 @@ impl FormSer for Sticker {
         form = self.thumb.serialize(format!("{}[thumb]", key), form);
         form = self.emoji.serialize(format!("{}[emoji]", key), form);
         form = self.set_name.serialize(format!("{}[set_name]", key), form);
+        form = self.premium_animation.serialize(format!("{}[premium_animation]", key), form);
         form = self.mask_position.serialize(format!("{}[mask_position]", key), form);
         form = self.file_size.serialize(format!("{}[file_size]", key), form);
         form
@@ -1936,10 +3153,44 @@ impl Sticker {
             thumb: None,
             emoji: None,
             set_name: None,
+            premium_animation: None,
             mask_position: None,
             file_size: None,
         }
     }
+}
+
+impl Sticker {
+    pub fn with_thumb(mut self, thumb: PhotoSize) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
+    pub fn with_emoji(mut self, emoji: String) -> Self {
+        self.emoji = Some(emoji);
+        self
+    }
+
+    pub fn with_set_name(mut self, set_name: String) -> Self {
+        self.set_name = Some(set_name);
+        self
+    }
+
+    pub fn with_premium_animation(mut self, premium_animation: File) -> Self {
+        self.premium_animation = Some(premium_animation);
+        self
+    }
+
+    pub fn with_mask_position(mut self, mask_position: MaskPosition) -> Self {
+        self.mask_position = Some(mask_position);
+        self
+    }
+
+    pub fn with_file_size(mut self, file_size: i64) -> Self {
+        self.file_size = Some(file_size);
+        self
+    }
+
 }
 
 impl FormSer for StickerSet {
@@ -1967,6 +3218,14 @@ impl StickerSet {
             thumb: None,
         }
     }
+}
+
+impl StickerSet {
+    pub fn with_thumb(mut self, thumb: PhotoSize) -> Self {
+        self.thumb = Some(thumb);
+        self
+    }
+
 }
 
 impl FormSer for MaskPosition {
@@ -2015,696 +3274,17 @@ impl InlineQuery {
     }
 }
 
-impl FormSer for InlineQueryResultArticle {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.url.serialize(format!("{}[url]", key), form);
-        form = self.hide_url.serialize(format!("{}[hide_url]", key), form);
-        form = self.description.serialize(format!("{}[description]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.thumb_width.serialize(format!("{}[thumb_width]", key), form);
-        form = self.thumb_height.serialize(format!("{}[thumb_height]", key), form);
-        form
+impl InlineQuery {
+    pub fn with_chat_type(mut self, chat_type: String) -> Self {
+        self.chat_type = Some(chat_type);
+        self
     }
-}
 
-impl InlineQueryResultArticle {
-    pub fn new(type_: String, id: String, title: String, input_message_content: InputMessageContent, ) -> Self {
-        Self {
-            type_,
-            id,
-            title,
-            input_message_content,
-            reply_markup: None,
-            url: None,
-            hide_url: None,
-            description: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        }
+    pub fn with_location(mut self, location: Location) -> Self {
+        self.location = Some(location);
+        self
     }
-}
 
-impl FormSer for InlineQueryResultPhoto {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.photo_url.serialize(format!("{}[photo_url]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.photo_width.serialize(format!("{}[photo_width]", key), form);
-        form = self.photo_height.serialize(format!("{}[photo_height]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.description.serialize(format!("{}[description]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultPhoto {
-    pub fn new(type_: String, id: String, photo_url: String, thumb_url: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            photo_url,
-            thumb_url,
-            photo_width: None,
-            photo_height: None,
-            title: None,
-            description: None,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultGif {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.gif_url.serialize(format!("{}[gif_url]", key), form);
-        form = self.gif_width.serialize(format!("{}[gif_width]", key), form);
-        form = self.gif_height.serialize(format!("{}[gif_height]", key), form);
-        form = self.gif_duration.serialize(format!("{}[gif_duration]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.thumb_mime_type.serialize(format!("{}[thumb_mime_type]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultGif {
-    pub fn new(type_: String, id: String, gif_url: String, thumb_url: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            gif_url,
-            gif_width: None,
-            gif_height: None,
-            gif_duration: None,
-            thumb_url,
-            thumb_mime_type: None,
-            title: None,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultMpeg4Gif {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.mpeg4_url.serialize(format!("{}[mpeg4_url]", key), form);
-        form = self.mpeg4_width.serialize(format!("{}[mpeg4_width]", key), form);
-        form = self.mpeg4_height.serialize(format!("{}[mpeg4_height]", key), form);
-        form = self.mpeg4_duration.serialize(format!("{}[mpeg4_duration]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.thumb_mime_type.serialize(format!("{}[thumb_mime_type]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultMpeg4Gif {
-    pub fn new(type_: String, id: String, mpeg4_url: String, thumb_url: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            mpeg4_url,
-            mpeg4_width: None,
-            mpeg4_height: None,
-            mpeg4_duration: None,
-            thumb_url,
-            thumb_mime_type: None,
-            title: None,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultVideo {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.video_url.serialize(format!("{}[video_url]", key), form);
-        form = self.mime_type.serialize(format!("{}[mime_type]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.video_width.serialize(format!("{}[video_width]", key), form);
-        form = self.video_height.serialize(format!("{}[video_height]", key), form);
-        form = self.video_duration.serialize(format!("{}[video_duration]", key), form);
-        form = self.description.serialize(format!("{}[description]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultVideo {
-    pub fn new(type_: String, id: String, video_url: String, mime_type: String, thumb_url: String, title: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            video_url,
-            mime_type,
-            thumb_url,
-            title,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            video_width: None,
-            video_height: None,
-            video_duration: None,
-            description: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultAudio {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.audio_url.serialize(format!("{}[audio_url]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.performer.serialize(format!("{}[performer]", key), form);
-        form = self.audio_duration.serialize(format!("{}[audio_duration]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultAudio {
-    pub fn new(type_: String, id: String, audio_url: String, title: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            audio_url,
-            title,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            performer: None,
-            audio_duration: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultVoice {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.voice_url.serialize(format!("{}[voice_url]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.voice_duration.serialize(format!("{}[voice_duration]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultVoice {
-    pub fn new(type_: String, id: String, voice_url: String, title: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            voice_url,
-            title,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            voice_duration: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultDocument {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.document_url.serialize(format!("{}[document_url]", key), form);
-        form = self.mime_type.serialize(format!("{}[mime_type]", key), form);
-        form = self.description.serialize(format!("{}[description]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.thumb_width.serialize(format!("{}[thumb_width]", key), form);
-        form = self.thumb_height.serialize(format!("{}[thumb_height]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultDocument {
-    pub fn new(type_: String, id: String, title: String, document_url: String, mime_type: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            title,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            document_url,
-            mime_type,
-            description: None,
-            reply_markup: None,
-            input_message_content: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultLocation {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.latitude.serialize(format!("{}[latitude]", key), form);
-        form = self.longitude.serialize(format!("{}[longitude]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.horizontal_accuracy.serialize(format!("{}[horizontal_accuracy]", key), form);
-        form = self.live_period.serialize(format!("{}[live_period]", key), form);
-        form = self.heading.serialize(format!("{}[heading]", key), form);
-        form = self.proximity_alert_radius.serialize(format!("{}[proximity_alert_radius]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.thumb_width.serialize(format!("{}[thumb_width]", key), form);
-        form = self.thumb_height.serialize(format!("{}[thumb_height]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultLocation {
-    pub fn new(type_: String, id: String, latitude: f64, longitude: f64, title: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            latitude,
-            longitude,
-            title,
-            horizontal_accuracy: None,
-            live_period: None,
-            heading: None,
-            proximity_alert_radius: None,
-            reply_markup: None,
-            input_message_content: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultVenue {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.latitude.serialize(format!("{}[latitude]", key), form);
-        form = self.longitude.serialize(format!("{}[longitude]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.address.serialize(format!("{}[address]", key), form);
-        form = self.foursquare_id.serialize(format!("{}[foursquare_id]", key), form);
-        form = self.foursquare_type.serialize(format!("{}[foursquare_type]", key), form);
-        form = self.google_place_id.serialize(format!("{}[google_place_id]", key), form);
-        form = self.google_place_type.serialize(format!("{}[google_place_type]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.thumb_width.serialize(format!("{}[thumb_width]", key), form);
-        form = self.thumb_height.serialize(format!("{}[thumb_height]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultVenue {
-    pub fn new(type_: String, id: String, latitude: f64, longitude: f64, title: String, address: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            latitude,
-            longitude,
-            title,
-            address,
-            foursquare_id: None,
-            foursquare_type: None,
-            google_place_id: None,
-            google_place_type: None,
-            reply_markup: None,
-            input_message_content: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultContact {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.phone_number.serialize(format!("{}[phone_number]", key), form);
-        form = self.first_name.serialize(format!("{}[first_name]", key), form);
-        form = self.last_name.serialize(format!("{}[last_name]", key), form);
-        form = self.vcard.serialize(format!("{}[vcard]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form = self.thumb_url.serialize(format!("{}[thumb_url]", key), form);
-        form = self.thumb_width.serialize(format!("{}[thumb_width]", key), form);
-        form = self.thumb_height.serialize(format!("{}[thumb_height]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultContact {
-    pub fn new(type_: String, id: String, phone_number: String, first_name: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            phone_number,
-            first_name,
-            last_name: None,
-            vcard: None,
-            reply_markup: None,
-            input_message_content: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultGame {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.game_short_name.serialize(format!("{}[game_short_name]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultGame {
-    pub fn new(type_: String, id: String, game_short_name: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            game_short_name,
-            reply_markup: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultCachedPhoto {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.photo_file_id.serialize(format!("{}[photo_file_id]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.description.serialize(format!("{}[description]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultCachedPhoto {
-    pub fn new(type_: String, id: String, photo_file_id: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            photo_file_id,
-            title: None,
-            description: None,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultCachedGif {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.gif_file_id.serialize(format!("{}[gif_file_id]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultCachedGif {
-    pub fn new(type_: String, id: String, gif_file_id: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            gif_file_id,
-            title: None,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultCachedMpeg4Gif {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.mpeg4_file_id.serialize(format!("{}[mpeg4_file_id]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultCachedMpeg4Gif {
-    pub fn new(type_: String, id: String, mpeg4_file_id: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            mpeg4_file_id,
-            title: None,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultCachedSticker {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.sticker_file_id.serialize(format!("{}[sticker_file_id]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultCachedSticker {
-    pub fn new(type_: String, id: String, sticker_file_id: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            sticker_file_id,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultCachedDocument {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.document_file_id.serialize(format!("{}[document_file_id]", key), form);
-        form = self.description.serialize(format!("{}[description]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultCachedDocument {
-    pub fn new(type_: String, id: String, title: String, document_file_id: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            title,
-            document_file_id,
-            description: None,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultCachedVideo {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.video_file_id.serialize(format!("{}[video_file_id]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.description.serialize(format!("{}[description]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultCachedVideo {
-    pub fn new(type_: String, id: String, video_file_id: String, title: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            video_file_id,
-            title,
-            description: None,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultCachedVoice {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.voice_file_id.serialize(format!("{}[voice_file_id]", key), form);
-        form = self.title.serialize(format!("{}[title]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultCachedVoice {
-    pub fn new(type_: String, id: String, voice_file_id: String, title: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            voice_file_id,
-            title,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
-}
-
-impl FormSer for InlineQueryResultCachedAudio {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.type_.serialize(format!("{}[type]", key), form);
-        form = self.id.serialize(format!("{}[id]", key), form);
-        form = self.audio_file_id.serialize(format!("{}[audio_file_id]", key), form);
-        form = self.caption.serialize(format!("{}[caption]", key), form);
-        form = self.parse_mode.serialize(format!("{}[parse_mode]", key), form);
-        form = self.caption_entities.serialize(format!("{}[caption_entities]", key), form);
-        form = self.reply_markup.serialize(format!("{}[reply_markup]", key), form);
-        form = self.input_message_content.serialize(format!("{}[input_message_content]", key), form);
-        form
-    }
-}
-
-impl InlineQueryResultCachedAudio {
-    pub fn new(type_: String, id: String, audio_file_id: String, ) -> Self {
-        Self {
-            type_,
-            id,
-            audio_file_id,
-            caption: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-            input_message_content: None,
-        }
-    }
 }
 
 impl FormSer for InputTextMessageContent {
@@ -2726,6 +3306,24 @@ impl InputTextMessageContent {
             disable_web_page_preview: None,
         }
     }
+}
+
+impl InputTextMessageContent {
+    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
+    }
+
+    pub fn with_entities(mut self, entities: Vec<MessageEntity>) -> Self {
+        self.entities = Some(entities);
+        self
+    }
+
+    pub fn with_disable_web_page_preview(mut self, disable_web_page_preview: bool) -> Self {
+        self.disable_web_page_preview = Some(disable_web_page_preview);
+        self
+    }
+
 }
 
 impl FormSer for InputLocationMessageContent {
@@ -2751,6 +3349,29 @@ impl InputLocationMessageContent {
             proximity_alert_radius: None,
         }
     }
+}
+
+impl InputLocationMessageContent {
+    pub fn with_horizontal_accuracy(mut self, horizontal_accuracy: f64) -> Self {
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
+    }
+
+    pub fn with_live_period(mut self, live_period: i64) -> Self {
+        self.live_period = Some(live_period);
+        self
+    }
+
+    pub fn with_heading(mut self, heading: i64) -> Self {
+        self.heading = Some(heading);
+        self
+    }
+
+    pub fn with_proximity_alert_radius(mut self, proximity_alert_radius: i64) -> Self {
+        self.proximity_alert_radius = Some(proximity_alert_radius);
+        self
+    }
+
 }
 
 impl FormSer for InputVenueMessageContent {
@@ -2782,6 +3403,29 @@ impl InputVenueMessageContent {
     }
 }
 
+impl InputVenueMessageContent {
+    pub fn with_foursquare_id(mut self, foursquare_id: String) -> Self {
+        self.foursquare_id = Some(foursquare_id);
+        self
+    }
+
+    pub fn with_foursquare_type(mut self, foursquare_type: String) -> Self {
+        self.foursquare_type = Some(foursquare_type);
+        self
+    }
+
+    pub fn with_google_place_id(mut self, google_place_id: String) -> Self {
+        self.google_place_id = Some(google_place_id);
+        self
+    }
+
+    pub fn with_google_place_type(mut self, google_place_type: String) -> Self {
+        self.google_place_type = Some(google_place_type);
+        self
+    }
+
+}
+
 impl FormSer for InputContactMessageContent {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.phone_number.serialize(format!("{}[phone_number]", key), form);
@@ -2801,6 +3445,19 @@ impl InputContactMessageContent {
             vcard: None,
         }
     }
+}
+
+impl InputContactMessageContent {
+    pub fn with_last_name(mut self, last_name: String) -> Self {
+        self.last_name = Some(last_name);
+        self
+    }
+
+    pub fn with_vcard(mut self, vcard: String) -> Self {
+        self.vcard = Some(vcard);
+        self
+    }
+
 }
 
 impl FormSer for InputInvoiceMessageContent {
@@ -2856,6 +3513,79 @@ impl InputInvoiceMessageContent {
     }
 }
 
+impl InputInvoiceMessageContent {
+    pub fn with_max_tip_amount(mut self, max_tip_amount: i64) -> Self {
+        self.max_tip_amount = Some(max_tip_amount);
+        self
+    }
+
+    pub fn with_suggested_tip_amounts(mut self, suggested_tip_amounts: Vec<i64>) -> Self {
+        self.suggested_tip_amounts = Some(suggested_tip_amounts);
+        self
+    }
+
+    pub fn with_provider_data(mut self, provider_data: String) -> Self {
+        self.provider_data = Some(provider_data);
+        self
+    }
+
+    pub fn with_photo_url(mut self, photo_url: String) -> Self {
+        self.photo_url = Some(photo_url);
+        self
+    }
+
+    pub fn with_photo_size(mut self, photo_size: i64) -> Self {
+        self.photo_size = Some(photo_size);
+        self
+    }
+
+    pub fn with_photo_width(mut self, photo_width: i64) -> Self {
+        self.photo_width = Some(photo_width);
+        self
+    }
+
+    pub fn with_photo_height(mut self, photo_height: i64) -> Self {
+        self.photo_height = Some(photo_height);
+        self
+    }
+
+    pub fn with_need_name(mut self, need_name: bool) -> Self {
+        self.need_name = Some(need_name);
+        self
+    }
+
+    pub fn with_need_phone_number(mut self, need_phone_number: bool) -> Self {
+        self.need_phone_number = Some(need_phone_number);
+        self
+    }
+
+    pub fn with_need_email(mut self, need_email: bool) -> Self {
+        self.need_email = Some(need_email);
+        self
+    }
+
+    pub fn with_need_shipping_address(mut self, need_shipping_address: bool) -> Self {
+        self.need_shipping_address = Some(need_shipping_address);
+        self
+    }
+
+    pub fn with_send_phone_number_to_provider(mut self, send_phone_number_to_provider: bool) -> Self {
+        self.send_phone_number_to_provider = Some(send_phone_number_to_provider);
+        self
+    }
+
+    pub fn with_send_email_to_provider(mut self, send_email_to_provider: bool) -> Self {
+        self.send_email_to_provider = Some(send_email_to_provider);
+        self
+    }
+
+    pub fn with_is_flexible(mut self, is_flexible: bool) -> Self {
+        self.is_flexible = Some(is_flexible);
+        self
+    }
+
+}
+
 impl FormSer for ChosenInlineResult {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.result_id.serialize(format!("{}[result_id]", key), form);
@@ -2877,6 +3607,34 @@ impl ChosenInlineResult {
             query,
         }
     }
+}
+
+impl ChosenInlineResult {
+    pub fn with_location(mut self, location: Location) -> Self {
+        self.location = Some(location);
+        self
+    }
+
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
+}
+
+impl FormSer for SentWebAppMessage {
+    fn serialize(&self, key: String, mut form: Form) -> Form {
+        form = self.inline_message_id.serialize(format!("{}[inline_message_id]", key), form);
+        form
+    }
+}
+
+impl SentWebAppMessage {
+    pub fn with_inline_message_id(mut self, inline_message_id: String) -> Self {
+        self.inline_message_id = Some(inline_message_id);
+        self
+    }
+
 }
 
 impl FormSer for LabeledPrice {
@@ -2954,6 +3712,29 @@ impl FormSer for OrderInfo {
     }
 }
 
+impl OrderInfo {
+    pub fn with_name(mut self, name: String) -> Self {
+        self.name = Some(name);
+        self
+    }
+
+    pub fn with_phone_number(mut self, phone_number: String) -> Self {
+        self.phone_number = Some(phone_number);
+        self
+    }
+
+    pub fn with_email(mut self, email: String) -> Self {
+        self.email = Some(email);
+        self
+    }
+
+    pub fn with_shipping_address(mut self, shipping_address: ShippingAddress) -> Self {
+        self.shipping_address = Some(shipping_address);
+        self
+    }
+
+}
+
 impl FormSer for ShippingOption {
     fn serialize(&self, key: String, mut form: Form) -> Form {
         form = self.id.serialize(format!("{}[id]", key), form);
@@ -2998,6 +3779,19 @@ impl SuccessfulPayment {
             provider_payment_charge_id,
         }
     }
+}
+
+impl SuccessfulPayment {
+    pub fn with_shipping_option_id(mut self, shipping_option_id: String) -> Self {
+        self.shipping_option_id = Some(shipping_option_id);
+        self
+    }
+
+    pub fn with_order_info(mut self, order_info: OrderInfo) -> Self {
+        self.order_info = Some(order_info);
+        self
+    }
+
 }
 
 impl FormSer for ShippingQuery {
@@ -3046,6 +3840,19 @@ impl PreCheckoutQuery {
             order_info: None,
         }
     }
+}
+
+impl PreCheckoutQuery {
+    pub fn with_shipping_option_id(mut self, shipping_option_id: String) -> Self {
+        self.shipping_option_id = Some(shipping_option_id);
+        self
+    }
+
+    pub fn with_order_info(mut self, order_info: OrderInfo) -> Self {
+        self.order_info = Some(order_info);
+        self
+    }
+
 }
 
 impl FormSer for PassportData {
@@ -3117,6 +3924,49 @@ impl EncryptedPassportElement {
             hash,
         }
     }
+}
+
+impl EncryptedPassportElement {
+    pub fn with_data(mut self, data: String) -> Self {
+        self.data = Some(data);
+        self
+    }
+
+    pub fn with_phone_number(mut self, phone_number: String) -> Self {
+        self.phone_number = Some(phone_number);
+        self
+    }
+
+    pub fn with_email(mut self, email: String) -> Self {
+        self.email = Some(email);
+        self
+    }
+
+    pub fn with_files(mut self, files: Vec<PassportFile>) -> Self {
+        self.files = Some(files);
+        self
+    }
+
+    pub fn with_front_side(mut self, front_side: PassportFile) -> Self {
+        self.front_side = Some(front_side);
+        self
+    }
+
+    pub fn with_reverse_side(mut self, reverse_side: PassportFile) -> Self {
+        self.reverse_side = Some(reverse_side);
+        self
+    }
+
+    pub fn with_selfie(mut self, selfie: PassportFile) -> Self {
+        self.selfie = Some(selfie);
+        self
+    }
+
+    pub fn with_translation(mut self, translation: Vec<PassportFile>) -> Self {
+        self.translation = Some(translation);
+        self
+    }
+
 }
 
 impl FormSer for EncryptedCredentials {
@@ -3352,6 +4202,24 @@ impl Game {
             animation: None,
         }
     }
+}
+
+impl Game {
+    pub fn with_text(mut self, text: String) -> Self {
+        self.text = Some(text);
+        self
+    }
+
+    pub fn with_text_entities(mut self, text_entities: Vec<MessageEntity>) -> Self {
+        self.text_entities = Some(text_entities);
+        self
+    }
+
+    pub fn with_animation(mut self, animation: Animation) -> Self {
+        self.animation = Some(animation);
+        self
+    }
+
 }
 
 impl FormSer for CallbackGame {

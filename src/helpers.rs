@@ -1,63 +1,10 @@
-use crate::BotError;
-use crate::objects::*;
-use crate::functions::*;
-pub(crate) use reqwest::multipart::Form;
-use std::path::PathBuf;
 use std::io::Read;
-
-pub trait FormSer {
-    fn serialize(&self, key: String, form: Form) -> Form;
-}
-
-impl FormSer for bool {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        form.text(key, self.to_string())
-    }
-}
-
-impl FormSer for i64 {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        form.text(key, self.to_string())
-    }
-}
-
-impl FormSer for f64 {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        form.text(key, self.to_string())
-    }
-}
-
-impl FormSer for String {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        form.text(key, self.to_string())
-    }
-}
-
-impl<T: FormSer> FormSer for Vec<T> {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        for (i, elem) in self.iter().enumerate() {
-            form = elem.serialize(format!("{}[{}]", key, i), form);
-        }
-
-        return form;
-    }
-}
-
-impl<T: FormSer> FormSer for Option<T> {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        if let Some(s) = self.as_ref() {
-            s.serialize(key, form)
-        } else {
-            form
-        }
-    }
-}
-
-impl<T: FormSer> FormSer for Box<T> {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        self.as_ref().serialize(key, form)
-    }
-}
+use std::path::PathBuf;
+use reqwest::multipart::Form;
+use crate::{BotError, FormSer};
+use crate::types::*;
+use crate::methods::*;
+use serde::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
@@ -110,20 +57,18 @@ impl FormSer for MessageOrBool {
 
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub enum ParseMode {
-    Markdown,
+    MarkdownOld,
+    MarkdownV2,
     HTML,
-    None,
 }
 
-impl Default for ParseMode {
-    fn default() -> ParseMode {
-        ParseMode::None
-    }
-}
-
-impl ParseMode {
-    pub fn is_none(&self) -> bool {
-        *self == ParseMode::None
+impl FormSer for ParseMode {
+    fn serialize(&self, key: String, form: Form) -> Form {
+        match self {
+            ParseMode::MarkdownOld => form.text(key, "Markdown"),
+            ParseMode::MarkdownV2 => form.text(key, "MarkdownV2"),
+            ParseMode::HTML => form.text(key, "HTML"),
+        }
     }
 }
 
@@ -296,24 +241,10 @@ impl FormSer for UpdateType {
 
 impl Message {
     pub fn reply(&self, text: impl Into<String>) -> SendMessage {
-        let mut send_msg = SendMessage::new(self.chat.id.into(), text.into());
-        send_msg.reply_to_message_id = Some(self.message_id);
-
-        send_msg
-    }
-
-    pub fn respond(&self, text: impl Into<String>) -> SendMessage {
         SendMessage::new(self.chat.id.into(), text.into())
     }
 
     pub fn reply_photo(&self, photo: InputFile) -> SendPhoto {
-        let mut send_photo = SendPhoto::new(self.chat.id.into(), photo);
-        send_photo.reply_to_message_id = Some(self.message_id);
-
-        send_photo
-    }
-
-    pub fn respond_photo(&self, photo: InputFile) -> SendPhoto {
         SendPhoto::new(self.chat.id.into(), photo)
     }
 

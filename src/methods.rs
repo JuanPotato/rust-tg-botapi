@@ -1,5 +1,5 @@
-use crate::objects::*;
-use crate::better::*;
+use crate::types::*;
+use crate::helpers::*;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct GetUpdates {
@@ -17,6 +17,7 @@ pub struct SetWebhook {
     pub max_connections: Option<i64>,
     pub allowed_updates: Option<Vec<String>>,
     pub drop_pending_updates: Option<bool>,
+    pub secret_token: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -44,7 +45,7 @@ pub struct Close {
 pub struct SendMessage {
     pub chat_id: ChatId,
     pub text: String,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub entities: Option<Vec<MessageEntity>>,
     pub disable_web_page_preview: Option<bool>,
     pub disable_notification: Option<bool>,
@@ -69,7 +70,7 @@ pub struct CopyMessage {
     pub from_chat_id: ChatId,
     pub message_id: i64,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub disable_notification: Option<bool>,
     pub protect_content: Option<bool>,
@@ -83,7 +84,7 @@ pub struct SendPhoto {
     pub chat_id: ChatId,
     pub photo: InputFile,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub disable_notification: Option<bool>,
     pub protect_content: Option<bool>,
@@ -97,7 +98,7 @@ pub struct SendAudio {
     pub chat_id: ChatId,
     pub audio: InputFile,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub duration: Option<i64>,
     pub performer: Option<String>,
@@ -116,7 +117,7 @@ pub struct SendDocument {
     pub document: InputFile,
     pub thumb: Option<InputFile>,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub disable_content_type_detection: Option<bool>,
     pub disable_notification: Option<bool>,
@@ -135,7 +136,7 @@ pub struct SendVideo {
     pub height: Option<i64>,
     pub thumb: Option<InputFile>,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub supports_streaming: Option<bool>,
     pub disable_notification: Option<bool>,
@@ -154,7 +155,7 @@ pub struct SendAnimation {
     pub height: Option<i64>,
     pub thumb: Option<InputFile>,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub disable_notification: Option<bool>,
     pub protect_content: Option<bool>,
@@ -168,7 +169,7 @@ pub struct SendVoice {
     pub chat_id: ChatId,
     pub voice: InputFile,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub duration: Option<i64>,
     pub disable_notification: Option<bool>,
@@ -356,7 +357,7 @@ pub struct PromoteChatMember {
     pub can_post_messages: Option<bool>,
     pub can_edit_messages: Option<bool>,
     pub can_delete_messages: Option<bool>,
-    pub can_manage_voice_chats: Option<bool>,
+    pub can_manage_video_chats: Option<bool>,
     pub can_restrict_members: Option<bool>,
     pub can_promote_members: Option<bool>,
     pub can_change_info: Option<bool>,
@@ -538,12 +539,34 @@ pub struct GetMyCommands {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+pub struct SetChatMenuButton {
+    pub chat_id: Option<i64>,
+    pub menu_button: Option<MenuButton>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct GetChatMenuButton {
+    pub chat_id: Option<i64>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct SetMyDefaultAdministratorRights {
+    pub rights: Option<ChatAdministratorRights>,
+    pub for_channels: Option<bool>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct GetMyDefaultAdministratorRights {
+    pub for_channels: Option<bool>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 pub struct EditMessageText {
     pub chat_id: Option<ChatId>,
     pub message_id: Option<i64>,
     pub inline_message_id: Option<String>,
     pub text: String,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub entities: Option<Vec<MessageEntity>>,
     pub disable_web_page_preview: Option<bool>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -555,7 +578,7 @@ pub struct EditMessageCaption {
     pub message_id: Option<i64>,
     pub inline_message_id: Option<String>,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
@@ -666,6 +689,12 @@ pub struct AnswerInlineQuery {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+pub struct AnswerWebAppQuery {
+    pub web_app_query_id: String,
+    pub result: InlineQueryResult,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 pub struct SendInvoice {
     pub chat_id: ChatId,
     pub title: String,
@@ -694,6 +723,30 @@ pub struct SendInvoice {
     pub reply_to_message_id: Option<i64>,
     pub allow_sending_without_reply: Option<bool>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct CreateInvoiceLink {
+    pub title: String,
+    pub description: String,
+    pub payload: String,
+    pub provider_token: String,
+    pub currency: String,
+    pub prices: Vec<LabeledPrice>,
+    pub max_tip_amount: Option<i64>,
+    pub suggested_tip_amounts: Option<Vec<i64>>,
+    pub provider_data: Option<String>,
+    pub photo_url: Option<String>,
+    pub photo_size: Option<i64>,
+    pub photo_width: Option<i64>,
+    pub photo_height: Option<i64>,
+    pub need_name: Option<bool>,
+    pub need_phone_number: Option<bool>,
+    pub need_email: Option<bool>,
+    pub need_shipping_address: Option<bool>,
+    pub send_phone_number_to_provider: Option<bool>,
+    pub send_email_to_provider: Option<bool>,
+    pub is_flexible: Option<bool>,
 }
 
 #[derive(Debug, Clone, Deserialize)]

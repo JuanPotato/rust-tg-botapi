@@ -1,4 +1,5 @@
-use crate::better::*;
+use crate::helpers::*;
+pub use crate::inline_query::*;
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
@@ -25,37 +26,20 @@ pub enum BotCommandScope {
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
+pub enum MenuButton {
+    Commands(MenuButtonCommands),
+    WebApp(MenuButtonWebApp),
+    Default(MenuButtonDefault),
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(untagged)]
 pub enum InputMedia {
     Animation(InputMediaAnimation),
     Document(InputMediaDocument),
     Audio(InputMediaAudio),
     Photo(InputMediaPhoto),
     Video(InputMediaVideo),
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[serde(untagged)]
-pub enum InlineQueryResult {
-    CachedAudio(InlineQueryResultCachedAudio),
-    CachedDocument(InlineQueryResultCachedDocument),
-    CachedGif(InlineQueryResultCachedGif),
-    CachedMpeg4Gif(InlineQueryResultCachedMpeg4Gif),
-    CachedPhoto(InlineQueryResultCachedPhoto),
-    CachedSticker(InlineQueryResultCachedSticker),
-    CachedVideo(InlineQueryResultCachedVideo),
-    CachedVoice(InlineQueryResultCachedVoice),
-    Article(InlineQueryResultArticle),
-    Audio(InlineQueryResultAudio),
-    Contact(InlineQueryResultContact),
-    Game(InlineQueryResultGame),
-    Document(InlineQueryResultDocument),
-    Gif(InlineQueryResultGif),
-    Location(InlineQueryResultLocation),
-    Mpeg4Gif(InlineQueryResultMpeg4Gif),
-    Photo(InlineQueryResultPhoto),
-    Venue(InlineQueryResultVenue),
-    Video(InlineQueryResultVideo),
-    Voice(InlineQueryResultVoice),
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -90,6 +74,7 @@ pub struct WebhookInfo {
     pub ip_address: Option<String>,
     pub last_error_date: Option<i64>,
     pub last_error_message: Option<String>,
+    pub last_synchronization_error_date: Option<i64>,
     pub max_connections: Option<i64>,
     pub allowed_updates: Option<Vec<String>>,
 }
@@ -102,6 +87,8 @@ pub struct User {
     pub last_name: Option<String>,
     pub username: Option<String>,
     pub language_code: Option<String>,
+    pub is_premium: Option<bool>,
+    pub added_to_attachment_menu: Option<bool>,
     pub can_join_groups: Option<bool>,
     pub can_read_all_group_messages: Option<bool>,
     pub supports_inline_queries: Option<bool>,
@@ -120,6 +107,8 @@ pub struct Chat {
     pub photo: Option<ChatPhoto>,
     pub bio: Option<String>,
     pub has_private_forwards: Option<bool>,
+    pub join_to_send_messages: Option<bool>,
+    pub join_by_request: Option<bool>,
     pub description: Option<String>,
     pub invite_link: Option<String>,
     pub pinned_message: Option<Box<Message>>,
@@ -188,10 +177,11 @@ pub struct Message {
     pub connected_website: Option<String>,
     pub passport_data: Option<PassportData>,
     pub proximity_alert_triggered: Option<ProximityAlertTriggered>,
-    pub voice_chat_scheduled: Option<VoiceChatScheduled>,
-    pub voice_chat_started: Option<VoiceChatStarted>,
-    pub voice_chat_ended: Option<VoiceChatEnded>,
-    pub voice_chat_participants_invited: Option<VoiceChatParticipantsInvited>,
+    pub video_chat_scheduled: Option<VideoChatScheduled>,
+    pub video_chat_started: Option<VideoChatStarted>,
+    pub video_chat_ended: Option<VideoChatEnded>,
+    pub video_chat_participants_invited: Option<VideoChatParticipantsInvited>,
+    pub web_app_data: Option<WebAppData>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
@@ -358,6 +348,12 @@ pub struct Venue {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+pub struct WebAppData {
+    pub data: String,
+    pub button_text: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 pub struct ProximityAlertTriggered {
     pub traveler: User,
     pub watcher: User,
@@ -370,22 +366,22 @@ pub struct MessageAutoDeleteTimerChanged {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct VoiceChatScheduled {
+pub struct VideoChatScheduled {
     pub start_date: i64,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct VoiceChatStarted {
+pub struct VideoChatStarted {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct VoiceChatEnded {
+pub struct VideoChatEnded {
     pub duration: i64,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct VoiceChatParticipantsInvited {
-    pub users: Option<Vec<User>>,
+pub struct VideoChatParticipantsInvited {
+    pub users: Vec<User>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -403,6 +399,11 @@ pub struct File {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+pub struct WebAppInfo {
+    pub url: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 pub struct ReplyKeyboardMarkup {
     pub keyboard: Vec<Vec<KeyboardButton>>,
     pub resize_keyboard: Option<bool>,
@@ -417,6 +418,7 @@ pub struct KeyboardButton {
     pub request_contact: Option<bool>,
     pub request_location: Option<bool>,
     pub request_poll: Option<KeyboardButtonPollType>,
+    pub web_app: Option<WebAppInfo>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -441,8 +443,9 @@ pub struct InlineKeyboardMarkup {
 pub struct InlineKeyboardButton {
     pub text: String,
     pub url: Option<String>,
-    pub login_url: Option<LoginUrl>,
     pub callback_data: Option<String>,
+    pub web_app: Option<WebAppInfo>,
+    pub login_url: Option<LoginUrl>,
     pub switch_inline_query: Option<String>,
     pub switch_inline_query_current_chat: Option<String>,
     pub callback_game: Option<CallbackGame>,
@@ -497,6 +500,21 @@ pub struct ChatInviteLink {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+pub struct ChatAdministratorRights {
+    pub is_anonymous: bool,
+    pub can_manage_chat: bool,
+    pub can_delete_messages: bool,
+    pub can_manage_video_chats: bool,
+    pub can_restrict_members: bool,
+    pub can_promote_members: bool,
+    pub can_change_info: bool,
+    pub can_invite_users: bool,
+    pub can_post_messages: Option<bool>,
+    pub can_edit_messages: Option<bool>,
+    pub can_pin_messages: Option<bool>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 pub struct ChatMemberOwner {
     pub status: String,
     pub user: User,
@@ -512,7 +530,7 @@ pub struct ChatMemberAdministrator {
     pub is_anonymous: bool,
     pub can_manage_chat: bool,
     pub can_delete_messages: bool,
-    pub can_manage_voice_chats: bool,
+    pub can_manage_video_chats: bool,
     pub can_restrict_members: bool,
     pub can_promote_members: bool,
     pub can_change_info: bool,
@@ -655,6 +673,29 @@ pub struct BotCommandScopeChatMember {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+pub struct MenuButtonCommands {
+
+    #[serde(rename = "type")]
+    pub type_: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct MenuButtonWebApp {
+
+    #[serde(rename = "type")]
+    pub type_: String,
+    pub text: String,
+    pub web_app: WebAppInfo,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct MenuButtonDefault {
+
+    #[serde(rename = "type")]
+    pub type_: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 pub struct ResponseParameters {
     pub migrate_to_chat_id: Option<i64>,
     pub retry_after: Option<i64>,
@@ -667,7 +708,7 @@ pub struct InputMediaPhoto {
     pub type_: String,
     pub media: String,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
@@ -679,7 +720,7 @@ pub struct InputMediaVideo {
     pub media: String,
     pub thumb: Option<InputFile>,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub width: Option<i64>,
     pub height: Option<i64>,
@@ -695,7 +736,7 @@ pub struct InputMediaAnimation {
     pub media: String,
     pub thumb: Option<InputFile>,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub width: Option<i64>,
     pub height: Option<i64>,
@@ -710,7 +751,7 @@ pub struct InputMediaAudio {
     pub media: String,
     pub thumb: Option<InputFile>,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub duration: Option<i64>,
     pub performer: Option<String>,
@@ -725,7 +766,7 @@ pub struct InputMediaDocument {
     pub media: String,
     pub thumb: Option<InputFile>,
     pub caption: Option<String>,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub caption_entities: Option<Vec<MessageEntity>>,
     pub disable_content_type_detection: Option<bool>,
 }
@@ -741,6 +782,7 @@ pub struct Sticker {
     pub thumb: Option<PhotoSize>,
     pub emoji: Option<String>,
     pub set_name: Option<String>,
+    pub premium_animation: Option<File>,
     pub mask_position: Option<MaskPosition>,
     pub file_size: Option<i64>,
 }
@@ -775,345 +817,9 @@ pub struct InlineQuery {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultArticle {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub title: String,
-    pub input_message_content: InputMessageContent,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub url: Option<String>,
-    pub hide_url: Option<bool>,
-    pub description: Option<String>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultPhoto {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub photo_url: String,
-    pub thumb_url: String,
-    pub photo_width: Option<i64>,
-    pub photo_height: Option<i64>,
-    pub title: Option<String>,
-    pub description: Option<String>,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultGif {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub gif_url: String,
-    pub gif_width: Option<i64>,
-    pub gif_height: Option<i64>,
-    pub gif_duration: Option<i64>,
-    pub thumb_url: String,
-    pub thumb_mime_type: Option<String>,
-    pub title: Option<String>,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultMpeg4Gif {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub mpeg4_url: String,
-    pub mpeg4_width: Option<i64>,
-    pub mpeg4_height: Option<i64>,
-    pub mpeg4_duration: Option<i64>,
-    pub thumb_url: String,
-    pub thumb_mime_type: Option<String>,
-    pub title: Option<String>,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultVideo {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub video_url: String,
-    pub mime_type: String,
-    pub thumb_url: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub video_width: Option<i64>,
-    pub video_height: Option<i64>,
-    pub video_duration: Option<i64>,
-    pub description: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultAudio {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub audio_url: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub performer: Option<String>,
-    pub audio_duration: Option<i64>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultVoice {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub voice_url: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub voice_duration: Option<i64>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultDocument {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub document_url: String,
-    pub mime_type: String,
-    pub description: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultLocation {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub latitude: f64,
-    pub longitude: f64,
-    pub title: String,
-    pub horizontal_accuracy: Option<f64>,
-    pub live_period: Option<i64>,
-    pub heading: Option<i64>,
-    pub proximity_alert_radius: Option<i64>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultVenue {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub latitude: f64,
-    pub longitude: f64,
-    pub title: String,
-    pub address: String,
-    pub foursquare_id: Option<String>,
-    pub foursquare_type: Option<String>,
-    pub google_place_id: Option<String>,
-    pub google_place_type: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultContact {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub phone_number: String,
-    pub first_name: String,
-    pub last_name: Option<String>,
-    pub vcard: Option<String>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-    pub thumb_url: Option<String>,
-    pub thumb_width: Option<i64>,
-    pub thumb_height: Option<i64>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultGame {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub game_short_name: String,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultCachedPhoto {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub photo_file_id: String,
-    pub title: Option<String>,
-    pub description: Option<String>,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultCachedGif {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub gif_file_id: String,
-    pub title: Option<String>,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultCachedMpeg4Gif {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub mpeg4_file_id: String,
-    pub title: Option<String>,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultCachedSticker {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub sticker_file_id: String,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultCachedDocument {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub title: String,
-    pub document_file_id: String,
-    pub description: Option<String>,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultCachedVideo {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub video_file_id: String,
-    pub title: String,
-    pub description: Option<String>,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultCachedVoice {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub voice_file_id: String,
-    pub title: String,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct InlineQueryResultCachedAudio {
-
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
-    pub audio_file_id: String,
-    pub caption: Option<String>,
-    pub parse_mode: Option<String>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-    pub input_message_content: Option<InputMessageContent>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
 pub struct InputTextMessageContent {
     pub message_text: String,
-    pub parse_mode: Option<String>,
+    pub parse_mode: Option<ParseMode>,
     pub entities: Option<Vec<MessageEntity>>,
     pub disable_web_page_preview: Option<bool>,
 }
@@ -1179,6 +885,11 @@ pub struct ChosenInlineResult {
     pub location: Option<Location>,
     pub inline_message_id: Option<String>,
     pub query: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct SentWebAppMessage {
+    pub inline_message_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]

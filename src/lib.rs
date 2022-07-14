@@ -12,21 +12,26 @@ use tokio::time::Duration;
 
 use serde::Deserialize;
 
-pub mod better;
-pub mod functions;
-pub mod objects;
+mod form_ser;
+mod methods;
+mod types;
+mod helpers;
+mod inline_query;
 
 pub mod api {
-    pub use crate::functions::*;
-    pub use crate::objects::*;
+    pub use crate::methods::*;
+    pub use crate::types::*;
+    pub use crate::form_ser::*;
+    pub use crate::helpers::*;
 }
 
 #[allow(unused_mut, unused_variables)]
-mod functions_impl;
+mod methods_impl;
 #[allow(unused_mut, unused_variables)]
-mod objects_impl;
+mod types_impl;
 
-use better::{ApiResult, FormSer};
+use helpers::ApiResult;
+use form_ser::FormSer;
 
 #[derive(Debug)]
 pub enum BotError {
@@ -35,7 +40,7 @@ pub enum BotError {
     Api {
         error_code: i64,
         description: String,
-        parameters: Option<objects::ResponseParameters>,
+        parameters: Option<types::ResponseParameters>,
     },
 }
 
@@ -113,13 +118,13 @@ impl Bot {
         res.into()
     }
 
-    pub fn start_polling(&self) -> Receiver<better::Update> {
+    pub fn start_polling(&self) -> Receiver<helpers::Update> {
         let (mut tx, rx) = futures::channel::mpsc::channel(100);
 
         let bot = self.clone();
 
         tokio::spawn(async move {
-            let mut req = functions::GetUpdates {
+            let mut req = methods::GetUpdates {
                 offset: Some(0),
                 limit: None,
                 timeout: Some(5 * 60),
@@ -143,3 +148,4 @@ impl Bot {
         &self.token
     }
 }
+
