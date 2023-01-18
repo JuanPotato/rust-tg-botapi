@@ -1,22 +1,28 @@
 use crate::methods::*;
 use crate::types::*;
-use crate::form_ser::*;
 use crate::helpers::*;
-use crate::TgMethod;
-
-impl FormSer for GetUpdates {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.offset.serialize("offset".into(), form);
-        form = self.limit.serialize("limit".into(), form);
-        form = self.timeout.serialize("timeout".into(), form);
-        form = self.allowed_updates.serialize("allowed_updates".into(), form);
-        form
-    }
-}
+use crate::{TgMethod, TgObject};
 
 impl TgMethod for GetUpdates {
     type ResponseType = Vec<Update>;
     const PATH: &'static str = "getUpdates";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.offset {
+            form = form.text("offset", s.to_string());
+        }
+        if let Some(s) = &self.limit {
+            form = form.text("limit", s.to_string());
+        }
+        if let Some(s) = &self.timeout {
+            form = form.text("timeout", s.to_string());
+        }
+        if let Some(s) = &self.allowed_updates {
+            form = form.text("allowed_updates", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl GetUpdates {
@@ -42,22 +48,34 @@ impl GetUpdates {
 
 }
 
-impl FormSer for SetWebhook {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.url.serialize("url".into(), form);
-        form = self.certificate.serialize("certificate".into(), form);
-        form = self.ip_address.serialize("ip_address".into(), form);
-        form = self.max_connections.serialize("max_connections".into(), form);
-        form = self.allowed_updates.serialize("allowed_updates".into(), form);
-        form = self.drop_pending_updates.serialize("drop_pending_updates".into(), form);
-        form = self.secret_token.serialize("secret_token".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetWebhook {
     type ResponseType = bool;
     const PATH: &'static str = "setWebhook";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.certificate.add_file(form);
+        form = form.text("url", self.url.to_string());
+        if let Some(s) = &self.certificate {
+            form = form.text("certificate", s.to_string());
+        }
+        if let Some(s) = &self.ip_address {
+            form = form.text("ip_address", s.to_string());
+        }
+        if let Some(s) = &self.max_connections {
+            form = form.text("max_connections", s.to_string());
+        }
+        if let Some(s) = &self.allowed_updates {
+            form = form.text("allowed_updates", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.drop_pending_updates {
+            form = form.text("drop_pending_updates", s.to_string());
+        }
+        if let Some(s) = &self.secret_token {
+            form = form.text("secret_token", s.to_string());
+        }
+        form
+    }
 }
 
 impl SetWebhook {
@@ -107,9 +125,9 @@ impl SetWebhook {
 
 }
 
-impl FormSer for DeleteWebhook {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.drop_pending_updates.serialize("drop_pending_updates".into(), form);
+impl crate::TgObject for SetWebhook {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.certificate.add_file(form);
         form
     }
 }
@@ -117,6 +135,14 @@ impl FormSer for DeleteWebhook {
 impl TgMethod for DeleteWebhook {
     type ResponseType = bool;
     const PATH: &'static str = "deleteWebhook";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.drop_pending_updates {
+            form = form.text("drop_pending_updates", s.to_string());
+        }
+        form
+    }
 }
 
 impl DeleteWebhook {
@@ -127,19 +153,12 @@ impl DeleteWebhook {
 
 }
 
-impl FormSer for GetWebhookInfo {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form
-    }
-}
-
 impl TgMethod for GetWebhookInfo {
     type ResponseType = WebhookInfo;
     const PATH: &'static str = "getWebhookInfo";
-}
 
-impl FormSer for GetMe {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
         form
     }
 }
@@ -147,10 +166,9 @@ impl FormSer for GetMe {
 impl TgMethod for GetMe {
     type ResponseType = User;
     const PATH: &'static str = "getMe";
-}
 
-impl FormSer for LogOut {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
         form
     }
 }
@@ -158,10 +176,9 @@ impl FormSer for LogOut {
 impl TgMethod for LogOut {
     type ResponseType = bool;
     const PATH: &'static str = "logOut";
-}
 
-impl FormSer for Close {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
         form
     }
 }
@@ -169,20 +186,9 @@ impl FormSer for Close {
 impl TgMethod for Close {
     type ResponseType = bool;
     const PATH: &'static str = "close";
-}
 
-impl FormSer for SendMessage {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.text.serialize("text".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.entities.serialize("entities".into(), form);
-        form = self.disable_web_page_preview.serialize("disable_web_page_preview".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
         form
     }
 }
@@ -190,12 +196,47 @@ impl FormSer for SendMessage {
 impl TgMethod for SendMessage {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendMessage";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("text", self.text.to_string());
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.entities {
+            form = form.text("entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.disable_web_page_preview {
+            form = form.text("disable_web_page_preview", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendMessage {
     pub fn new(chat_id: ChatId, text: String, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             text,
             parse_mode: None,
             entities: None,
@@ -210,6 +251,11 @@ impl SendMessage {
 }
 
 impl SendMessage {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
         self
@@ -252,26 +298,33 @@ impl SendMessage {
 
 }
 
-impl FormSer for ForwardMessage {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.from_chat_id.serialize("from_chat_id".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for ForwardMessage {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "forwardMessage";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("from_chat_id", self.from_chat_id.to_string());
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        form = form.text("message_id", self.message_id.to_string());
+        form
+    }
 }
 
 impl ForwardMessage {
     pub fn new(chat_id: ChatId, from_chat_id: ChatId, message_id: i64, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             from_chat_id,
             disable_notification: None,
             protect_content: None,
@@ -281,6 +334,11 @@ impl ForwardMessage {
 }
 
 impl ForwardMessage {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
         self
@@ -293,32 +351,51 @@ impl ForwardMessage {
 
 }
 
-impl FormSer for CopyMessage {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.from_chat_id.serialize("from_chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.caption.serialize("caption".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.caption_entities.serialize("caption_entities".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for CopyMessage {
     type ResponseType = MessageId;
     const PATH: &'static str = "copyMessage";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("from_chat_id", self.from_chat_id.to_string());
+        form = form.text("message_id", self.message_id.to_string());
+        if let Some(s) = &self.caption {
+            form = form.text("caption", s.to_string());
+        }
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.caption_entities {
+            form = form.text("caption_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl CopyMessage {
     pub fn new(chat_id: ChatId, from_chat_id: ChatId, message_id: i64, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             from_chat_id,
             message_id,
             caption: None,
@@ -334,6 +411,11 @@ impl CopyMessage {
 }
 
 impl CopyMessage {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_caption(mut self, caption: String) -> Self {
         self.caption = Some(caption);
         self
@@ -376,35 +458,59 @@ impl CopyMessage {
 
 }
 
-impl FormSer for SendPhoto {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.photo.serialize("photo".into(), form);
-        form = self.caption.serialize("caption".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.caption_entities.serialize("caption_entities".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendPhoto {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendPhoto";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.photo.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("photo", self.photo.to_string());
+        if let Some(s) = &self.caption {
+            form = form.text("caption", s.to_string());
+        }
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.caption_entities {
+            form = form.text("caption_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.has_spoiler {
+            form = form.text("has_spoiler", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendPhoto {
     pub fn new(chat_id: ChatId, photo: InputFile, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             photo,
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            has_spoiler: None,
             disable_notification: None,
             protect_content: None,
             reply_to_message_id: None,
@@ -415,6 +521,11 @@ impl SendPhoto {
 }
 
 impl SendPhoto {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_caption(mut self, caption: String) -> Self {
         self.caption = Some(caption);
         self
@@ -427,6 +538,11 @@ impl SendPhoto {
 
     pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
         self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_has_spoiler(mut self, has_spoiler: bool) -> Self {
+        self.has_spoiler = Some(has_spoiler);
         self
     }
 
@@ -457,22 +573,9 @@ impl SendPhoto {
 
 }
 
-impl FormSer for SendAudio {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.audio.serialize("audio".into(), form);
-        form = self.caption.serialize("caption".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.caption_entities.serialize("caption_entities".into(), form);
-        form = self.duration.serialize("duration".into(), form);
-        form = self.performer.serialize("performer".into(), form);
-        form = self.title.serialize("title".into(), form);
-        form = self.thumb.serialize("thumb".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+impl crate::TgObject for SendPhoto {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.photo.add_file(form);
         form
     }
 }
@@ -480,12 +583,61 @@ impl FormSer for SendAudio {
 impl TgMethod for SendAudio {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendAudio";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.audio.add_file(form);
+        form = self.thumb.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("audio", self.audio.to_string());
+        if let Some(s) = &self.caption {
+            form = form.text("caption", s.to_string());
+        }
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.caption_entities {
+            form = form.text("caption_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.duration {
+            form = form.text("duration", s.to_string());
+        }
+        if let Some(s) = &self.performer {
+            form = form.text("performer", s.to_string());
+        }
+        if let Some(s) = &self.title {
+            form = form.text("title", s.to_string());
+        }
+        if let Some(s) = &self.thumb {
+            form = form.text("thumb", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendAudio {
     pub fn new(chat_id: ChatId, audio: InputFile, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             audio,
             caption: None,
             parse_mode: None,
@@ -504,6 +656,11 @@ impl SendAudio {
 }
 
 impl SendAudio {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_caption(mut self, caption: String) -> Self {
         self.caption = Some(caption);
         self
@@ -566,20 +723,10 @@ impl SendAudio {
 
 }
 
-impl FormSer for SendDocument {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.document.serialize("document".into(), form);
-        form = self.thumb.serialize("thumb".into(), form);
-        form = self.caption.serialize("caption".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.caption_entities.serialize("caption_entities".into(), form);
-        form = self.disable_content_type_detection.serialize("disable_content_type_detection".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+impl crate::TgObject for SendAudio {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.audio.add_file(form);
+        form = self.thumb.add_file(form);
         form
     }
 }
@@ -587,12 +734,55 @@ impl FormSer for SendDocument {
 impl TgMethod for SendDocument {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendDocument";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.document.add_file(form);
+        form = self.thumb.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("document", self.document.to_string());
+        if let Some(s) = &self.thumb {
+            form = form.text("thumb", s.to_string());
+        }
+        if let Some(s) = &self.caption {
+            form = form.text("caption", s.to_string());
+        }
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.caption_entities {
+            form = form.text("caption_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.disable_content_type_detection {
+            form = form.text("disable_content_type_detection", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendDocument {
     pub fn new(chat_id: ChatId, document: InputFile, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             document,
             thumb: None,
             caption: None,
@@ -609,6 +799,11 @@ impl SendDocument {
 }
 
 impl SendDocument {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_thumb(mut self, thumb: InputFile) -> Self {
         self.thumb = Some(thumb);
         self
@@ -661,23 +856,10 @@ impl SendDocument {
 
 }
 
-impl FormSer for SendVideo {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.video.serialize("video".into(), form);
-        form = self.duration.serialize("duration".into(), form);
-        form = self.width.serialize("width".into(), form);
-        form = self.height.serialize("height".into(), form);
-        form = self.thumb.serialize("thumb".into(), form);
-        form = self.caption.serialize("caption".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.caption_entities.serialize("caption_entities".into(), form);
-        form = self.supports_streaming.serialize("supports_streaming".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+impl crate::TgObject for SendDocument {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.document.add_file(form);
+        form = self.thumb.add_file(form);
         form
     }
 }
@@ -685,12 +867,67 @@ impl FormSer for SendVideo {
 impl TgMethod for SendVideo {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendVideo";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.video.add_file(form);
+        form = self.thumb.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("video", self.video.to_string());
+        if let Some(s) = &self.duration {
+            form = form.text("duration", s.to_string());
+        }
+        if let Some(s) = &self.width {
+            form = form.text("width", s.to_string());
+        }
+        if let Some(s) = &self.height {
+            form = form.text("height", s.to_string());
+        }
+        if let Some(s) = &self.thumb {
+            form = form.text("thumb", s.to_string());
+        }
+        if let Some(s) = &self.caption {
+            form = form.text("caption", s.to_string());
+        }
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.caption_entities {
+            form = form.text("caption_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.has_spoiler {
+            form = form.text("has_spoiler", s.to_string());
+        }
+        if let Some(s) = &self.supports_streaming {
+            form = form.text("supports_streaming", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendVideo {
     pub fn new(chat_id: ChatId, video: InputFile, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             video,
             duration: None,
             width: None,
@@ -699,6 +936,7 @@ impl SendVideo {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            has_spoiler: None,
             supports_streaming: None,
             disable_notification: None,
             protect_content: None,
@@ -710,6 +948,11 @@ impl SendVideo {
 }
 
 impl SendVideo {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_duration(mut self, duration: i64) -> Self {
         self.duration = Some(duration);
         self
@@ -742,6 +985,11 @@ impl SendVideo {
 
     pub fn with_caption_entities(mut self, caption_entities: Vec<MessageEntity>) -> Self {
         self.caption_entities = Some(caption_entities);
+        self
+    }
+
+    pub fn with_has_spoiler(mut self, has_spoiler: bool) -> Self {
+        self.has_spoiler = Some(has_spoiler);
         self
     }
 
@@ -777,22 +1025,10 @@ impl SendVideo {
 
 }
 
-impl FormSer for SendAnimation {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.animation.serialize("animation".into(), form);
-        form = self.duration.serialize("duration".into(), form);
-        form = self.width.serialize("width".into(), form);
-        form = self.height.serialize("height".into(), form);
-        form = self.thumb.serialize("thumb".into(), form);
-        form = self.caption.serialize("caption".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.caption_entities.serialize("caption_entities".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+impl crate::TgObject for SendVideo {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.video.add_file(form);
+        form = self.thumb.add_file(form);
         form
     }
 }
@@ -800,12 +1036,64 @@ impl FormSer for SendAnimation {
 impl TgMethod for SendAnimation {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendAnimation";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.animation.add_file(form);
+        form = self.thumb.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("animation", self.animation.to_string());
+        if let Some(s) = &self.duration {
+            form = form.text("duration", s.to_string());
+        }
+        if let Some(s) = &self.width {
+            form = form.text("width", s.to_string());
+        }
+        if let Some(s) = &self.height {
+            form = form.text("height", s.to_string());
+        }
+        if let Some(s) = &self.thumb {
+            form = form.text("thumb", s.to_string());
+        }
+        if let Some(s) = &self.caption {
+            form = form.text("caption", s.to_string());
+        }
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.caption_entities {
+            form = form.text("caption_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.has_spoiler {
+            form = form.text("has_spoiler", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendAnimation {
     pub fn new(chat_id: ChatId, animation: InputFile, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             animation,
             duration: None,
             width: None,
@@ -814,6 +1102,7 @@ impl SendAnimation {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            has_spoiler: None,
             disable_notification: None,
             protect_content: None,
             reply_to_message_id: None,
@@ -824,6 +1113,11 @@ impl SendAnimation {
 }
 
 impl SendAnimation {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_duration(mut self, duration: i64) -> Self {
         self.duration = Some(duration);
         self
@@ -859,6 +1153,11 @@ impl SendAnimation {
         self
     }
 
+    pub fn with_has_spoiler(mut self, has_spoiler: bool) -> Self {
+        self.has_spoiler = Some(has_spoiler);
+        self
+    }
+
     pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
         self
@@ -886,19 +1185,10 @@ impl SendAnimation {
 
 }
 
-impl FormSer for SendVoice {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.voice.serialize("voice".into(), form);
-        form = self.caption.serialize("caption".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.caption_entities.serialize("caption_entities".into(), form);
-        form = self.duration.serialize("duration".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+impl crate::TgObject for SendAnimation {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.animation.add_file(form);
+        form = self.thumb.add_file(form);
         form
     }
 }
@@ -906,12 +1196,51 @@ impl FormSer for SendVoice {
 impl TgMethod for SendVoice {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendVoice";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.voice.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("voice", self.voice.to_string());
+        if let Some(s) = &self.caption {
+            form = form.text("caption", s.to_string());
+        }
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.caption_entities {
+            form = form.text("caption_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.duration {
+            form = form.text("duration", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendVoice {
     pub fn new(chat_id: ChatId, voice: InputFile, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             voice,
             caption: None,
             parse_mode: None,
@@ -927,6 +1256,11 @@ impl SendVoice {
 }
 
 impl SendVoice {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_caption(mut self, caption: String) -> Self {
         self.caption = Some(caption);
         self
@@ -974,18 +1308,9 @@ impl SendVoice {
 
 }
 
-impl FormSer for SendVideoNote {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.video_note.serialize("video_note".into(), form);
-        form = self.duration.serialize("duration".into(), form);
-        form = self.length.serialize("length".into(), form);
-        form = self.thumb.serialize("thumb".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+impl crate::TgObject for SendVoice {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.voice.add_file(form);
         form
     }
 }
@@ -993,12 +1318,49 @@ impl FormSer for SendVideoNote {
 impl TgMethod for SendVideoNote {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendVideoNote";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.video_note.add_file(form);
+        form = self.thumb.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("video_note", self.video_note.to_string());
+        if let Some(s) = &self.duration {
+            form = form.text("duration", s.to_string());
+        }
+        if let Some(s) = &self.length {
+            form = form.text("length", s.to_string());
+        }
+        if let Some(s) = &self.thumb {
+            form = form.text("thumb", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendVideoNote {
     pub fn new(chat_id: ChatId, video_note: InputFile, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             video_note,
             duration: None,
             length: None,
@@ -1013,6 +1375,11 @@ impl SendVideoNote {
 }
 
 impl SendVideoNote {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_duration(mut self, duration: i64) -> Self {
         self.duration = Some(duration);
         self
@@ -1055,14 +1422,10 @@ impl SendVideoNote {
 
 }
 
-impl FormSer for SendMediaGroup {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.media.serialize("media".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
+impl crate::TgObject for SendVideoNote {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.video_note.add_file(form);
+        form = self.thumb.add_file(form);
         form
     }
 }
@@ -1070,12 +1433,36 @@ impl FormSer for SendMediaGroup {
 impl TgMethod for SendMediaGroup {
     type ResponseType = Vec<Message>;
     const PATH: &'static str = "sendMediaGroup";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.media.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("media", serde_json::to_string(&self.media).unwrap());
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        form
+    }
 }
 
 impl SendMediaGroup {
     pub fn new(chat_id: ChatId, media: Vec<InputMedia>, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             media,
             disable_notification: None,
             protect_content: None,
@@ -1086,6 +1473,11 @@ impl SendMediaGroup {
 }
 
 impl SendMediaGroup {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
         self
@@ -1108,20 +1500,9 @@ impl SendMediaGroup {
 
 }
 
-impl FormSer for SendLocation {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.latitude.serialize("latitude".into(), form);
-        form = self.longitude.serialize("longitude".into(), form);
-        form = self.horizontal_accuracy.serialize("horizontal_accuracy".into(), form);
-        form = self.live_period.serialize("live_period".into(), form);
-        form = self.heading.serialize("heading".into(), form);
-        form = self.proximity_alert_radius.serialize("proximity_alert_radius".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+impl crate::TgObject for SendMediaGroup {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.media.add_file(form);
         form
     }
 }
@@ -1129,12 +1510,51 @@ impl FormSer for SendLocation {
 impl TgMethod for SendLocation {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendLocation";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("latitude", self.latitude.to_string());
+        form = form.text("longitude", self.longitude.to_string());
+        if let Some(s) = &self.horizontal_accuracy {
+            form = form.text("horizontal_accuracy", s.to_string());
+        }
+        if let Some(s) = &self.live_period {
+            form = form.text("live_period", s.to_string());
+        }
+        if let Some(s) = &self.heading {
+            form = form.text("heading", s.to_string());
+        }
+        if let Some(s) = &self.proximity_alert_radius {
+            form = form.text("proximity_alert_radius", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendLocation {
     pub fn new(chat_id: ChatId, latitude: f64, longitude: f64, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             latitude,
             longitude,
             horizontal_accuracy: None,
@@ -1151,6 +1571,11 @@ impl SendLocation {
 }
 
 impl SendLocation {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_horizontal_accuracy(mut self, horizontal_accuracy: f64) -> Self {
         self.horizontal_accuracy = Some(horizontal_accuracy);
         self
@@ -1198,24 +1623,37 @@ impl SendLocation {
 
 }
 
-impl FormSer for EditMessageLiveLocation {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.inline_message_id.serialize("inline_message_id".into(), form);
-        form = self.latitude.serialize("latitude".into(), form);
-        form = self.longitude.serialize("longitude".into(), form);
-        form = self.horizontal_accuracy.serialize("horizontal_accuracy".into(), form);
-        form = self.heading.serialize("heading".into(), form);
-        form = self.proximity_alert_radius.serialize("proximity_alert_radius".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for EditMessageLiveLocation {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "editMessageLiveLocation";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        if let Some(s) = &self.inline_message_id {
+            form = form.text("inline_message_id", s.to_string());
+        }
+        form = form.text("latitude", self.latitude.to_string());
+        form = form.text("longitude", self.longitude.to_string());
+        if let Some(s) = &self.horizontal_accuracy {
+            form = form.text("horizontal_accuracy", s.to_string());
+        }
+        if let Some(s) = &self.heading {
+            form = form.text("heading", s.to_string());
+        }
+        if let Some(s) = &self.proximity_alert_radius {
+            form = form.text("proximity_alert_radius", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl EditMessageLiveLocation {
@@ -1272,19 +1710,26 @@ impl EditMessageLiveLocation {
 
 }
 
-impl FormSer for StopMessageLiveLocation {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.inline_message_id.serialize("inline_message_id".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for StopMessageLiveLocation {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "stopMessageLiveLocation";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        if let Some(s) = &self.inline_message_id {
+            form = form.text("inline_message_id", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl StopMessageLiveLocation {
@@ -1310,35 +1755,56 @@ impl StopMessageLiveLocation {
 
 }
 
-impl FormSer for SendVenue {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.latitude.serialize("latitude".into(), form);
-        form = self.longitude.serialize("longitude".into(), form);
-        form = self.title.serialize("title".into(), form);
-        form = self.address.serialize("address".into(), form);
-        form = self.foursquare_id.serialize("foursquare_id".into(), form);
-        form = self.foursquare_type.serialize("foursquare_type".into(), form);
-        form = self.google_place_id.serialize("google_place_id".into(), form);
-        form = self.google_place_type.serialize("google_place_type".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendVenue {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendVenue";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("latitude", self.latitude.to_string());
+        form = form.text("longitude", self.longitude.to_string());
+        form = form.text("title", self.title.to_string());
+        form = form.text("address", self.address.to_string());
+        if let Some(s) = &self.foursquare_id {
+            form = form.text("foursquare_id", s.to_string());
+        }
+        if let Some(s) = &self.foursquare_type {
+            form = form.text("foursquare_type", s.to_string());
+        }
+        if let Some(s) = &self.google_place_id {
+            form = form.text("google_place_id", s.to_string());
+        }
+        if let Some(s) = &self.google_place_type {
+            form = form.text("google_place_type", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendVenue {
     pub fn new(chat_id: ChatId, latitude: f64, longitude: f64, title: String, address: String, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             latitude,
             longitude,
             title,
@@ -1357,6 +1823,11 @@ impl SendVenue {
 }
 
 impl SendVenue {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_foursquare_id(mut self, foursquare_id: String) -> Self {
         self.foursquare_id = Some(foursquare_id);
         self
@@ -1404,31 +1875,48 @@ impl SendVenue {
 
 }
 
-impl FormSer for SendContact {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.phone_number.serialize("phone_number".into(), form);
-        form = self.first_name.serialize("first_name".into(), form);
-        form = self.last_name.serialize("last_name".into(), form);
-        form = self.vcard.serialize("vcard".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendContact {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendContact";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("phone_number", self.phone_number.to_string());
+        form = form.text("first_name", self.first_name.to_string());
+        if let Some(s) = &self.last_name {
+            form = form.text("last_name", s.to_string());
+        }
+        if let Some(s) = &self.vcard {
+            form = form.text("vcard", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendContact {
     pub fn new(chat_id: ChatId, phone_number: String, first_name: String, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             phone_number,
             first_name,
             last_name: None,
@@ -1443,6 +1931,11 @@ impl SendContact {
 }
 
 impl SendContact {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_last_name(mut self, last_name: String) -> Self {
         self.last_name = Some(last_name);
         self
@@ -1480,39 +1973,72 @@ impl SendContact {
 
 }
 
-impl FormSer for SendPoll {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.question.serialize("question".into(), form);
-        form = self.options.serialize("options".into(), form);
-        form = self.is_anonymous.serialize("is_anonymous".into(), form);
-        form = self.type_.serialize("type".into(), form);
-        form = self.allows_multiple_answers.serialize("allows_multiple_answers".into(), form);
-        form = self.correct_option_id.serialize("correct_option_id".into(), form);
-        form = self.explanation.serialize("explanation".into(), form);
-        form = self.explanation_parse_mode.serialize("explanation_parse_mode".into(), form);
-        form = self.explanation_entities.serialize("explanation_entities".into(), form);
-        form = self.open_period.serialize("open_period".into(), form);
-        form = self.close_date.serialize("close_date".into(), form);
-        form = self.is_closed.serialize("is_closed".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendPoll {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendPoll";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("question", self.question.to_string());
+        form = form.text("options", serde_json::to_string(&self.options).unwrap());
+        if let Some(s) = &self.is_anonymous {
+            form = form.text("is_anonymous", s.to_string());
+        }
+        if let Some(s) = &self.type_ {
+            form = form.text("type", s.to_string());
+        }
+        if let Some(s) = &self.allows_multiple_answers {
+            form = form.text("allows_multiple_answers", s.to_string());
+        }
+        if let Some(s) = &self.correct_option_id {
+            form = form.text("correct_option_id", s.to_string());
+        }
+        if let Some(s) = &self.explanation {
+            form = form.text("explanation", s.to_string());
+        }
+        if let Some(s) = &self.explanation_parse_mode {
+            form = form.text("explanation_parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.explanation_entities {
+            form = form.text("explanation_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.open_period {
+            form = form.text("open_period", s.to_string());
+        }
+        if let Some(s) = &self.close_date {
+            form = form.text("close_date", s.to_string());
+        }
+        if let Some(s) = &self.is_closed {
+            form = form.text("is_closed", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendPoll {
     pub fn new(chat_id: ChatId, question: String, options: Vec<String>, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             question,
             options,
             is_anonymous: None,
@@ -1535,12 +2061,17 @@ impl SendPoll {
 }
 
 impl SendPoll {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_is_anonymous(mut self, is_anonymous: bool) -> Self {
         self.is_anonymous = Some(is_anonymous);
         self
     }
 
-    pub fn with_type_(mut self, type_: String) -> Self {
+    pub fn with_type(mut self, type_: String) -> Self {
         self.type_ = Some(type_);
         self
     }
@@ -1612,28 +2143,43 @@ impl SendPoll {
 
 }
 
-impl FormSer for SendDice {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.emoji.serialize("emoji".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendDice {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendDice";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        if let Some(s) = &self.emoji {
+            form = form.text("emoji", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendDice {
     pub fn new(chat_id: ChatId, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             emoji: None,
             disable_notification: None,
             protect_content: None,
@@ -1645,6 +2191,11 @@ impl SendDice {
 }
 
 impl SendDice {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_emoji(mut self, emoji: String) -> Self {
         self.emoji = Some(emoji);
         self
@@ -1677,40 +2228,54 @@ impl SendDice {
 
 }
 
-impl FormSer for SendChatAction {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.action.serialize("action".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendChatAction {
     type ResponseType = bool;
     const PATH: &'static str = "sendChatAction";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("action", self.action.to_string());
+        form
+    }
 }
 
 impl SendChatAction {
     pub fn new(chat_id: ChatId, action: String, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             action,
         }
     }
 }
 
-impl FormSer for GetUserProfilePhotos {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.offset.serialize("offset".into(), form);
-        form = self.limit.serialize("limit".into(), form);
-        form
+impl SendChatAction {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
     }
+
 }
 
 impl TgMethod for GetUserProfilePhotos {
     type ResponseType = UserProfilePhotos;
     const PATH: &'static str = "getUserProfilePhotos";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("user_id", self.user_id.to_string());
+        if let Some(s) = &self.offset {
+            form = form.text("offset", s.to_string());
+        }
+        if let Some(s) = &self.limit {
+            form = form.text("limit", s.to_string());
+        }
+        form
+    }
 }
 
 impl GetUserProfilePhotos {
@@ -1736,16 +2301,15 @@ impl GetUserProfilePhotos {
 
 }
 
-impl FormSer for GetFile {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.file_id.serialize("file_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetFile {
     type ResponseType = File;
     const PATH: &'static str = "getFile";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("file_id", self.file_id.to_string());
+        form
+    }
 }
 
 impl GetFile {
@@ -1756,19 +2320,22 @@ impl GetFile {
     }
 }
 
-impl FormSer for BanChatMember {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.until_date.serialize("until_date".into(), form);
-        form = self.revoke_messages.serialize("revoke_messages".into(), form);
-        form
-    }
-}
-
 impl TgMethod for BanChatMember {
     type ResponseType = bool;
     const PATH: &'static str = "banChatMember";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        if let Some(s) = &self.until_date {
+            form = form.text("until_date", s.to_string());
+        }
+        if let Some(s) = &self.revoke_messages {
+            form = form.text("revoke_messages", s.to_string());
+        }
+        form
+    }
 }
 
 impl BanChatMember {
@@ -1795,18 +2362,19 @@ impl BanChatMember {
 
 }
 
-impl FormSer for UnbanChatMember {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.only_if_banned.serialize("only_if_banned".into(), form);
-        form
-    }
-}
-
 impl TgMethod for UnbanChatMember {
     type ResponseType = bool;
     const PATH: &'static str = "unbanChatMember";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        if let Some(s) = &self.only_if_banned {
+            form = form.text("only_if_banned", s.to_string());
+        }
+        form
+    }
 }
 
 impl UnbanChatMember {
@@ -1827,19 +2395,20 @@ impl UnbanChatMember {
 
 }
 
-impl FormSer for RestrictChatMember {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.permissions.serialize("permissions".into(), form);
-        form = self.until_date.serialize("until_date".into(), form);
-        form
-    }
-}
-
 impl TgMethod for RestrictChatMember {
     type ResponseType = bool;
     const PATH: &'static str = "restrictChatMember";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        form = form.text("permissions", serde_json::to_string(&self.permissions).unwrap());
+        if let Some(s) = &self.until_date {
+            form = form.text("until_date", s.to_string());
+        }
+        form
+    }
 }
 
 impl RestrictChatMember {
@@ -1861,28 +2430,52 @@ impl RestrictChatMember {
 
 }
 
-impl FormSer for PromoteChatMember {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.is_anonymous.serialize("is_anonymous".into(), form);
-        form = self.can_manage_chat.serialize("can_manage_chat".into(), form);
-        form = self.can_post_messages.serialize("can_post_messages".into(), form);
-        form = self.can_edit_messages.serialize("can_edit_messages".into(), form);
-        form = self.can_delete_messages.serialize("can_delete_messages".into(), form);
-        form = self.can_manage_video_chats.serialize("can_manage_video_chats".into(), form);
-        form = self.can_restrict_members.serialize("can_restrict_members".into(), form);
-        form = self.can_promote_members.serialize("can_promote_members".into(), form);
-        form = self.can_change_info.serialize("can_change_info".into(), form);
-        form = self.can_invite_users.serialize("can_invite_users".into(), form);
-        form = self.can_pin_messages.serialize("can_pin_messages".into(), form);
-        form
-    }
-}
-
 impl TgMethod for PromoteChatMember {
     type ResponseType = bool;
     const PATH: &'static str = "promoteChatMember";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        if let Some(s) = &self.is_anonymous {
+            form = form.text("is_anonymous", s.to_string());
+        }
+        if let Some(s) = &self.can_manage_chat {
+            form = form.text("can_manage_chat", s.to_string());
+        }
+        if let Some(s) = &self.can_post_messages {
+            form = form.text("can_post_messages", s.to_string());
+        }
+        if let Some(s) = &self.can_edit_messages {
+            form = form.text("can_edit_messages", s.to_string());
+        }
+        if let Some(s) = &self.can_delete_messages {
+            form = form.text("can_delete_messages", s.to_string());
+        }
+        if let Some(s) = &self.can_manage_video_chats {
+            form = form.text("can_manage_video_chats", s.to_string());
+        }
+        if let Some(s) = &self.can_restrict_members {
+            form = form.text("can_restrict_members", s.to_string());
+        }
+        if let Some(s) = &self.can_promote_members {
+            form = form.text("can_promote_members", s.to_string());
+        }
+        if let Some(s) = &self.can_change_info {
+            form = form.text("can_change_info", s.to_string());
+        }
+        if let Some(s) = &self.can_invite_users {
+            form = form.text("can_invite_users", s.to_string());
+        }
+        if let Some(s) = &self.can_pin_messages {
+            form = form.text("can_pin_messages", s.to_string());
+        }
+        if let Some(s) = &self.can_manage_topics {
+            form = form.text("can_manage_topics", s.to_string());
+        }
+        form
+    }
 }
 
 impl PromoteChatMember {
@@ -1901,6 +2494,7 @@ impl PromoteChatMember {
             can_change_info: None,
             can_invite_users: None,
             can_pin_messages: None,
+            can_manage_topics: None,
         }
     }
 }
@@ -1961,20 +2555,24 @@ impl PromoteChatMember {
         self
     }
 
-}
-
-impl FormSer for SetChatAdministratorCustomTitle {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.custom_title.serialize("custom_title".into(), form);
-        form
+    pub fn with_can_manage_topics(mut self, can_manage_topics: bool) -> Self {
+        self.can_manage_topics = Some(can_manage_topics);
+        self
     }
+
 }
 
 impl TgMethod for SetChatAdministratorCustomTitle {
     type ResponseType = bool;
     const PATH: &'static str = "setChatAdministratorCustomTitle";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        form = form.text("custom_title", self.custom_title.to_string());
+        form
+    }
 }
 
 impl SetChatAdministratorCustomTitle {
@@ -1987,17 +2585,16 @@ impl SetChatAdministratorCustomTitle {
     }
 }
 
-impl FormSer for BanChatSenderChat {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.sender_chat_id.serialize("sender_chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for BanChatSenderChat {
     type ResponseType = bool;
     const PATH: &'static str = "banChatSenderChat";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("sender_chat_id", self.sender_chat_id.to_string());
+        form
+    }
 }
 
 impl BanChatSenderChat {
@@ -2009,17 +2606,16 @@ impl BanChatSenderChat {
     }
 }
 
-impl FormSer for UnbanChatSenderChat {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.sender_chat_id.serialize("sender_chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for UnbanChatSenderChat {
     type ResponseType = bool;
     const PATH: &'static str = "unbanChatSenderChat";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("sender_chat_id", self.sender_chat_id.to_string());
+        form
+    }
 }
 
 impl UnbanChatSenderChat {
@@ -2031,17 +2627,16 @@ impl UnbanChatSenderChat {
     }
 }
 
-impl FormSer for SetChatPermissions {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.permissions.serialize("permissions".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetChatPermissions {
     type ResponseType = bool;
     const PATH: &'static str = "setChatPermissions";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("permissions", serde_json::to_string(&self.permissions).unwrap());
+        form
+    }
 }
 
 impl SetChatPermissions {
@@ -2053,16 +2648,15 @@ impl SetChatPermissions {
     }
 }
 
-impl FormSer for ExportChatInviteLink {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for ExportChatInviteLink {
     type ResponseType = String;
     const PATH: &'static str = "exportChatInviteLink";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
 }
 
 impl ExportChatInviteLink {
@@ -2073,20 +2667,27 @@ impl ExportChatInviteLink {
     }
 }
 
-impl FormSer for CreateChatInviteLink {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.name.serialize("name".into(), form);
-        form = self.expire_date.serialize("expire_date".into(), form);
-        form = self.member_limit.serialize("member_limit".into(), form);
-        form = self.creates_join_request.serialize("creates_join_request".into(), form);
-        form
-    }
-}
-
 impl TgMethod for CreateChatInviteLink {
     type ResponseType = ChatInviteLink;
     const PATH: &'static str = "createChatInviteLink";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.name {
+            form = form.text("name", s.to_string());
+        }
+        if let Some(s) = &self.expire_date {
+            form = form.text("expire_date", s.to_string());
+        }
+        if let Some(s) = &self.member_limit {
+            form = form.text("member_limit", s.to_string());
+        }
+        if let Some(s) = &self.creates_join_request {
+            form = form.text("creates_join_request", s.to_string());
+        }
+        form
+    }
 }
 
 impl CreateChatInviteLink {
@@ -2124,21 +2725,28 @@ impl CreateChatInviteLink {
 
 }
 
-impl FormSer for EditChatInviteLink {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.invite_link.serialize("invite_link".into(), form);
-        form = self.name.serialize("name".into(), form);
-        form = self.expire_date.serialize("expire_date".into(), form);
-        form = self.member_limit.serialize("member_limit".into(), form);
-        form = self.creates_join_request.serialize("creates_join_request".into(), form);
-        form
-    }
-}
-
 impl TgMethod for EditChatInviteLink {
     type ResponseType = ChatInviteLink;
     const PATH: &'static str = "editChatInviteLink";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("invite_link", self.invite_link.to_string());
+        if let Some(s) = &self.name {
+            form = form.text("name", s.to_string());
+        }
+        if let Some(s) = &self.expire_date {
+            form = form.text("expire_date", s.to_string());
+        }
+        if let Some(s) = &self.member_limit {
+            form = form.text("member_limit", s.to_string());
+        }
+        if let Some(s) = &self.creates_join_request {
+            form = form.text("creates_join_request", s.to_string());
+        }
+        form
+    }
 }
 
 impl EditChatInviteLink {
@@ -2177,17 +2785,16 @@ impl EditChatInviteLink {
 
 }
 
-impl FormSer for RevokeChatInviteLink {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.invite_link.serialize("invite_link".into(), form);
-        form
-    }
-}
-
 impl TgMethod for RevokeChatInviteLink {
     type ResponseType = ChatInviteLink;
     const PATH: &'static str = "revokeChatInviteLink";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("invite_link", self.invite_link.to_string());
+        form
+    }
 }
 
 impl RevokeChatInviteLink {
@@ -2199,17 +2806,16 @@ impl RevokeChatInviteLink {
     }
 }
 
-impl FormSer for ApproveChatJoinRequest {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for ApproveChatJoinRequest {
     type ResponseType = bool;
     const PATH: &'static str = "approveChatJoinRequest";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        form
+    }
 }
 
 impl ApproveChatJoinRequest {
@@ -2221,17 +2827,16 @@ impl ApproveChatJoinRequest {
     }
 }
 
-impl FormSer for DeclineChatJoinRequest {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for DeclineChatJoinRequest {
     type ResponseType = bool;
     const PATH: &'static str = "declineChatJoinRequest";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        form
+    }
 }
 
 impl DeclineChatJoinRequest {
@@ -2243,17 +2848,17 @@ impl DeclineChatJoinRequest {
     }
 }
 
-impl FormSer for SetChatPhoto {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.photo.serialize("photo".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetChatPhoto {
     type ResponseType = bool;
     const PATH: &'static str = "setChatPhoto";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.photo.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("photo", self.photo.to_string());
+        form
+    }
 }
 
 impl SetChatPhoto {
@@ -2265,9 +2870,9 @@ impl SetChatPhoto {
     }
 }
 
-impl FormSer for DeleteChatPhoto {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
+impl crate::TgObject for SetChatPhoto {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.photo.add_file(form);
         form
     }
 }
@@ -2275,6 +2880,12 @@ impl FormSer for DeleteChatPhoto {
 impl TgMethod for DeleteChatPhoto {
     type ResponseType = bool;
     const PATH: &'static str = "deleteChatPhoto";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
 }
 
 impl DeleteChatPhoto {
@@ -2285,17 +2896,16 @@ impl DeleteChatPhoto {
     }
 }
 
-impl FormSer for SetChatTitle {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.title.serialize("title".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetChatTitle {
     type ResponseType = bool;
     const PATH: &'static str = "setChatTitle";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("title", self.title.to_string());
+        form
+    }
 }
 
 impl SetChatTitle {
@@ -2307,17 +2917,18 @@ impl SetChatTitle {
     }
 }
 
-impl FormSer for SetChatDescription {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.description.serialize("description".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetChatDescription {
     type ResponseType = bool;
     const PATH: &'static str = "setChatDescription";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.description {
+            form = form.text("description", s.to_string());
+        }
+        form
+    }
 }
 
 impl SetChatDescription {
@@ -2337,18 +2948,19 @@ impl SetChatDescription {
 
 }
 
-impl FormSer for PinChatMessage {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form
-    }
-}
-
 impl TgMethod for PinChatMessage {
     type ResponseType = bool;
     const PATH: &'static str = "pinChatMessage";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("message_id", self.message_id.to_string());
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        form
+    }
 }
 
 impl PinChatMessage {
@@ -2369,17 +2981,18 @@ impl PinChatMessage {
 
 }
 
-impl FormSer for UnpinChatMessage {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for UnpinChatMessage {
     type ResponseType = bool;
     const PATH: &'static str = "unpinChatMessage";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        form
+    }
 }
 
 impl UnpinChatMessage {
@@ -2399,16 +3012,15 @@ impl UnpinChatMessage {
 
 }
 
-impl FormSer for UnpinAllChatMessages {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for UnpinAllChatMessages {
     type ResponseType = bool;
     const PATH: &'static str = "unpinAllChatMessages";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
 }
 
 impl UnpinAllChatMessages {
@@ -2419,16 +3031,15 @@ impl UnpinAllChatMessages {
     }
 }
 
-impl FormSer for LeaveChat {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for LeaveChat {
     type ResponseType = bool;
     const PATH: &'static str = "leaveChat";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
 }
 
 impl LeaveChat {
@@ -2439,16 +3050,15 @@ impl LeaveChat {
     }
 }
 
-impl FormSer for GetChat {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetChat {
     type ResponseType = Chat;
     const PATH: &'static str = "getChat";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
 }
 
 impl GetChat {
@@ -2459,16 +3069,15 @@ impl GetChat {
     }
 }
 
-impl FormSer for GetChatAdministrators {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetChatAdministrators {
     type ResponseType = Vec<ChatMember>;
     const PATH: &'static str = "getChatAdministrators";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
 }
 
 impl GetChatAdministrators {
@@ -2479,16 +3088,15 @@ impl GetChatAdministrators {
     }
 }
 
-impl FormSer for GetChatMemberCount {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetChatMemberCount {
     type ResponseType = i64;
     const PATH: &'static str = "getChatMemberCount";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
 }
 
 impl GetChatMemberCount {
@@ -2499,17 +3107,16 @@ impl GetChatMemberCount {
     }
 }
 
-impl FormSer for GetChatMember {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetChatMember {
     type ResponseType = ChatMember;
     const PATH: &'static str = "getChatMember";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        form
+    }
 }
 
 impl GetChatMember {
@@ -2521,17 +3128,16 @@ impl GetChatMember {
     }
 }
 
-impl FormSer for SetChatStickerSet {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.sticker_set_name.serialize("sticker_set_name".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetChatStickerSet {
     type ResponseType = bool;
     const PATH: &'static str = "setChatStickerSet";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("sticker_set_name", self.sticker_set_name.to_string());
+        form
+    }
 }
 
 impl SetChatStickerSet {
@@ -2543,16 +3149,15 @@ impl SetChatStickerSet {
     }
 }
 
-impl FormSer for DeleteChatStickerSet {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for DeleteChatStickerSet {
     type ResponseType = bool;
     const PATH: &'static str = "deleteChatStickerSet";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
 }
 
 impl DeleteChatStickerSet {
@@ -2563,20 +3168,302 @@ impl DeleteChatStickerSet {
     }
 }
 
-impl FormSer for AnswerCallbackQuery {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.callback_query_id.serialize("callback_query_id".into(), form);
-        form = self.text.serialize("text".into(), form);
-        form = self.show_alert.serialize("show_alert".into(), form);
-        form = self.url.serialize("url".into(), form);
-        form = self.cache_time.serialize("cache_time".into(), form);
+impl TgMethod for GetForumTopicIconStickers {
+    type ResponseType = Vec<Sticker>;
+    const PATH: &'static str = "getForumTopicIconStickers";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
         form
+    }
+}
+
+impl TgMethod for CreateForumTopic {
+    type ResponseType = ForumTopic;
+    const PATH: &'static str = "createForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("name", self.name.to_string());
+        if let Some(s) = &self.icon_color {
+            form = form.text("icon_color", s.to_string());
+        }
+        if let Some(s) = &self.icon_custom_emoji_id {
+            form = form.text("icon_custom_emoji_id", s.to_string());
+        }
+        form
+    }
+}
+
+impl CreateForumTopic {
+    pub fn new(chat_id: ChatId, name: String, ) -> Self {
+        Self {
+            chat_id,
+            name,
+            icon_color: None,
+            icon_custom_emoji_id: None,
+        }
+    }
+}
+
+impl CreateForumTopic {
+    pub fn with_icon_color(mut self, icon_color: i64) -> Self {
+        self.icon_color = Some(icon_color);
+        self
+    }
+
+    pub fn with_icon_custom_emoji_id(mut self, icon_custom_emoji_id: String) -> Self {
+        self.icon_custom_emoji_id = Some(icon_custom_emoji_id);
+        self
+    }
+
+}
+
+impl TgMethod for EditForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "editForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("message_thread_id", self.message_thread_id.to_string());
+        if let Some(s) = &self.name {
+            form = form.text("name", s.to_string());
+        }
+        if let Some(s) = &self.icon_custom_emoji_id {
+            form = form.text("icon_custom_emoji_id", s.to_string());
+        }
+        form
+    }
+}
+
+impl EditForumTopic {
+    pub fn new(chat_id: ChatId, message_thread_id: i64, ) -> Self {
+        Self {
+            chat_id,
+            message_thread_id,
+            name: None,
+            icon_custom_emoji_id: None,
+        }
+    }
+}
+
+impl EditForumTopic {
+    pub fn with_name(mut self, name: String) -> Self {
+        self.name = Some(name);
+        self
+    }
+
+    pub fn with_icon_custom_emoji_id(mut self, icon_custom_emoji_id: String) -> Self {
+        self.icon_custom_emoji_id = Some(icon_custom_emoji_id);
+        self
+    }
+
+}
+
+impl TgMethod for CloseForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "closeForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("message_thread_id", self.message_thread_id.to_string());
+        form
+    }
+}
+
+impl CloseForumTopic {
+    pub fn new(chat_id: ChatId, message_thread_id: i64, ) -> Self {
+        Self {
+            chat_id,
+            message_thread_id,
+        }
+    }
+}
+
+impl TgMethod for ReopenForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "reopenForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("message_thread_id", self.message_thread_id.to_string());
+        form
+    }
+}
+
+impl ReopenForumTopic {
+    pub fn new(chat_id: ChatId, message_thread_id: i64, ) -> Self {
+        Self {
+            chat_id,
+            message_thread_id,
+        }
+    }
+}
+
+impl TgMethod for DeleteForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "deleteForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("message_thread_id", self.message_thread_id.to_string());
+        form
+    }
+}
+
+impl DeleteForumTopic {
+    pub fn new(chat_id: ChatId, message_thread_id: i64, ) -> Self {
+        Self {
+            chat_id,
+            message_thread_id,
+        }
+    }
+}
+
+impl TgMethod for UnpinAllForumTopicMessages {
+    type ResponseType = bool;
+    const PATH: &'static str = "unpinAllForumTopicMessages";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("message_thread_id", self.message_thread_id.to_string());
+        form
+    }
+}
+
+impl UnpinAllForumTopicMessages {
+    pub fn new(chat_id: ChatId, message_thread_id: i64, ) -> Self {
+        Self {
+            chat_id,
+            message_thread_id,
+        }
+    }
+}
+
+impl TgMethod for EditGeneralForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "editGeneralForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("name", self.name.to_string());
+        form
+    }
+}
+
+impl EditGeneralForumTopic {
+    pub fn new(chat_id: ChatId, name: String, ) -> Self {
+        Self {
+            chat_id,
+            name,
+        }
+    }
+}
+
+impl TgMethod for CloseGeneralForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "closeGeneralForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
+}
+
+impl CloseGeneralForumTopic {
+    pub fn new(chat_id: ChatId, ) -> Self {
+        Self {
+            chat_id,
+        }
+    }
+}
+
+impl TgMethod for ReopenGeneralForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "reopenGeneralForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
+}
+
+impl ReopenGeneralForumTopic {
+    pub fn new(chat_id: ChatId, ) -> Self {
+        Self {
+            chat_id,
+        }
+    }
+}
+
+impl TgMethod for HideGeneralForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "hideGeneralForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
+}
+
+impl HideGeneralForumTopic {
+    pub fn new(chat_id: ChatId, ) -> Self {
+        Self {
+            chat_id,
+        }
+    }
+}
+
+impl TgMethod for UnhideGeneralForumTopic {
+    type ResponseType = bool;
+    const PATH: &'static str = "unhideGeneralForumTopic";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form
+    }
+}
+
+impl UnhideGeneralForumTopic {
+    pub fn new(chat_id: ChatId, ) -> Self {
+        Self {
+            chat_id,
+        }
     }
 }
 
 impl TgMethod for AnswerCallbackQuery {
     type ResponseType = bool;
     const PATH: &'static str = "answerCallbackQuery";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("callback_query_id", self.callback_query_id.to_string());
+        if let Some(s) = &self.text {
+            form = form.text("text", s.to_string());
+        }
+        if let Some(s) = &self.show_alert {
+            form = form.text("show_alert", s.to_string());
+        }
+        if let Some(s) = &self.url {
+            form = form.text("url", s.to_string());
+        }
+        if let Some(s) = &self.cache_time {
+            form = form.text("cache_time", s.to_string());
+        }
+        form
+    }
 }
 
 impl AnswerCallbackQuery {
@@ -2614,18 +3501,21 @@ impl AnswerCallbackQuery {
 
 }
 
-impl FormSer for SetMyCommands {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.commands.serialize("commands".into(), form);
-        form = self.scope.serialize("scope".into(), form);
-        form = self.language_code.serialize("language_code".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetMyCommands {
     type ResponseType = bool;
     const PATH: &'static str = "setMyCommands";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("commands", serde_json::to_string(&self.commands).unwrap());
+        if let Some(s) = &self.scope {
+            form = form.text("scope", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.language_code {
+            form = form.text("language_code", s.to_string());
+        }
+        form
+    }
 }
 
 impl SetMyCommands {
@@ -2651,17 +3541,20 @@ impl SetMyCommands {
 
 }
 
-impl FormSer for DeleteMyCommands {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.scope.serialize("scope".into(), form);
-        form = self.language_code.serialize("language_code".into(), form);
-        form
-    }
-}
-
 impl TgMethod for DeleteMyCommands {
     type ResponseType = bool;
     const PATH: &'static str = "deleteMyCommands";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.scope {
+            form = form.text("scope", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.language_code {
+            form = form.text("language_code", s.to_string());
+        }
+        form
+    }
 }
 
 impl DeleteMyCommands {
@@ -2677,17 +3570,20 @@ impl DeleteMyCommands {
 
 }
 
-impl FormSer for GetMyCommands {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.scope.serialize("scope".into(), form);
-        form = self.language_code.serialize("language_code".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetMyCommands {
     type ResponseType = Vec<BotCommand>;
     const PATH: &'static str = "getMyCommands";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.scope {
+            form = form.text("scope", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.language_code {
+            form = form.text("language_code", s.to_string());
+        }
+        form
+    }
 }
 
 impl GetMyCommands {
@@ -2703,17 +3599,20 @@ impl GetMyCommands {
 
 }
 
-impl FormSer for SetChatMenuButton {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.menu_button.serialize("menu_button".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetChatMenuButton {
     type ResponseType = bool;
     const PATH: &'static str = "setChatMenuButton";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.menu_button {
+            form = form.text("menu_button", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SetChatMenuButton {
@@ -2729,16 +3628,17 @@ impl SetChatMenuButton {
 
 }
 
-impl FormSer for GetChatMenuButton {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetChatMenuButton {
     type ResponseType = MenuButton;
     const PATH: &'static str = "getChatMenuButton";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        form
+    }
 }
 
 impl GetChatMenuButton {
@@ -2749,17 +3649,20 @@ impl GetChatMenuButton {
 
 }
 
-impl FormSer for SetMyDefaultAdministratorRights {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.rights.serialize("rights".into(), form);
-        form = self.for_channels.serialize("for_channels".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetMyDefaultAdministratorRights {
     type ResponseType = bool;
     const PATH: &'static str = "setMyDefaultAdministratorRights";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.rights {
+            form = form.text("rights", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.for_channels {
+            form = form.text("for_channels", s.to_string());
+        }
+        form
+    }
 }
 
 impl SetMyDefaultAdministratorRights {
@@ -2775,16 +3678,17 @@ impl SetMyDefaultAdministratorRights {
 
 }
 
-impl FormSer for GetMyDefaultAdministratorRights {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.for_channels.serialize("for_channels".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetMyDefaultAdministratorRights {
     type ResponseType = ChatAdministratorRights;
     const PATH: &'static str = "getMyDefaultAdministratorRights";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.for_channels {
+            form = form.text("for_channels", s.to_string());
+        }
+        form
+    }
 }
 
 impl GetMyDefaultAdministratorRights {
@@ -2795,23 +3699,36 @@ impl GetMyDefaultAdministratorRights {
 
 }
 
-impl FormSer for EditMessageText {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.inline_message_id.serialize("inline_message_id".into(), form);
-        form = self.text.serialize("text".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.entities.serialize("entities".into(), form);
-        form = self.disable_web_page_preview.serialize("disable_web_page_preview".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for EditMessageText {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "editMessageText";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        if let Some(s) = &self.inline_message_id {
+            form = form.text("inline_message_id", s.to_string());
+        }
+        form = form.text("text", self.text.to_string());
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.entities {
+            form = form.text("entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.disable_web_page_preview {
+            form = form.text("disable_web_page_preview", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl EditMessageText {
@@ -2867,22 +3784,35 @@ impl EditMessageText {
 
 }
 
-impl FormSer for EditMessageCaption {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.inline_message_id.serialize("inline_message_id".into(), form);
-        form = self.caption.serialize("caption".into(), form);
-        form = self.parse_mode.serialize("parse_mode".into(), form);
-        form = self.caption_entities.serialize("caption_entities".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for EditMessageCaption {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "editMessageCaption";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        if let Some(s) = &self.inline_message_id {
+            form = form.text("inline_message_id", s.to_string());
+        }
+        if let Some(s) = &self.caption {
+            form = form.text("caption", s.to_string());
+        }
+        if let Some(s) = &self.parse_mode {
+            form = form.text("parse_mode", s.to_string());
+        }
+        if let Some(s) = &self.caption_entities {
+            form = form.text("caption_entities", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl EditMessageCaption {
@@ -2923,20 +3853,28 @@ impl EditMessageCaption {
 
 }
 
-impl FormSer for EditMessageMedia {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.inline_message_id.serialize("inline_message_id".into(), form);
-        form = self.media.serialize("media".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for EditMessageMedia {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "editMessageMedia";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.media.add_file(form);
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        if let Some(s) = &self.inline_message_id {
+            form = form.text("inline_message_id", s.to_string());
+        }
+        form = form.text("media", serde_json::to_string(&self.media).unwrap());
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl EditMessageMedia {
@@ -2974,12 +3912,9 @@ impl EditMessageMedia {
 
 }
 
-impl FormSer for EditMessageReplyMarkup {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.inline_message_id.serialize("inline_message_id".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
+impl crate::TgObject for EditMessageMedia {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.media.add_file(form);
         form
     }
 }
@@ -2987,6 +3922,23 @@ impl FormSer for EditMessageReplyMarkup {
 impl TgMethod for EditMessageReplyMarkup {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "editMessageReplyMarkup";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        if let Some(s) = &self.inline_message_id {
+            form = form.text("inline_message_id", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl EditMessageReplyMarkup {
@@ -3012,18 +3964,19 @@ impl EditMessageReplyMarkup {
 
 }
 
-impl FormSer for StopPoll {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for StopPoll {
     type ResponseType = Poll;
     const PATH: &'static str = "stopPoll";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("message_id", self.message_id.to_string());
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl StopPoll {
@@ -3044,17 +3997,16 @@ impl StopPoll {
 
 }
 
-impl FormSer for DeleteMessage {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for DeleteMessage {
     type ResponseType = bool;
     const PATH: &'static str = "deleteMessage";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        form = form.text("message_id", self.message_id.to_string());
+        form
+    }
 }
 
 impl DeleteMessage {
@@ -3066,28 +4018,42 @@ impl DeleteMessage {
     }
 }
 
-impl FormSer for SendSticker {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.sticker.serialize("sticker".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendSticker {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendSticker";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.sticker.add_file(form);
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("sticker", self.sticker.to_string());
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendSticker {
     pub fn new(chat_id: ChatId, sticker: InputFile, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             sticker,
             disable_notification: None,
             protect_content: None,
@@ -3099,6 +4065,11 @@ impl SendSticker {
 }
 
 impl SendSticker {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
         self
@@ -3126,9 +4097,9 @@ impl SendSticker {
 
 }
 
-impl FormSer for GetStickerSet {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.name.serialize("name".into(), form);
+impl crate::TgObject for SendSticker {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.sticker.add_file(form);
         form
     }
 }
@@ -3136,6 +4107,12 @@ impl FormSer for GetStickerSet {
 impl TgMethod for GetStickerSet {
     type ResponseType = StickerSet;
     const PATH: &'static str = "getStickerSet";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("name", self.name.to_string());
+        form
+    }
 }
 
 impl GetStickerSet {
@@ -3146,17 +4123,36 @@ impl GetStickerSet {
     }
 }
 
-impl FormSer for UploadStickerFile {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.png_sticker.serialize("png_sticker".into(), form);
+impl TgMethod for GetCustomEmojiStickers {
+    type ResponseType = Vec<Sticker>;
+    const PATH: &'static str = "getCustomEmojiStickers";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("custom_emoji_ids", serde_json::to_string(&self.custom_emoji_ids).unwrap());
         form
+    }
+}
+
+impl GetCustomEmojiStickers {
+    pub fn new(custom_emoji_ids: Vec<String>, ) -> Self {
+        Self {
+            custom_emoji_ids,
+        }
     }
 }
 
 impl TgMethod for UploadStickerFile {
     type ResponseType = File;
     const PATH: &'static str = "uploadStickerFile";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.png_sticker.add_file(form);
+        form = form.text("user_id", self.user_id.to_string());
+        form = form.text("png_sticker", self.png_sticker.to_string());
+        form
+    }
 }
 
 impl UploadStickerFile {
@@ -3168,17 +4164,9 @@ impl UploadStickerFile {
     }
 }
 
-impl FormSer for CreateNewStickerSet {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.name.serialize("name".into(), form);
-        form = self.title.serialize("title".into(), form);
-        form = self.png_sticker.serialize("png_sticker".into(), form);
-        form = self.tgs_sticker.serialize("tgs_sticker".into(), form);
-        form = self.webm_sticker.serialize("webm_sticker".into(), form);
-        form = self.emojis.serialize("emojis".into(), form);
-        form = self.contains_masks.serialize("contains_masks".into(), form);
-        form = self.mask_position.serialize("mask_position".into(), form);
+impl crate::TgObject for UploadStickerFile {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.png_sticker.add_file(form);
         form
     }
 }
@@ -3186,6 +4174,33 @@ impl FormSer for CreateNewStickerSet {
 impl TgMethod for CreateNewStickerSet {
     type ResponseType = bool;
     const PATH: &'static str = "createNewStickerSet";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.png_sticker.add_file(form);
+        form = self.tgs_sticker.add_file(form);
+        form = self.webm_sticker.add_file(form);
+        form = form.text("user_id", self.user_id.to_string());
+        form = form.text("name", self.name.to_string());
+        form = form.text("title", self.title.to_string());
+        if let Some(s) = &self.png_sticker {
+            form = form.text("png_sticker", s.to_string());
+        }
+        if let Some(s) = &self.tgs_sticker {
+            form = form.text("tgs_sticker", s.to_string());
+        }
+        if let Some(s) = &self.webm_sticker {
+            form = form.text("webm_sticker", s.to_string());
+        }
+        if let Some(s) = &self.sticker_type {
+            form = form.text("sticker_type", s.to_string());
+        }
+        form = form.text("emojis", self.emojis.to_string());
+        if let Some(s) = &self.mask_position {
+            form = form.text("mask_position", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl CreateNewStickerSet {
@@ -3197,8 +4212,8 @@ impl CreateNewStickerSet {
             png_sticker: None,
             tgs_sticker: None,
             webm_sticker: None,
+            sticker_type: None,
             emojis,
-            contains_masks: None,
             mask_position: None,
         }
     }
@@ -3220,8 +4235,8 @@ impl CreateNewStickerSet {
         self
     }
 
-    pub fn with_contains_masks(mut self, contains_masks: bool) -> Self {
-        self.contains_masks = Some(contains_masks);
+    pub fn with_sticker_type(mut self, sticker_type: String) -> Self {
+        self.sticker_type = Some(sticker_type);
         self
     }
 
@@ -3232,15 +4247,11 @@ impl CreateNewStickerSet {
 
 }
 
-impl FormSer for AddStickerToSet {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.name.serialize("name".into(), form);
-        form = self.png_sticker.serialize("png_sticker".into(), form);
-        form = self.tgs_sticker.serialize("tgs_sticker".into(), form);
-        form = self.webm_sticker.serialize("webm_sticker".into(), form);
-        form = self.emojis.serialize("emojis".into(), form);
-        form = self.mask_position.serialize("mask_position".into(), form);
+impl crate::TgObject for CreateNewStickerSet {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.png_sticker.add_file(form);
+        form = self.tgs_sticker.add_file(form);
+        form = self.webm_sticker.add_file(form);
         form
     }
 }
@@ -3248,6 +4259,29 @@ impl FormSer for AddStickerToSet {
 impl TgMethod for AddStickerToSet {
     type ResponseType = bool;
     const PATH: &'static str = "addStickerToSet";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.png_sticker.add_file(form);
+        form = self.tgs_sticker.add_file(form);
+        form = self.webm_sticker.add_file(form);
+        form = form.text("user_id", self.user_id.to_string());
+        form = form.text("name", self.name.to_string());
+        if let Some(s) = &self.png_sticker {
+            form = form.text("png_sticker", s.to_string());
+        }
+        if let Some(s) = &self.tgs_sticker {
+            form = form.text("tgs_sticker", s.to_string());
+        }
+        if let Some(s) = &self.webm_sticker {
+            form = form.text("webm_sticker", s.to_string());
+        }
+        form = form.text("emojis", self.emojis.to_string());
+        if let Some(s) = &self.mask_position {
+            form = form.text("mask_position", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl AddStickerToSet {
@@ -3287,10 +4321,11 @@ impl AddStickerToSet {
 
 }
 
-impl FormSer for SetStickerPositionInSet {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.sticker.serialize("sticker".into(), form);
-        form = self.position.serialize("position".into(), form);
+impl crate::TgObject for AddStickerToSet {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.png_sticker.add_file(form);
+        form = self.tgs_sticker.add_file(form);
+        form = self.webm_sticker.add_file(form);
         form
     }
 }
@@ -3298,6 +4333,13 @@ impl FormSer for SetStickerPositionInSet {
 impl TgMethod for SetStickerPositionInSet {
     type ResponseType = bool;
     const PATH: &'static str = "setStickerPositionInSet";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("sticker", self.sticker.to_string());
+        form = form.text("position", self.position.to_string());
+        form
+    }
 }
 
 impl SetStickerPositionInSet {
@@ -3309,16 +4351,15 @@ impl SetStickerPositionInSet {
     }
 }
 
-impl FormSer for DeleteStickerFromSet {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.sticker.serialize("sticker".into(), form);
-        form
-    }
-}
-
 impl TgMethod for DeleteStickerFromSet {
     type ResponseType = bool;
     const PATH: &'static str = "deleteStickerFromSet";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("sticker", self.sticker.to_string());
+        form
+    }
 }
 
 impl DeleteStickerFromSet {
@@ -3329,18 +4370,20 @@ impl DeleteStickerFromSet {
     }
 }
 
-impl FormSer for SetStickerSetThumb {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.name.serialize("name".into(), form);
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.thumb.serialize("thumb".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetStickerSetThumb {
     type ResponseType = bool;
     const PATH: &'static str = "setStickerSetThumb";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = self.thumb.add_file(form);
+        form = form.text("name", self.name.to_string());
+        form = form.text("user_id", self.user_id.to_string());
+        if let Some(s) = &self.thumb {
+            form = form.text("thumb", s.to_string());
+        }
+        form
+    }
 }
 
 impl SetStickerSetThumb {
@@ -3361,15 +4404,9 @@ impl SetStickerSetThumb {
 
 }
 
-impl FormSer for AnswerInlineQuery {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.inline_query_id.serialize("inline_query_id".into(), form);
-        form = self.results.serialize("results".into(), form);
-        form = self.cache_time.serialize("cache_time".into(), form);
-        form = self.is_personal.serialize("is_personal".into(), form);
-        form = self.next_offset.serialize("next_offset".into(), form);
-        form = self.switch_pm_text.serialize("switch_pm_text".into(), form);
-        form = self.switch_pm_parameter.serialize("switch_pm_parameter".into(), form);
+impl crate::TgObject for SetStickerSetThumb {
+    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {
+        form = self.thumb.add_file(form);
         form
     }
 }
@@ -3377,6 +4414,28 @@ impl FormSer for AnswerInlineQuery {
 impl TgMethod for AnswerInlineQuery {
     type ResponseType = bool;
     const PATH: &'static str = "answerInlineQuery";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("inline_query_id", self.inline_query_id.to_string());
+        form = form.text("results", serde_json::to_string(&self.results).unwrap());
+        if let Some(s) = &self.cache_time {
+            form = form.text("cache_time", s.to_string());
+        }
+        if let Some(s) = &self.is_personal {
+            form = form.text("is_personal", s.to_string());
+        }
+        if let Some(s) = &self.next_offset {
+            form = form.text("next_offset", s.to_string());
+        }
+        if let Some(s) = &self.switch_pm_text {
+            form = form.text("switch_pm_text", s.to_string());
+        }
+        if let Some(s) = &self.switch_pm_parameter {
+            form = form.text("switch_pm_parameter", s.to_string());
+        }
+        form
+    }
 }
 
 impl AnswerInlineQuery {
@@ -3421,17 +4480,16 @@ impl AnswerInlineQuery {
 
 }
 
-impl FormSer for AnswerWebAppQuery {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.web_app_query_id.serialize("web_app_query_id".into(), form);
-        form = self.result.serialize("result".into(), form);
-        form
-    }
-}
-
 impl TgMethod for AnswerWebAppQuery {
     type ResponseType = SentWebAppMessage;
     const PATH: &'static str = "answerWebAppQuery";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("web_app_query_id", self.web_app_query_id.to_string());
+        form = form.text("result", serde_json::to_string(&self.result).unwrap());
+        form
+    }
 }
 
 impl AnswerWebAppQuery {
@@ -3443,48 +4501,91 @@ impl AnswerWebAppQuery {
     }
 }
 
-impl FormSer for SendInvoice {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.title.serialize("title".into(), form);
-        form = self.description.serialize("description".into(), form);
-        form = self.payload.serialize("payload".into(), form);
-        form = self.provider_token.serialize("provider_token".into(), form);
-        form = self.currency.serialize("currency".into(), form);
-        form = self.prices.serialize("prices".into(), form);
-        form = self.max_tip_amount.serialize("max_tip_amount".into(), form);
-        form = self.suggested_tip_amounts.serialize("suggested_tip_amounts".into(), form);
-        form = self.start_parameter.serialize("start_parameter".into(), form);
-        form = self.provider_data.serialize("provider_data".into(), form);
-        form = self.photo_url.serialize("photo_url".into(), form);
-        form = self.photo_size.serialize("photo_size".into(), form);
-        form = self.photo_width.serialize("photo_width".into(), form);
-        form = self.photo_height.serialize("photo_height".into(), form);
-        form = self.need_name.serialize("need_name".into(), form);
-        form = self.need_phone_number.serialize("need_phone_number".into(), form);
-        form = self.need_email.serialize("need_email".into(), form);
-        form = self.need_shipping_address.serialize("need_shipping_address".into(), form);
-        form = self.send_phone_number_to_provider.serialize("send_phone_number_to_provider".into(), form);
-        form = self.send_email_to_provider.serialize("send_email_to_provider".into(), form);
-        form = self.is_flexible.serialize("is_flexible".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendInvoice {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendInvoice";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("title", self.title.to_string());
+        form = form.text("description", self.description.to_string());
+        form = form.text("payload", self.payload.to_string());
+        form = form.text("provider_token", self.provider_token.to_string());
+        form = form.text("currency", self.currency.to_string());
+        form = form.text("prices", serde_json::to_string(&self.prices).unwrap());
+        if let Some(s) = &self.max_tip_amount {
+            form = form.text("max_tip_amount", s.to_string());
+        }
+        if let Some(s) = &self.suggested_tip_amounts {
+            form = form.text("suggested_tip_amounts", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.start_parameter {
+            form = form.text("start_parameter", s.to_string());
+        }
+        if let Some(s) = &self.provider_data {
+            form = form.text("provider_data", s.to_string());
+        }
+        if let Some(s) = &self.photo_url {
+            form = form.text("photo_url", s.to_string());
+        }
+        if let Some(s) = &self.photo_size {
+            form = form.text("photo_size", s.to_string());
+        }
+        if let Some(s) = &self.photo_width {
+            form = form.text("photo_width", s.to_string());
+        }
+        if let Some(s) = &self.photo_height {
+            form = form.text("photo_height", s.to_string());
+        }
+        if let Some(s) = &self.need_name {
+            form = form.text("need_name", s.to_string());
+        }
+        if let Some(s) = &self.need_phone_number {
+            form = form.text("need_phone_number", s.to_string());
+        }
+        if let Some(s) = &self.need_email {
+            form = form.text("need_email", s.to_string());
+        }
+        if let Some(s) = &self.need_shipping_address {
+            form = form.text("need_shipping_address", s.to_string());
+        }
+        if let Some(s) = &self.send_phone_number_to_provider {
+            form = form.text("send_phone_number_to_provider", s.to_string());
+        }
+        if let Some(s) = &self.send_email_to_provider {
+            form = form.text("send_email_to_provider", s.to_string());
+        }
+        if let Some(s) = &self.is_flexible {
+            form = form.text("is_flexible", s.to_string());
+        }
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendInvoice {
     pub fn new(chat_id: ChatId, title: String, description: String, payload: String, provider_token: String, currency: String, prices: Vec<LabeledPrice>, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             title,
             description,
             payload,
@@ -3516,6 +4617,11 @@ impl SendInvoice {
 }
 
 impl SendInvoice {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_max_tip_amount(mut self, max_tip_amount: i64) -> Self {
         self.max_tip_amount = Some(max_tip_amount);
         self
@@ -3618,35 +4724,62 @@ impl SendInvoice {
 
 }
 
-impl FormSer for CreateInvoiceLink {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.title.serialize("title".into(), form);
-        form = self.description.serialize("description".into(), form);
-        form = self.payload.serialize("payload".into(), form);
-        form = self.provider_token.serialize("provider_token".into(), form);
-        form = self.currency.serialize("currency".into(), form);
-        form = self.prices.serialize("prices".into(), form);
-        form = self.max_tip_amount.serialize("max_tip_amount".into(), form);
-        form = self.suggested_tip_amounts.serialize("suggested_tip_amounts".into(), form);
-        form = self.provider_data.serialize("provider_data".into(), form);
-        form = self.photo_url.serialize("photo_url".into(), form);
-        form = self.photo_size.serialize("photo_size".into(), form);
-        form = self.photo_width.serialize("photo_width".into(), form);
-        form = self.photo_height.serialize("photo_height".into(), form);
-        form = self.need_name.serialize("need_name".into(), form);
-        form = self.need_phone_number.serialize("need_phone_number".into(), form);
-        form = self.need_email.serialize("need_email".into(), form);
-        form = self.need_shipping_address.serialize("need_shipping_address".into(), form);
-        form = self.send_phone_number_to_provider.serialize("send_phone_number_to_provider".into(), form);
-        form = self.send_email_to_provider.serialize("send_email_to_provider".into(), form);
-        form = self.is_flexible.serialize("is_flexible".into(), form);
-        form
-    }
-}
-
 impl TgMethod for CreateInvoiceLink {
     type ResponseType = String;
     const PATH: &'static str = "createInvoiceLink";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("title", self.title.to_string());
+        form = form.text("description", self.description.to_string());
+        form = form.text("payload", self.payload.to_string());
+        form = form.text("provider_token", self.provider_token.to_string());
+        form = form.text("currency", self.currency.to_string());
+        form = form.text("prices", serde_json::to_string(&self.prices).unwrap());
+        if let Some(s) = &self.max_tip_amount {
+            form = form.text("max_tip_amount", s.to_string());
+        }
+        if let Some(s) = &self.suggested_tip_amounts {
+            form = form.text("suggested_tip_amounts", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.provider_data {
+            form = form.text("provider_data", s.to_string());
+        }
+        if let Some(s) = &self.photo_url {
+            form = form.text("photo_url", s.to_string());
+        }
+        if let Some(s) = &self.photo_size {
+            form = form.text("photo_size", s.to_string());
+        }
+        if let Some(s) = &self.photo_width {
+            form = form.text("photo_width", s.to_string());
+        }
+        if let Some(s) = &self.photo_height {
+            form = form.text("photo_height", s.to_string());
+        }
+        if let Some(s) = &self.need_name {
+            form = form.text("need_name", s.to_string());
+        }
+        if let Some(s) = &self.need_phone_number {
+            form = form.text("need_phone_number", s.to_string());
+        }
+        if let Some(s) = &self.need_email {
+            form = form.text("need_email", s.to_string());
+        }
+        if let Some(s) = &self.need_shipping_address {
+            form = form.text("need_shipping_address", s.to_string());
+        }
+        if let Some(s) = &self.send_phone_number_to_provider {
+            form = form.text("send_phone_number_to_provider", s.to_string());
+        }
+        if let Some(s) = &self.send_email_to_provider {
+            form = form.text("send_email_to_provider", s.to_string());
+        }
+        if let Some(s) = &self.is_flexible {
+            form = form.text("is_flexible", s.to_string());
+        }
+        form
+    }
 }
 
 impl CreateInvoiceLink {
@@ -3749,19 +4882,22 @@ impl CreateInvoiceLink {
 
 }
 
-impl FormSer for AnswerShippingQuery {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.shipping_query_id.serialize("shipping_query_id".into(), form);
-        form = self.ok.serialize("ok".into(), form);
-        form = self.shipping_options.serialize("shipping_options".into(), form);
-        form = self.error_message.serialize("error_message".into(), form);
-        form
-    }
-}
-
 impl TgMethod for AnswerShippingQuery {
     type ResponseType = bool;
     const PATH: &'static str = "answerShippingQuery";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("shipping_query_id", self.shipping_query_id.to_string());
+        form = form.text("ok", self.ok.to_string());
+        if let Some(s) = &self.shipping_options {
+            form = form.text("shipping_options", serde_json::to_string(&s).unwrap());
+        }
+        if let Some(s) = &self.error_message {
+            form = form.text("error_message", s.to_string());
+        }
+        form
+    }
 }
 
 impl AnswerShippingQuery {
@@ -3788,18 +4924,19 @@ impl AnswerShippingQuery {
 
 }
 
-impl FormSer for AnswerPreCheckoutQuery {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.pre_checkout_query_id.serialize("pre_checkout_query_id".into(), form);
-        form = self.ok.serialize("ok".into(), form);
-        form = self.error_message.serialize("error_message".into(), form);
-        form
-    }
-}
-
 impl TgMethod for AnswerPreCheckoutQuery {
     type ResponseType = bool;
     const PATH: &'static str = "answerPreCheckoutQuery";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("pre_checkout_query_id", self.pre_checkout_query_id.to_string());
+        form = form.text("ok", self.ok.to_string());
+        if let Some(s) = &self.error_message {
+            form = form.text("error_message", s.to_string());
+        }
+        form
+    }
 }
 
 impl AnswerPreCheckoutQuery {
@@ -3820,17 +4957,16 @@ impl AnswerPreCheckoutQuery {
 
 }
 
-impl FormSer for SetPassportDataErrors {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.errors.serialize("errors".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetPassportDataErrors {
     type ResponseType = bool;
     const PATH: &'static str = "setPassportDataErrors";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("user_id", self.user_id.to_string());
+        form = form.text("errors", serde_json::to_string(&self.errors).unwrap());
+        form
+    }
 }
 
 impl SetPassportDataErrors {
@@ -3842,28 +4978,41 @@ impl SetPassportDataErrors {
     }
 }
 
-impl FormSer for SendGame {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.game_short_name.serialize("game_short_name".into(), form);
-        form = self.disable_notification.serialize("disable_notification".into(), form);
-        form = self.protect_content.serialize("protect_content".into(), form);
-        form = self.reply_to_message_id.serialize("reply_to_message_id".into(), form);
-        form = self.allow_sending_without_reply.serialize("allow_sending_without_reply".into(), form);
-        form = self.reply_markup.serialize("reply_markup".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SendGame {
     type ResponseType = Box<Message>;
     const PATH: &'static str = "sendGame";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("chat_id", self.chat_id.to_string());
+        if let Some(s) = &self.message_thread_id {
+            form = form.text("message_thread_id", s.to_string());
+        }
+        form = form.text("game_short_name", self.game_short_name.to_string());
+        if let Some(s) = &self.disable_notification {
+            form = form.text("disable_notification", s.to_string());
+        }
+        if let Some(s) = &self.protect_content {
+            form = form.text("protect_content", s.to_string());
+        }
+        if let Some(s) = &self.reply_to_message_id {
+            form = form.text("reply_to_message_id", s.to_string());
+        }
+        if let Some(s) = &self.allow_sending_without_reply {
+            form = form.text("allow_sending_without_reply", s.to_string());
+        }
+        if let Some(s) = &self.reply_markup {
+            form = form.text("reply_markup", serde_json::to_string(&s).unwrap());
+        }
+        form
+    }
 }
 
 impl SendGame {
     pub fn new(chat_id: i64, game_short_name: String, ) -> Self {
         Self {
             chat_id,
+            message_thread_id: None,
             game_short_name,
             disable_notification: None,
             protect_content: None,
@@ -3875,6 +5024,11 @@ impl SendGame {
 }
 
 impl SendGame {
+    pub fn with_message_thread_id(mut self, message_thread_id: i64) -> Self {
+        self.message_thread_id = Some(message_thread_id);
+        self
+    }
+
     pub fn with_disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
         self
@@ -3902,22 +5056,31 @@ impl SendGame {
 
 }
 
-impl FormSer for SetGameScore {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.score.serialize("score".into(), form);
-        form = self.force.serialize("force".into(), form);
-        form = self.disable_edit_message.serialize("disable_edit_message".into(), form);
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.inline_message_id.serialize("inline_message_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for SetGameScore {
     type ResponseType = MessageOrBool;
     const PATH: &'static str = "setGameScore";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("user_id", self.user_id.to_string());
+        form = form.text("score", self.score.to_string());
+        if let Some(s) = &self.force {
+            form = form.text("force", s.to_string());
+        }
+        if let Some(s) = &self.disable_edit_message {
+            form = form.text("disable_edit_message", s.to_string());
+        }
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        if let Some(s) = &self.inline_message_id {
+            form = form.text("inline_message_id", s.to_string());
+        }
+        form
+    }
 }
 
 impl SetGameScore {
@@ -3962,19 +5125,24 @@ impl SetGameScore {
 
 }
 
-impl FormSer for GetGameHighScores {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.user_id.serialize("user_id".into(), form);
-        form = self.chat_id.serialize("chat_id".into(), form);
-        form = self.message_id.serialize("message_id".into(), form);
-        form = self.inline_message_id.serialize("inline_message_id".into(), form);
-        form
-    }
-}
-
 impl TgMethod for GetGameHighScores {
     type ResponseType = Vec<GameHighScore>;
     const PATH: &'static str = "getGameHighScores";
+
+    fn to_form(&self) -> reqwest::multipart::Form {
+        let mut form = reqwest::multipart::Form::new();
+        form = form.text("user_id", self.user_id.to_string());
+        if let Some(s) = &self.chat_id {
+            form = form.text("chat_id", s.to_string());
+        }
+        if let Some(s) = &self.message_id {
+            form = form.text("message_id", s.to_string());
+        }
+        if let Some(s) = &self.inline_message_id {
+            form = form.text("inline_message_id", s.to_string());
+        }
+        form
+    }
 }
 
 impl GetGameHighScores {

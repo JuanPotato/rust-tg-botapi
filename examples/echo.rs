@@ -35,11 +35,11 @@ async fn handle_message(bot: Bot, msg: Message) {
         bot.send(&req).await.unwrap();
     } else if let Some(text) = msg.get_text() {
         if text == "/img" {
-            let req = msg.reply_photo(InputFile::File("./image.jpg".into()));
+            let req = msg.reply_photo(InputFile::File("./image.png".into()));
 
             bot.send(&req).await.unwrap();
         } else {
-            let req = msg.reply(text).with_parse_mode(ParseMode::MarkdownV2);
+            let req = msg.reply(text).with_parse_mode(ParseMode::Markdown);
 
             bot.send(&req).await.unwrap();
         }

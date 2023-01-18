@@ -12,16 +12,13 @@ use tokio::time::Duration;
 
 use serde::Deserialize;
 
-mod form_ser;
 mod methods;
 mod types;
 mod helpers;
-mod inline_query;
 
 pub mod api {
     pub use crate::methods::*;
     pub use crate::types::*;
-    pub use crate::form_ser::*;
     pub use crate::helpers::*;
 }
 
@@ -31,7 +28,6 @@ mod methods_impl;
 mod types_impl;
 
 use helpers::ApiResult;
-use form_ser::FormSer;
 
 #[derive(Debug)]
 pub enum BotError {
@@ -79,6 +75,33 @@ impl error::Error for BotError {
 pub trait TgMethod {
     type ResponseType;
     const PATH: &'static str;
+
+    fn to_form(&self) -> Form;
+}
+
+pub(crate) trait TgObject {
+    fn add_file(&self, form: Form) -> Form {
+        form
+    }
+}
+
+impl<T: TgObject> TgObject for Option<T> {
+    fn add_file(&self, form: Form) -> Form {
+        match self {
+            Some(s) => s.add_file(form),
+            None => form,
+        }
+    }
+}
+
+impl<T: TgObject> TgObject for Vec<T> {
+    fn add_file(&self, mut form: Form) -> Form {
+        for s in self {
+            form = s.add_file(form);
+        }
+
+        form
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -101,12 +124,12 @@ impl Bot {
         }
     }
 
-    pub async fn send<R: for<'de> Deserialize<'de>, M: TgMethod<ResponseType=R> + FormSer>(
+    pub async fn send<R: for<'de> Deserialize<'de>, M: TgMethod<ResponseType=R>>(
         &self, m: &M,
     ) -> Result<R, BotError> {
         let url = format!("https://api.telegram.org/bot{}/{}", self.token, M::PATH);
 
-        let form = m.serialize("".into(), Form::new());
+        let form = m.to_form();
 
         let resp: Response = self.client
             .post(&url)

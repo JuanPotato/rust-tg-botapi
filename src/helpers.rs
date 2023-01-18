@@ -1,10 +1,11 @@
+use crate::methods::*;
+use crate::types::*;
+use crate::BotError;
+use crate::TgObject;
+use reqwest::multipart::Form;
+use serde::{Deserialize, Serialize};
 use std::io::Read;
 use std::path::PathBuf;
-use reqwest::multipart::Form;
-use crate::{BotError, FormSer};
-use crate::types::*;
-use crate::methods::*;
-use serde::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
@@ -28,7 +29,8 @@ impl<T> Into<Result<T, BotError>> for ApiResult<T> {
             ApiResult::Err {
                 error_code,
                 description,
-                parameters, ..
+                parameters,
+                ..
             } => Err(BotError::Api {
                 error_code,
                 description,
@@ -38,7 +40,6 @@ impl<T> Into<Result<T, BotError>> for ApiResult<T> {
     }
 }
 
-
 #[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum MessageOrBool {
@@ -46,48 +47,70 @@ pub enum MessageOrBool {
     Bool(bool),
 }
 
-impl FormSer for MessageOrBool {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        match self {
-            MessageOrBool::Message(m) => m.serialize(key, form),
-            MessageOrBool::Bool(b) => b.serialize(key, form),
-        }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ParseMode {
-    MarkdownOld,
+    Markdown,
     MarkdownV2,
     HTML,
 }
 
-impl FormSer for ParseMode {
-    fn serialize(&self, key: String, form: Form) -> Form {
+impl ToString for ParseMode {
+    fn to_string(&self) -> String {
         match self {
-            ParseMode::MarkdownOld => form.text(key, "Markdown"),
-            ParseMode::MarkdownV2 => form.text(key, "MarkdownV2"),
-            ParseMode::HTML => form.text(key, "HTML"),
-        }
+            ParseMode::Markdown => "Markdown",
+            ParseMode::MarkdownV2 => "MarkdownV2",
+            ParseMode::HTML => "HTML",
+        }.to_string()
     }
 }
-
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum InputFile {
     FileId(String),
     File(PathBuf),
-    Raw {
-        bytes: Vec<u8>,
-        name: String
-    },
+    Raw { bytes: Vec<u8>, name: String },
 }
 
-impl FormSer for InputFile {
-    fn serialize(&self, key: String, form: Form) -> Form {
+impl ToString for InputFile {
+    fn to_string(&self) -> String {
         match self {
-            InputFile::FileId(f) => f.serialize(key, form),
+            InputFile::FileId(file_id) => file_id.clone(),
+            InputFile::File(path) => {
+                let name = path.file_name().unwrap().to_string_lossy();
+                format!("attach://{name}")
+            }
+            InputFile::Raw { bytes: _, name } => {
+                format!("attach://{name}")
+            }
+        }
+    }
+}
+
+impl Serialize for InputFile {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            InputFile::FileId(file_id) => serializer.serialize_str(file_id),
+            InputFile::File(path) => {
+                let name = path.file_name().unwrap().to_string_lossy();
+                let input_file = format!("attach://{name}");
+                serializer.serialize_str(&input_file)
+            }
+            InputFile::Raw { bytes: _, name } => {
+                let input_file = format!("attach://{name}");
+                serializer.serialize_str(&input_file)
+            }
+        }
+    }
+}
+
+impl TgObject for InputFile {
+    fn add_file(&self, form: Form) -> Form {
+        match self {
+            InputFile::FileId(_) => form,
 
             InputFile::File(path) => {
                 let mut file = std::fs::File::open(path).unwrap();
@@ -95,23 +118,22 @@ impl FormSer for InputFile {
                 file.read_to_end(&mut bytes).unwrap();
 
                 let mut part = reqwest::multipart::Part::bytes(bytes);
-                let filename: String = path.file_name().unwrap().to_str().unwrap().to_string();
-                part = part.file_name(filename);
+                let filename = path.file_name().unwrap().to_string_lossy().to_string();
+                part = part.file_name(filename.clone());
 
-                form.part(key, part)
+                form.part(filename, part)
             }
 
-            InputFile::Raw {bytes, name} => {
+            InputFile::Raw { bytes, name } => {
                 let mut part = reqwest::multipart::Part::bytes(bytes.clone());
                 part = part.file_name(name.clone());
-                form.part(key, part)
+                form.part(name.clone(), part)
             }
         }
     }
 }
 
-
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ChatId {
     Id(i64),
@@ -130,34 +152,22 @@ impl From<String> for ChatId {
     }
 }
 
-impl FormSer for ChatId {
-    fn serialize(&self, key: String, form: Form) -> Form {
+impl ToString for ChatId {
+    fn to_string(&self) -> String {
         match self {
-            ChatId::Id(id) => id.serialize(key, form),
-            ChatId::Username(name) => name.serialize(key, form),
+            ChatId::Id(i) => i.to_string(),
+            ChatId::Username(u) => u.clone(),
         }
     }
 }
 
-
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ReplyMarkup {
     InlineKeyboard(InlineKeyboardMarkup),
     ReplyKeyboard(ReplyKeyboardMarkup),
     ReplyKeyboardRemove(ReplyKeyboardRemove),
     ForceReply(ForceReply),
-}
-
-impl FormSer for ReplyMarkup {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        match self {
-            ReplyMarkup::InlineKeyboard(i) => i.serialize(key, form),
-            ReplyMarkup::ReplyKeyboard(r) => r.serialize(key, form),
-            ReplyMarkup::ReplyKeyboardRemove(r) => r.serialize(key, form),
-            ReplyMarkup::ForceReply(f) => f.serialize(key, form),
-        }
-    }
 }
 
 impl From<InlineKeyboardMarkup> for ReplyMarkup {
@@ -208,35 +218,6 @@ pub enum UpdateType {
     MyChatMember(ChatMemberUpdated),
     ChatMember(ChatMemberUpdated),
     ChatJoinRequest(ChatJoinRequest),
-}
-
-impl FormSer for Update {
-    fn serialize(&self, key: String, mut form: Form) -> Form {
-        form = self.update_id.serialize(format!("{}[update_id]", key), form);
-        form = self.update_type.serialize(key, form);
-        return form;
-    }
-}
-
-impl FormSer for UpdateType {
-    fn serialize(&self, key: String, form: Form) -> Form {
-        match self {
-            UpdateType::Message(v) => v.serialize(format!("{}[message]", key), form),
-            UpdateType::EditedMessage(v) => v.serialize(format!("{}[edited_message]", key), form),
-            UpdateType::ChannelPost(v) => v.serialize(format!("{}[channel_post]", key), form),
-            UpdateType::EditedChannelPost(v) => v.serialize(format!("{}[edited_channel_post]", key), form),
-            UpdateType::InlineQuery(v) => v.serialize(format!("{}[inline_query]", key), form),
-            UpdateType::ChosenInlineResult(v) => v.serialize(format!("{}[chosen_inline_result]", key), form),
-            UpdateType::CallbackQuery(v) => v.serialize(format!("{}[callback_query]", key), form),
-            UpdateType::ShippingQuery(v) => v.serialize(format!("{}[shipping_query]", key), form),
-            UpdateType::PreCheckoutQuery(v) => v.serialize(format!("{}[pre_checkout_query]", key), form),
-            UpdateType::Poll(v) => v.serialize(format!("{}[poll]", key), form),
-            UpdateType::PollAnswer(v) => v.serialize(format!("{}[poll_answer]", key), form),
-            UpdateType::MyChatMember(v) => v.serialize(format!("{}[my_chat_member]", key), form),
-            UpdateType::ChatMember(v) => v.serialize(format!("{}[chat_member]", key), form),
-            UpdateType::ChatJoinRequest(v) => v.serialize(format!("{}[chat_join_request]", key), form),
-        }
-    }
 }
 
 impl Message {
