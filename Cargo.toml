@@ -6,7 +6,7 @@ license = "MIT"
 name = "tg_botapi"
 readme = "README.md"
 repository = "https://github.com/JuanPotato/rust-tg-botapi"
-version = "0.9.0"
+version = "0.10.0"
 edition = "2021"
 
 [dependencies]
