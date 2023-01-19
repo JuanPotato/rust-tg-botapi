@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import textwrap
 import pathlib
 import json
 import re
@@ -30,6 +31,11 @@ def to_camel_case(s):
 def has_file(field, objects):
     o = objects.get(field.type.base_type)
     return field.type.base_type == 'InputFile' or (o and o.has_inputfile)
+
+def desc_to_doc(desc, indent=0):
+    spaces = ' ' * indent
+    lines = textwrap.wrap(desc, width=100 - (indent + 5))
+    return ''.join(f'{spaces}/// {l}\n' for l in lines)
 
 class TgType:
     def __init__(self, type_str, name='', required=True):
@@ -95,6 +101,7 @@ class TgObject:
             defs += '#[derive(Debug, Clone, Serialize, Deserialize)]\n'
         else:
             defs += '#[derive(Debug, Clone, Deserialize)]\n'
+        defs += desc_to_doc(self.desc)
         defs += f'pub struct {self.camel} {{\n'
         for field in self.fields:
             if field.skip: continue
@@ -102,6 +109,7 @@ class TgObject:
                 defs += f'    #[serde(rename = "{field.raw_name}")]\n'
             if not field.required and self.need_serialize:
                 defs += f'    #[serde(skip_serializing_if = "Option::is_none")]\n'
+            defs += desc_to_doc(field.desc, 4)
             defs += f'    pub {field.name}: {field.type.rust_type},\n'
         defs += f'}}\n\n'
 

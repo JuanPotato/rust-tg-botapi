@@ -3,23 +3,25 @@ extern crate serde;
 
 use std::{error, fmt};
 
-use futures::SinkExt;
 use futures::channel::mpsc::Receiver;
-use reqwest::{Client, Response};
+use futures::SinkExt;
 use reqwest::multipart::Form;
+use reqwest::{Client, Response};
 
 use tokio::time::Duration;
 
 use serde::Deserialize;
 
-mod methods;
-mod types;
 mod helpers;
+#[allow(rustdoc::invalid_html_tags, rustdoc::bare_urls)]
+mod methods;
+#[allow(rustdoc::invalid_html_tags, rustdoc::bare_urls)]
+mod types;
 
 pub mod api {
+    pub use crate::helpers::*;
     pub use crate::methods::*;
     pub use crate::types::*;
-    pub use crate::helpers::*;
 }
 
 #[allow(unused_mut, unused_variables)]
@@ -124,18 +126,15 @@ impl Bot {
         }
     }
 
-    pub async fn send<R: for<'de> Deserialize<'de>, M: TgMethod<ResponseType=R>>(
-        &self, m: &M,
+    pub async fn send<R: for<'de> Deserialize<'de>, M: TgMethod<ResponseType = R>>(
+        &self,
+        m: &M,
     ) -> Result<R, BotError> {
         let url = format!("https://api.telegram.org/bot{}/{}", self.token, M::PATH);
 
         let form = m.to_form();
 
-        let resp: Response = self.client
-            .post(&url)
-            .multipart(form)
-            .send()
-            .await?;
+        let resp: Response = self.client.post(&url).multipart(form).send().await?;
 
         let res: ApiResult<R> = resp.json().await?;
         res.into()
@@ -171,4 +170,3 @@ impl Bot {
         &self.token
     }
 }
-
