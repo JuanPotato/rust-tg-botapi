@@ -793,59 +793,52 @@ impl BotCommand {
 }
 
 impl BotCommandScopeDefault {
-    pub fn new(type_: String, ) -> Self {
+    pub fn new() -> Self {
         Self {
-            type_,
         }
     }
 }
 
 impl BotCommandScopeAllPrivateChats {
-    pub fn new(type_: String, ) -> Self {
+    pub fn new() -> Self {
         Self {
-            type_,
         }
     }
 }
 
 impl BotCommandScopeAllGroupChats {
-    pub fn new(type_: String, ) -> Self {
+    pub fn new() -> Self {
         Self {
-            type_,
         }
     }
 }
 
 impl BotCommandScopeAllChatAdministrators {
-    pub fn new(type_: String, ) -> Self {
+    pub fn new() -> Self {
         Self {
-            type_,
         }
     }
 }
 
 impl BotCommandScopeChat {
-    pub fn new(type_: String, chat_id: ChatId, ) -> Self {
+    pub fn new(chat_id: ChatId, ) -> Self {
         Self {
-            type_,
             chat_id,
         }
     }
 }
 
 impl BotCommandScopeChatAdministrators {
-    pub fn new(type_: String, chat_id: ChatId, ) -> Self {
+    pub fn new(chat_id: ChatId, ) -> Self {
         Self {
-            type_,
             chat_id,
         }
     }
 }
 
 impl BotCommandScopeChatMember {
-    pub fn new(type_: String, chat_id: ChatId, user_id: i64, ) -> Self {
+    pub fn new(chat_id: ChatId, user_id: i64, ) -> Self {
         Self {
-            type_,
             chat_id,
             user_id,
         }
@@ -853,17 +846,15 @@ impl BotCommandScopeChatMember {
 }
 
 impl MenuButtonCommands {
-    pub fn new(type_: String, ) -> Self {
+    pub fn new() -> Self {
         Self {
-            type_,
         }
     }
 }
 
 impl MenuButtonWebApp {
-    pub fn new(type_: String, text: String, web_app: WebAppInfo, ) -> Self {
+    pub fn new(text: String, web_app: WebAppInfo, ) -> Self {
         Self {
-            type_,
             text,
             web_app,
         }
@@ -871,17 +862,15 @@ impl MenuButtonWebApp {
 }
 
 impl MenuButtonDefault {
-    pub fn new(type_: String, ) -> Self {
+    pub fn new() -> Self {
         Self {
-            type_,
         }
     }
 }
 
 impl InputMediaPhoto {
-    pub fn new(type_: String, media: String, ) -> Self {
+    pub fn new(media: String, ) -> Self {
         Self {
-            type_,
             media,
             caption: None,
             parse_mode: None,
@@ -915,9 +904,8 @@ impl InputMediaPhoto {
 }
 
 impl InputMediaVideo {
-    pub fn new(type_: String, media: String, ) -> Self {
+    pub fn new(media: String, ) -> Self {
         Self {
-            type_,
             media,
             thumb: None,
             caption: None,
@@ -988,9 +976,8 @@ impl crate::TgObject for InputMediaVideo {
 }
 
 impl InputMediaAnimation {
-    pub fn new(type_: String, media: String, ) -> Self {
+    pub fn new(media: String, ) -> Self {
         Self {
-            type_,
             media,
             thumb: None,
             caption: None,
@@ -1055,9 +1042,8 @@ impl crate::TgObject for InputMediaAnimation {
 }
 
 impl InputMediaAudio {
-    pub fn new(type_: String, media: String, ) -> Self {
+    pub fn new(media: String, ) -> Self {
         Self {
-            type_,
             media,
             thumb: None,
             caption: None,
@@ -1116,9 +1102,8 @@ impl crate::TgObject for InputMediaAudio {
 }
 
 impl InputMediaDocument {
-    pub fn new(type_: String, media: String, ) -> Self {
+    pub fn new(media: String, ) -> Self {
         Self {
-            type_,
             media,
             thumb: None,
             caption: None,
@@ -1176,9 +1161,8 @@ impl MaskPosition {
 }
 
 impl InlineQueryResultArticle {
-    pub fn new(type_: String, id: String, title: String, input_message_content: InputMessageContent, ) -> Self {
+    pub fn new(id: String, title: String, input_message_content: InputMessageContent, ) -> Self {
         Self {
-            type_,
             id,
             title,
             input_message_content,
@@ -1232,9 +1216,8 @@ impl InlineQueryResultArticle {
 }
 
 impl InlineQueryResultPhoto {
-    pub fn new(type_: String, id: String, photo_url: String, thumb_url: String, ) -> Self {
+    pub fn new(id: String, photo_url: String, thumb_url: String, ) -> Self {
         Self {
-            type_,
             id,
             photo_url,
             thumb_url,
@@ -1300,9 +1283,8 @@ impl InlineQueryResultPhoto {
 }
 
 impl InlineQueryResultGif {
-    pub fn new(type_: String, id: String, gif_url: String, thumb_url: String, ) -> Self {
+    pub fn new(id: String, gif_url: String, thumb_url: String, ) -> Self {
         Self {
-            type_,
             id,
             gif_url,
             gif_width: None,
@@ -1374,9 +1356,8 @@ impl InlineQueryResultGif {
 }
 
 impl InlineQueryResultMpeg4Gif {
-    pub fn new(type_: String, id: String, mpeg4_url: String, thumb_url: String, ) -> Self {
+    pub fn new(id: String, mpeg4_url: String, thumb_url: String, ) -> Self {
         Self {
-            type_,
             id,
             mpeg4_url,
             mpeg4_width: None,
@@ -1448,9 +1429,8 @@ impl InlineQueryResultMpeg4Gif {
 }
 
 impl InlineQueryResultVideo {
-    pub fn new(type_: String, id: String, video_url: String, mime_type: String, thumb_url: String, title: String, ) -> Self {
+    pub fn new(id: String, video_url: String, mime_type: String, thumb_url: String, title: String, ) -> Self {
         Self {
-            type_,
             id,
             video_url,
             mime_type,
@@ -1518,9 +1498,8 @@ impl InlineQueryResultVideo {
 }
 
 impl InlineQueryResultAudio {
-    pub fn new(type_: String, id: String, audio_url: String, title: String, ) -> Self {
+    pub fn new(id: String, audio_url: String, title: String, ) -> Self {
         Self {
-            type_,
             id,
             audio_url,
             title,
@@ -1574,9 +1553,8 @@ impl InlineQueryResultAudio {
 }
 
 impl InlineQueryResultVoice {
-    pub fn new(type_: String, id: String, voice_url: String, title: String, ) -> Self {
+    pub fn new(id: String, voice_url: String, title: String, ) -> Self {
         Self {
-            type_,
             id,
             voice_url,
             title,
@@ -1624,9 +1602,8 @@ impl InlineQueryResultVoice {
 }
 
 impl InlineQueryResultDocument {
-    pub fn new(type_: String, id: String, title: String, document_url: String, mime_type: String, ) -> Self {
+    pub fn new(id: String, title: String, document_url: String, mime_type: String, ) -> Self {
         Self {
-            type_,
             id,
             title,
             caption: None,
@@ -1693,9 +1670,8 @@ impl InlineQueryResultDocument {
 }
 
 impl InlineQueryResultLocation {
-    pub fn new(type_: String, id: String, latitude: f64, longitude: f64, title: String, ) -> Self {
+    pub fn new(id: String, latitude: f64, longitude: f64, title: String, ) -> Self {
         Self {
-            type_,
             id,
             latitude,
             longitude,
@@ -1762,9 +1738,8 @@ impl InlineQueryResultLocation {
 }
 
 impl InlineQueryResultVenue {
-    pub fn new(type_: String, id: String, latitude: f64, longitude: f64, title: String, address: String, ) -> Self {
+    pub fn new(id: String, latitude: f64, longitude: f64, title: String, address: String, ) -> Self {
         Self {
-            type_,
             id,
             latitude,
             longitude,
@@ -1832,9 +1807,8 @@ impl InlineQueryResultVenue {
 }
 
 impl InlineQueryResultContact {
-    pub fn new(type_: String, id: String, phone_number: String, first_name: String, ) -> Self {
+    pub fn new(id: String, phone_number: String, first_name: String, ) -> Self {
         Self {
-            type_,
             id,
             phone_number,
             first_name,
@@ -1888,9 +1862,8 @@ impl InlineQueryResultContact {
 }
 
 impl InlineQueryResultGame {
-    pub fn new(type_: String, id: String, game_short_name: String, ) -> Self {
+    pub fn new(id: String, game_short_name: String, ) -> Self {
         Self {
-            type_,
             id,
             game_short_name,
             reply_markup: None,
@@ -1907,9 +1880,8 @@ impl InlineQueryResultGame {
 }
 
 impl InlineQueryResultCachedPhoto {
-    pub fn new(type_: String, id: String, photo_file_id: String, ) -> Self {
+    pub fn new(id: String, photo_file_id: String, ) -> Self {
         Self {
-            type_,
             id,
             photo_file_id,
             title: None,
@@ -1962,9 +1934,8 @@ impl InlineQueryResultCachedPhoto {
 }
 
 impl InlineQueryResultCachedGif {
-    pub fn new(type_: String, id: String, gif_file_id: String, ) -> Self {
+    pub fn new(id: String, gif_file_id: String, ) -> Self {
         Self {
-            type_,
             id,
             gif_file_id,
             title: None,
@@ -2011,9 +1982,8 @@ impl InlineQueryResultCachedGif {
 }
 
 impl InlineQueryResultCachedMpeg4Gif {
-    pub fn new(type_: String, id: String, mpeg4_file_id: String, ) -> Self {
+    pub fn new(id: String, mpeg4_file_id: String, ) -> Self {
         Self {
-            type_,
             id,
             mpeg4_file_id,
             title: None,
@@ -2060,9 +2030,8 @@ impl InlineQueryResultCachedMpeg4Gif {
 }
 
 impl InlineQueryResultCachedSticker {
-    pub fn new(type_: String, id: String, sticker_file_id: String, ) -> Self {
+    pub fn new(id: String, sticker_file_id: String, ) -> Self {
         Self {
-            type_,
             id,
             sticker_file_id,
             reply_markup: None,
@@ -2085,9 +2054,8 @@ impl InlineQueryResultCachedSticker {
 }
 
 impl InlineQueryResultCachedDocument {
-    pub fn new(type_: String, id: String, title: String, document_file_id: String, ) -> Self {
+    pub fn new(id: String, title: String, document_file_id: String, ) -> Self {
         Self {
-            type_,
             id,
             title,
             document_file_id,
@@ -2135,9 +2103,8 @@ impl InlineQueryResultCachedDocument {
 }
 
 impl InlineQueryResultCachedVideo {
-    pub fn new(type_: String, id: String, video_file_id: String, title: String, ) -> Self {
+    pub fn new(id: String, video_file_id: String, title: String, ) -> Self {
         Self {
-            type_,
             id,
             video_file_id,
             title,
@@ -2185,9 +2152,8 @@ impl InlineQueryResultCachedVideo {
 }
 
 impl InlineQueryResultCachedVoice {
-    pub fn new(type_: String, id: String, voice_file_id: String, title: String, ) -> Self {
+    pub fn new(id: String, voice_file_id: String, title: String, ) -> Self {
         Self {
-            type_,
             id,
             voice_file_id,
             title,
@@ -2229,9 +2195,8 @@ impl InlineQueryResultCachedVoice {
 }
 
 impl InlineQueryResultCachedAudio {
-    pub fn new(type_: String, id: String, audio_file_id: String, ) -> Self {
+    pub fn new(id: String, audio_file_id: String, ) -> Self {
         Self {
-            type_,
             id,
             audio_file_id,
             caption: None,
@@ -2518,9 +2483,8 @@ impl ShippingOption {
 }
 
 impl PassportElementErrorDataField {
-    pub fn new(source: String, type_: String, field_name: String, data_hash: String, message: String, ) -> Self {
+    pub fn new(type_: String, field_name: String, data_hash: String, message: String, ) -> Self {
         Self {
-            source,
             type_,
             field_name,
             data_hash,
@@ -2530,9 +2494,8 @@ impl PassportElementErrorDataField {
 }
 
 impl PassportElementErrorFrontSide {
-    pub fn new(source: String, type_: String, file_hash: String, message: String, ) -> Self {
+    pub fn new(type_: String, file_hash: String, message: String, ) -> Self {
         Self {
-            source,
             type_,
             file_hash,
             message,
@@ -2541,9 +2504,8 @@ impl PassportElementErrorFrontSide {
 }
 
 impl PassportElementErrorReverseSide {
-    pub fn new(source: String, type_: String, file_hash: String, message: String, ) -> Self {
+    pub fn new(type_: String, file_hash: String, message: String, ) -> Self {
         Self {
-            source,
             type_,
             file_hash,
             message,
@@ -2552,9 +2514,8 @@ impl PassportElementErrorReverseSide {
 }
 
 impl PassportElementErrorSelfie {
-    pub fn new(source: String, type_: String, file_hash: String, message: String, ) -> Self {
+    pub fn new(type_: String, file_hash: String, message: String, ) -> Self {
         Self {
-            source,
             type_,
             file_hash,
             message,
@@ -2563,9 +2524,8 @@ impl PassportElementErrorSelfie {
 }
 
 impl PassportElementErrorFile {
-    pub fn new(source: String, type_: String, file_hash: String, message: String, ) -> Self {
+    pub fn new(type_: String, file_hash: String, message: String, ) -> Self {
         Self {
-            source,
             type_,
             file_hash,
             message,
@@ -2574,9 +2534,8 @@ impl PassportElementErrorFile {
 }
 
 impl PassportElementErrorFiles {
-    pub fn new(source: String, type_: String, file_hashes: Vec<String>, message: String, ) -> Self {
+    pub fn new(type_: String, file_hashes: Vec<String>, message: String, ) -> Self {
         Self {
-            source,
             type_,
             file_hashes,
             message,
@@ -2585,9 +2544,8 @@ impl PassportElementErrorFiles {
 }
 
 impl PassportElementErrorTranslationFile {
-    pub fn new(source: String, type_: String, file_hash: String, message: String, ) -> Self {
+    pub fn new(type_: String, file_hash: String, message: String, ) -> Self {
         Self {
-            source,
             type_,
             file_hash,
             message,
@@ -2596,9 +2554,8 @@ impl PassportElementErrorTranslationFile {
 }
 
 impl PassportElementErrorTranslationFiles {
-    pub fn new(source: String, type_: String, file_hashes: Vec<String>, message: String, ) -> Self {
+    pub fn new(type_: String, file_hashes: Vec<String>, message: String, ) -> Self {
         Self {
-            source,
             type_,
             file_hashes,
             message,
@@ -2607,9 +2564,8 @@ impl PassportElementErrorTranslationFiles {
 }
 
 impl PassportElementErrorUnspecified {
-    pub fn new(source: String, type_: String, element_hash: String, message: String, ) -> Self {
+    pub fn new(type_: String, element_hash: String, message: String, ) -> Self {
         Self {
-            source,
             type_,
             element_hash,
             message,

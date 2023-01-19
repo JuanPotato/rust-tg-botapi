@@ -161,39 +161,6 @@ impl ToString for ChatId {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ReplyMarkup {
-    InlineKeyboard(InlineKeyboardMarkup),
-    ReplyKeyboard(ReplyKeyboardMarkup),
-    ReplyKeyboardRemove(ReplyKeyboardRemove),
-    ForceReply(ForceReply),
-}
-
-impl From<InlineKeyboardMarkup> for ReplyMarkup {
-    fn from(markup: InlineKeyboardMarkup) -> ReplyMarkup {
-        ReplyMarkup::InlineKeyboard(markup)
-    }
-}
-
-impl From<ReplyKeyboardMarkup> for ReplyMarkup {
-    fn from(markup: ReplyKeyboardMarkup) -> ReplyMarkup {
-        ReplyMarkup::ReplyKeyboard(markup)
-    }
-}
-
-impl From<ReplyKeyboardRemove> for ReplyMarkup {
-    fn from(markup: ReplyKeyboardRemove) -> ReplyMarkup {
-        ReplyMarkup::ReplyKeyboardRemove(markup)
-    }
-}
-
-impl From<ForceReply> for ReplyMarkup {
-    fn from(markup: ForceReply) -> ReplyMarkup {
-        ReplyMarkup::ForceReply(markup)
-    }
-}
-
 #[derive(Debug, Clone, Deserialize)]
 pub struct Update {
     pub update_id: i64,

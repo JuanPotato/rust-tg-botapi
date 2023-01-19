@@ -63,7 +63,12 @@ class TgField:
         self.name = self.raw_name
         if self.raw_name in ('type', 'Self', 'self'):
             self.name += '_'
-    
+        
+        self.required_value = None
+        if m := re.search(r", must be (\w+)$", self.desc):
+            self.required_value = m.group(1)
+        self.skip = False
+
     def __repr__(self) -> str:
         return f'{self.name}: {self.type.rust_type}'
 
@@ -75,6 +80,13 @@ class TgObject:
         self.desc = d['description']
         self.need_serialize = False
         self.has_inputfile = any(has_file(f, {}) for f in self.fields)
+        self.is_enum_variant = False
+    
+    def get_tag(self):
+        for f in self.fields:
+            if f.required_value:
+                return f
+        return None
     
     def dump_def(self):
         defs = ''
@@ -85,6 +97,7 @@ class TgObject:
             defs += '#[derive(Debug, Clone, Deserialize)]\n'
         defs += f'pub struct {self.camel} {{\n'
         for field in self.fields:
+            if field.skip: continue
             if field.name != field.raw_name:
                 defs += f'    #[serde(rename = "{field.raw_name}")]\n'
             if not field.required and self.need_serialize:
@@ -113,6 +126,7 @@ class TgObject:
         output  = f'impl {self.camel} {{\n'
         output += f'    pub fn new('
         for field in self.fields:
+            if field.skip: continue
             if field.required:
                 output += f'{field.name}: {field.type.rust_type}, '
         output += f') -> Self {{\n'
@@ -120,6 +134,7 @@ class TgObject:
         output += f'        Self {{\n'
 
         for field in self.fields:
+            if field.skip: continue
             if field.required:
                 output += f'            {field.name},\n'
             else:
@@ -135,6 +150,7 @@ class TgObject:
         output  = f'impl {self.camel} {{\n'
 
         for field in self.fields:
+            if field.skip: continue
             if not field.required:
                 output += f'    pub fn with_{field.raw_name}(mut self, {field.name}: {field.type.inner_optional}) -> Self {{\n'
                 output += f'        self.{field.name} = Some({field.name});\n'
@@ -150,6 +166,7 @@ class TgObject:
         output += f'impl crate::TgObject for {self.camel} {{\n'
         output += f'    fn add_file(&self, mut form: reqwest::multipart::Form) -> reqwest::multipart::Form {{\n'
         for field in self.fields:
+            if field.skip: continue
             if has_file(field, objects_map):
                 output += f'        form = self.{field.name}.add_file(form);\n'
         output += f'        form\n'
@@ -209,16 +226,29 @@ class TgEnum:
         self.need_serialize = False
         self.has_inputfile = False
 
-    def dump_def(self):
+    def dump_def(self, objects_map):
+        tags = [tag for v in self.variants if (tag := objects_map[v].get_tag())]
+        if tags:
+            if not all(t.name == tags[0].name for t in tags) or len(tags) != len(self.variants):
+                raise Exception("Somethings wrong...")
+
         defs = ''
 
         if self.need_serialize:
             defs += '#[derive(Debug, Clone, Serialize, Deserialize)]\n'
         else:
             defs += '#[derive(Debug, Clone, Deserialize)]\n'
-        defs += '#[serde(untagged)]\n'
+
+        if tags:
+            defs += f'#[serde(tag = "{tags[0].raw_name}")]\n'
+        else:
+            defs += '#[serde(untagged)]\n'
+
         defs += f'pub enum {self.name} {{\n'
-        for var, fil in zip(self.variants, self.filtered):
+        for i, (var, fil) in enumerate(zip(self.variants, self.filtered)):
+            if tags:
+                defs += f'    #[serde(rename = "{tags[i].required_value}")]\n'
+                tags[i].skip = True
             defs += f'    {fil}({var}),\n'
 
         defs += f'}}\n\n'
@@ -280,8 +310,6 @@ def main():
     enum_map = {e.name:e for e in enums}
     objects_map = {o.name:o for o in objects}
     e_o_map = {**enum_map, **objects_map}
-
-    ignore = ['i64', 'f64', 'String', 'bool', 'ParseMode', 'ChatId', 'InputFile', 'ReplyMarkup']
 
     needed_serialize = set()
     need_serialize = list(methods)
@@ -364,7 +392,7 @@ def main():
     meth_impl_file.write('use crate::helpers::*;\n')
     meth_impl_file.write('use crate::{TgMethod, TgObject};\n\n')
 
-    type_file.write(''.join(e.dump_def() for e in enums))
+    type_file.write(''.join(e.dump_def(e_o_map) for e in enums))
     type_file.write(''.join(o.dump_def() for o in objects))
 
     type_impl_file.write(''.join(e.dump_impl(e_o_map) for e in enums))

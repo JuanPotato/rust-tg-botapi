@@ -12,57 +12,92 @@ pub enum ChatMember {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "type")]
 pub enum BotCommandScope {
+    #[serde(rename = "default")]
     Default(BotCommandScopeDefault),
+    #[serde(rename = "all_private_chats")]
     AllPrivateChats(BotCommandScopeAllPrivateChats),
+    #[serde(rename = "all_group_chats")]
     AllGroupChats(BotCommandScopeAllGroupChats),
+    #[serde(rename = "all_chat_administrators")]
     AllChatAdministrators(BotCommandScopeAllChatAdministrators),
+    #[serde(rename = "chat")]
     Chat(BotCommandScopeChat),
+    #[serde(rename = "chat_administrators")]
     ChatAdministrators(BotCommandScopeChatAdministrators),
+    #[serde(rename = "chat_member")]
     ChatMember(BotCommandScopeChatMember),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "type")]
 pub enum MenuButton {
+    #[serde(rename = "commands")]
     Commands(MenuButtonCommands),
+    #[serde(rename = "web_app")]
     WebApp(MenuButtonWebApp),
+    #[serde(rename = "default")]
     Default(MenuButtonDefault),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "type")]
 pub enum InputMedia {
+    #[serde(rename = "animation")]
     Animation(InputMediaAnimation),
+    #[serde(rename = "document")]
     Document(InputMediaDocument),
+    #[serde(rename = "audio")]
     Audio(InputMediaAudio),
+    #[serde(rename = "photo")]
     Photo(InputMediaPhoto),
+    #[serde(rename = "video")]
     Video(InputMediaVideo),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "type")]
 pub enum InlineQueryResult {
+    #[serde(rename = "audio")]
     CachedAudio(InlineQueryResultCachedAudio),
+    #[serde(rename = "document")]
     CachedDocument(InlineQueryResultCachedDocument),
+    #[serde(rename = "gif")]
     CachedGif(InlineQueryResultCachedGif),
+    #[serde(rename = "mpeg4_gif")]
     CachedMpeg4Gif(InlineQueryResultCachedMpeg4Gif),
+    #[serde(rename = "photo")]
     CachedPhoto(InlineQueryResultCachedPhoto),
+    #[serde(rename = "sticker")]
     CachedSticker(InlineQueryResultCachedSticker),
+    #[serde(rename = "video")]
     CachedVideo(InlineQueryResultCachedVideo),
+    #[serde(rename = "voice")]
     CachedVoice(InlineQueryResultCachedVoice),
+    #[serde(rename = "article")]
     Article(InlineQueryResultArticle),
+    #[serde(rename = "audio")]
     Audio(InlineQueryResultAudio),
+    #[serde(rename = "contact")]
     Contact(InlineQueryResultContact),
+    #[serde(rename = "game")]
     Game(InlineQueryResultGame),
+    #[serde(rename = "document")]
     Document(InlineQueryResultDocument),
+    #[serde(rename = "gif")]
     Gif(InlineQueryResultGif),
+    #[serde(rename = "location")]
     Location(InlineQueryResultLocation),
+    #[serde(rename = "mpeg4_gif")]
     Mpeg4Gif(InlineQueryResultMpeg4Gif),
+    #[serde(rename = "photo")]
     Photo(InlineQueryResultPhoto),
+    #[serde(rename = "venue")]
     Venue(InlineQueryResultVenue),
+    #[serde(rename = "video")]
     Video(InlineQueryResultVideo),
+    #[serde(rename = "voice")]
     Voice(InlineQueryResultVoice),
 }
 
@@ -77,16 +112,25 @@ pub enum InputMessageContent {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "source")]
 pub enum PassportElementError {
+    #[serde(rename = "data")]
     DataField(PassportElementErrorDataField),
+    #[serde(rename = "front_side")]
     FrontSide(PassportElementErrorFrontSide),
+    #[serde(rename = "reverse_side")]
     ReverseSide(PassportElementErrorReverseSide),
+    #[serde(rename = "selfie")]
     Selfie(PassportElementErrorSelfie),
+    #[serde(rename = "file")]
     File(PassportElementErrorFile),
+    #[serde(rename = "files")]
     Files(PassportElementErrorFiles),
+    #[serde(rename = "translation_file")]
     TranslationFile(PassportElementErrorTranslationFile),
+    #[serde(rename = "translation_files")]
     TranslationFiles(PassportElementErrorTranslationFiles),
+    #[serde(rename = "unspecified")]
     Unspecified(PassportElementErrorUnspecified),
 }
 
@@ -762,68 +806,48 @@ pub struct BotCommand {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BotCommandScopeDefault {
-    #[serde(rename = "type")]
-    pub type_: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BotCommandScopeAllPrivateChats {
-    #[serde(rename = "type")]
-    pub type_: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BotCommandScopeAllGroupChats {
-    #[serde(rename = "type")]
-    pub type_: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BotCommandScopeAllChatAdministrators {
-    #[serde(rename = "type")]
-    pub type_: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BotCommandScopeChat {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub chat_id: ChatId,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BotCommandScopeChatAdministrators {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub chat_id: ChatId,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BotCommandScopeChatMember {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub chat_id: ChatId,
     pub user_id: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MenuButtonCommands {
-    #[serde(rename = "type")]
-    pub type_: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MenuButtonWebApp {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub text: String,
     pub web_app: WebAppInfo,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MenuButtonDefault {
-    #[serde(rename = "type")]
-    pub type_: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -834,8 +858,6 @@ pub struct ResponseParameters {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InputMediaPhoto {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub media: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
@@ -849,8 +871,6 @@ pub struct InputMediaPhoto {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InputMediaVideo {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub media: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
@@ -874,8 +894,6 @@ pub struct InputMediaVideo {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InputMediaAnimation {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub media: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
@@ -897,8 +915,6 @@ pub struct InputMediaAnimation {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InputMediaAudio {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub media: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
@@ -918,8 +934,6 @@ pub struct InputMediaAudio {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InputMediaDocument {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub media: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
@@ -983,8 +997,6 @@ pub struct InlineQuery {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultArticle {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub title: String,
     pub input_message_content: InputMessageContent,
@@ -1006,8 +1018,6 @@ pub struct InlineQueryResultArticle {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultPhoto {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub photo_url: String,
     pub thumb_url: String,
@@ -1033,8 +1043,6 @@ pub struct InlineQueryResultPhoto {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultGif {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub gif_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1062,8 +1070,6 @@ pub struct InlineQueryResultGif {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultMpeg4Gif {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub mpeg4_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1091,8 +1097,6 @@ pub struct InlineQueryResultMpeg4Gif {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultVideo {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub video_url: String,
     pub mime_type: String,
@@ -1120,8 +1124,6 @@ pub struct InlineQueryResultVideo {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultAudio {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub audio_url: String,
     pub title: String,
@@ -1143,8 +1145,6 @@ pub struct InlineQueryResultAudio {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultVoice {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub voice_url: String,
     pub title: String,
@@ -1164,8 +1164,6 @@ pub struct InlineQueryResultVoice {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultDocument {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1192,8 +1190,6 @@ pub struct InlineQueryResultDocument {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultLocation {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub latitude: f64,
     pub longitude: f64,
@@ -1220,8 +1216,6 @@ pub struct InlineQueryResultLocation {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultVenue {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub latitude: f64,
     pub longitude: f64,
@@ -1249,8 +1243,6 @@ pub struct InlineQueryResultVenue {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultContact {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub phone_number: String,
     pub first_name: String,
@@ -1272,8 +1264,6 @@ pub struct InlineQueryResultContact {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultGame {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub game_short_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1282,8 +1272,6 @@ pub struct InlineQueryResultGame {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultCachedPhoto {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub photo_file_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1304,8 +1292,6 @@ pub struct InlineQueryResultCachedPhoto {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultCachedGif {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub gif_file_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1324,8 +1310,6 @@ pub struct InlineQueryResultCachedGif {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultCachedMpeg4Gif {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub mpeg4_file_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1344,8 +1328,6 @@ pub struct InlineQueryResultCachedMpeg4Gif {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultCachedSticker {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub sticker_file_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1356,8 +1338,6 @@ pub struct InlineQueryResultCachedSticker {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultCachedDocument {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub title: String,
     pub document_file_id: String,
@@ -1377,8 +1357,6 @@ pub struct InlineQueryResultCachedDocument {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultCachedVideo {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub video_file_id: String,
     pub title: String,
@@ -1398,8 +1376,6 @@ pub struct InlineQueryResultCachedVideo {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultCachedVoice {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub voice_file_id: String,
     pub title: String,
@@ -1417,8 +1393,6 @@ pub struct InlineQueryResultCachedVoice {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InlineQueryResultCachedAudio {
-    #[serde(rename = "type")]
-    pub type_: String,
     pub id: String,
     pub audio_file_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1644,7 +1618,6 @@ pub struct EncryptedCredentials {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorDataField {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub field_name: String,
@@ -1654,7 +1627,6 @@ pub struct PassportElementErrorDataField {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorFrontSide {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub file_hash: String,
@@ -1663,7 +1635,6 @@ pub struct PassportElementErrorFrontSide {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorReverseSide {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub file_hash: String,
@@ -1672,7 +1643,6 @@ pub struct PassportElementErrorReverseSide {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorSelfie {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub file_hash: String,
@@ -1681,7 +1651,6 @@ pub struct PassportElementErrorSelfie {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorFile {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub file_hash: String,
@@ -1690,7 +1659,6 @@ pub struct PassportElementErrorFile {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorFiles {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub file_hashes: Vec<String>,
@@ -1699,7 +1667,6 @@ pub struct PassportElementErrorFiles {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorTranslationFile {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub file_hash: String,
@@ -1708,7 +1675,6 @@ pub struct PassportElementErrorTranslationFile {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorTranslationFiles {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub file_hashes: Vec<String>,
@@ -1717,7 +1683,6 @@ pub struct PassportElementErrorTranslationFiles {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassportElementErrorUnspecified {
-    pub source: String,
     #[serde(rename = "type")]
     pub type_: String,
     pub element_hash: String,
