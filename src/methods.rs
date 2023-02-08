@@ -1062,6 +1062,13 @@ pub struct RestrictChatMember {
     /// A JSON-serialized object for new user permissions
     pub permissions: ChatPermissions,
     #[serde(skip_serializing_if = "Option::is_none")]
+    /// Pass True if chat permissions are set independently. Otherwise, the can_send_other_messages
+    /// and can_add_web_page_previews permissions will imply the can_send_messages,
+    /// can_send_audios, can_send_documents, can_send_photos, can_send_videos,
+    /// can_send_video_notes, and can_send_voice_notes permissions; the can_send_polls permission
+    /// will imply the can_send_messages permission.
+    pub use_independent_chat_permissions: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     /// Date when restrictions will be lifted for the user, unix time. If user is restricted for
     /// more than 366 days or less than 30 seconds from the current time, they are considered to be
     /// restricted forever
@@ -1170,6 +1177,13 @@ pub struct SetChatPermissions {
     pub chat_id: ChatId,
     /// A JSON-serialized object for new default chat permissions
     pub permissions: ChatPermissions,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Pass True if chat permissions are set independently. Otherwise, the can_send_other_messages
+    /// and can_add_web_page_previews permissions will imply the can_send_messages,
+    /// can_send_audios, can_send_documents, can_send_photos, can_send_videos,
+    /// can_send_video_notes, and can_send_voice_notes permissions; the can_send_polls permission
+    /// will imply the can_send_messages permission.
+    pub use_independent_chat_permissions: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1396,9 +1410,9 @@ pub struct GetChatMemberCount {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-/// Use this method to get information about a member of a chat. The method is guaranteed to work
-/// for other users, only if the bot is an administrator in the chat. Returns a ChatMember object
-/// on success.
+/// Use this method to get information about a member of a chat. The method is only guaranteed to
+/// work for other users if the bot is an administrator in the chat. Returns a ChatMember object on
+/// success.
 pub struct GetChatMember {
     /// Unique identifier for the target chat or username of the target supergroup or channel (in
     /// the format @channelusername)

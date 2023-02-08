@@ -2404,6 +2404,9 @@ impl TgMethod for RestrictChatMember {
         form = form.text("chat_id", self.chat_id.to_string());
         form = form.text("user_id", self.user_id.to_string());
         form = form.text("permissions", serde_json::to_string(&self.permissions).unwrap());
+        if let Some(s) = &self.use_independent_chat_permissions {
+            form = form.text("use_independent_chat_permissions", s.to_string());
+        }
         if let Some(s) = &self.until_date {
             form = form.text("until_date", s.to_string());
         }
@@ -2417,12 +2420,18 @@ impl RestrictChatMember {
             chat_id,
             user_id,
             permissions,
+            use_independent_chat_permissions: None,
             until_date: None,
         }
     }
 }
 
 impl RestrictChatMember {
+    pub fn with_use_independent_chat_permissions(mut self, use_independent_chat_permissions: bool) -> Self {
+        self.use_independent_chat_permissions = Some(use_independent_chat_permissions);
+        self
+    }
+
     pub fn with_until_date(mut self, until_date: i64) -> Self {
         self.until_date = Some(until_date);
         self
@@ -2635,6 +2644,9 @@ impl TgMethod for SetChatPermissions {
         let mut form = reqwest::multipart::Form::new();
         form = form.text("chat_id", self.chat_id.to_string());
         form = form.text("permissions", serde_json::to_string(&self.permissions).unwrap());
+        if let Some(s) = &self.use_independent_chat_permissions {
+            form = form.text("use_independent_chat_permissions", s.to_string());
+        }
         form
     }
 }
@@ -2644,8 +2656,17 @@ impl SetChatPermissions {
         Self {
             chat_id,
             permissions,
+            use_independent_chat_permissions: None,
         }
     }
+}
+
+impl SetChatPermissions {
+    pub fn with_use_independent_chat_permissions(mut self, use_independent_chat_permissions: bool) -> Self {
+        self.use_independent_chat_permissions = Some(use_independent_chat_permissions);
+        self
+    }
+
 }
 
 impl TgMethod for ExportChatInviteLink {

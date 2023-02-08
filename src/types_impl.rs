@@ -518,6 +518,8 @@ impl KeyboardButton {
     pub fn new(text: String, ) -> Self {
         Self {
             text,
+            request_user: None,
+            request_chat: None,
             request_contact: None,
             request_location: None,
             request_poll: None,
@@ -527,6 +529,16 @@ impl KeyboardButton {
 }
 
 impl KeyboardButton {
+    pub fn with_request_user(mut self, request_user: KeyboardButtonRequestUser) -> Self {
+        self.request_user = Some(request_user);
+        self
+    }
+
+    pub fn with_request_chat(mut self, request_chat: KeyboardButtonRequestChat) -> Self {
+        self.request_chat = Some(request_chat);
+        self
+    }
+
     pub fn with_request_contact(mut self, request_contact: bool) -> Self {
         self.request_contact = Some(request_contact);
         self
@@ -544,6 +556,77 @@ impl KeyboardButton {
 
     pub fn with_web_app(mut self, web_app: WebAppInfo) -> Self {
         self.web_app = Some(web_app);
+        self
+    }
+
+}
+
+impl KeyboardButtonRequestUser {
+    pub fn new(request_id: i64, ) -> Self {
+        Self {
+            request_id,
+            user_is_bot: None,
+            user_is_premium: None,
+        }
+    }
+}
+
+impl KeyboardButtonRequestUser {
+    pub fn with_user_is_bot(mut self, user_is_bot: bool) -> Self {
+        self.user_is_bot = Some(user_is_bot);
+        self
+    }
+
+    pub fn with_user_is_premium(mut self, user_is_premium: bool) -> Self {
+        self.user_is_premium = Some(user_is_premium);
+        self
+    }
+
+}
+
+impl KeyboardButtonRequestChat {
+    pub fn new(request_id: i64, chat_is_channel: bool, ) -> Self {
+        Self {
+            request_id,
+            chat_is_channel,
+            chat_is_forum: None,
+            chat_has_username: None,
+            chat_is_created: None,
+            user_administrator_rights: None,
+            bot_administrator_rights: None,
+            bot_is_member: None,
+        }
+    }
+}
+
+impl KeyboardButtonRequestChat {
+    pub fn with_chat_is_forum(mut self, chat_is_forum: bool) -> Self {
+        self.chat_is_forum = Some(chat_is_forum);
+        self
+    }
+
+    pub fn with_chat_has_username(mut self, chat_has_username: bool) -> Self {
+        self.chat_has_username = Some(chat_has_username);
+        self
+    }
+
+    pub fn with_chat_is_created(mut self, chat_is_created: bool) -> Self {
+        self.chat_is_created = Some(chat_is_created);
+        self
+    }
+
+    pub fn with_user_administrator_rights(mut self, user_administrator_rights: ChatAdministratorRights) -> Self {
+        self.user_administrator_rights = Some(user_administrator_rights);
+        self
+    }
+
+    pub fn with_bot_administrator_rights(mut self, bot_administrator_rights: ChatAdministratorRights) -> Self {
+        self.bot_administrator_rights = Some(bot_administrator_rights);
+        self
+    }
+
+    pub fn with_bot_is_member(mut self, bot_is_member: bool) -> Self {
+        self.bot_is_member = Some(bot_is_member);
         self
     }
 
@@ -741,8 +824,33 @@ impl ChatPermissions {
         self
     }
 
-    pub fn with_can_send_media_messages(mut self, can_send_media_messages: bool) -> Self {
-        self.can_send_media_messages = Some(can_send_media_messages);
+    pub fn with_can_send_audios(mut self, can_send_audios: bool) -> Self {
+        self.can_send_audios = Some(can_send_audios);
+        self
+    }
+
+    pub fn with_can_send_documents(mut self, can_send_documents: bool) -> Self {
+        self.can_send_documents = Some(can_send_documents);
+        self
+    }
+
+    pub fn with_can_send_photos(mut self, can_send_photos: bool) -> Self {
+        self.can_send_photos = Some(can_send_photos);
+        self
+    }
+
+    pub fn with_can_send_videos(mut self, can_send_videos: bool) -> Self {
+        self.can_send_videos = Some(can_send_videos);
+        self
+    }
+
+    pub fn with_can_send_video_notes(mut self, can_send_video_notes: bool) -> Self {
+        self.can_send_video_notes = Some(can_send_video_notes);
+        self
+    }
+
+    pub fn with_can_send_voice_notes(mut self, can_send_voice_notes: bool) -> Self {
+        self.can_send_voice_notes = Some(can_send_voice_notes);
         self
     }
 
